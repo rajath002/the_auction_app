@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "image": "sagar.jpeg",
+    "name": "Sagar G",
+    "stats": {
+      "baseValue": 200,
+      "bidValue": 200,
+      "currentTeamId": null,
+      "status": null
+    },
+    "currentBid": 100,
+    "type": "Batsman"
+  },
+  {
+    "id": 2,
+    "image": "adarsh.jpeg",
+    "name": "Adarsh",
+    "stats": {
+      "baseValue": 200,
+      "bidValue": 200,
+      "currentTeamId": null,
+      "status": null
+    },
+    "currentBid": 10,
+    "type": "All Rounder"
+  },
+  {
+    "id": 3,
+    "image": "karthik_tigu.jpeg",
+    "name": "Karthik",
+    "stats": {
+      "baseValue": 200,
+      "bidValue": 200,
+      "currentTeamId": null,
+      "status": null
+    },
+    "currentBid": 10,
+    "type": "Batsman"
+  },
+  {
+    "id": 4,
+    "image": "manoj.jpeg",
+    "name": "Manoj",
+    "stats": {
+      "baseValue": 200,
+      "bidValue": 200,
+      "currentTeamId": null,
+      "status": null
+    },
+    "currentBid": 10,
+    "type": "All Rounder"
+  }
+]

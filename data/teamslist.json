@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "name": "Tantri Warriors",
+    "purse": 10000,
+    "owner": "Bhargav Bhat",
+    "mentor": "Nazeer",
+    "iconPlayer": "Nikhil Kulal"
+    
+  },
+  {
+    "id": 2,
+    "name": "Team Squad",
+    "purse": 10000,
+    "owner": "Guruprasad",
+    "mentor": "Santhosh Shetty",
+    "iconPlayer": "Dheeraj S Shetty"
+  },
+  {
+    "id": 3,
+    "name": "Shabari Strikers",
+    "purse": 10000,
+    "owner": "Rajesh Shetty",
+    "mentor": "Pavan Shetty",
+    "iconPlayer": "Adarsh Acharya"
+  },
+  {
+    "id": 4,
+    "name": "Kuthyar Lions",
+    "purse": 10000,
+    "owner": "Ashok Devadiga",
+    "mentor": "Shreyas",
+    "iconPlayer": "Sathish"
+  },
+  {
+    "id": 5,
+    "name": "Bhoomi Fighters",
+    "purse": 10000,
+    "owner": "Dheeraj Kulal",
+    "mentor": "Praveen",
+    "iconPlayer": "Sandesh"
+  }
+]
