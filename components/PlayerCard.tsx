@@ -36,7 +36,7 @@ export const PlayerCard = ({
           )}
         </div>
         <div className="  bottom-0 text-white">
-          <div className="">{index + 1}</div>
+          {/* <div className="">{index + 1}</div> */}
           <h2 className="text-4xl font-bold"> {player?.name}</h2>
           <ul className="text-sm mt-2">
             <h1 className="text-lg">{player?.type}🏏</h1>
@@ -76,7 +76,7 @@ function Buttons(props: {
   onSell: (player: Player) => void;
   onRevoke: (player: Player) => void;
   onResetPlayer: (player: Player) => void;
-  onUnsold:(player: Player) => void;
+  onUnsold: (player: Player) => void;
 }) {
   const [openPopover, setOpenPopover] = useState(false);
   const [openSoldPopover, setOpenSoldPopover] = useState(false);
@@ -96,7 +96,7 @@ function Buttons(props: {
     setTimeout(() => {
       props.onSell(props.player);
     }, 600);
-  }
+  };
 
   const handleUnsoldChange = () => setOpenUnsoldPopover(!openUnsoldPopover);
   const onUnsoldHandler = () => {
@@ -104,19 +104,49 @@ function Buttons(props: {
     setTimeout(() => {
       props.onUnsold(props.player);
     }, 600);
-  }
+  };
+
+  const unsoldBtn = props.player?.stats.status === null && (
+    <Popover
+      content={
+        <>
+          <Button onClick={onUnsoldHandler}>Yes</Button>
+          <Button className="mx-2" onClick={handleUnsoldChange}>
+            No
+          </Button>
+        </>
+      }
+      title="Is this Player is Unsold?"
+      trigger="click"
+      open={openUnsoldPopover}
+      placement="bottom"
+      onOpenChange={handleUnsoldChange}
+    >
+      <Button
+        type="primary"
+        danger
+        onClick={handleUnsoldChange}
+        className=" text-white bg-green-500"
+        icon={<DislikeFilled />}
+      >
+        Drop
+      </Button>
+    </Popover>
+  );
 
   if (!props.player?.stats.currentTeamId) {
-    return <></>;
+    return <>{unsoldBtn}</>;
   }
   const btn =
-    props.player?.stats.status === null ? (
+    props.player?.stats.status === null || props.player?.stats.status ===  "UNSOLD" ? (
       <>
         <Popover
           content={
             <>
               <Button onClick={onSoldHandler}>Yes</Button>
-              <Button className="mx-2" onClick={handleSoldChange}>No</Button>
+              <Button className="mx-2" onClick={handleSoldChange}>
+                No
+              </Button>
             </>
           }
           title="Are you sure to sell the Player?"
@@ -134,30 +164,6 @@ function Buttons(props: {
             Sell
           </Button>
         </Popover>
-        <Popover
-          content={
-            <>
-              <Button onClick={onUnsoldHandler}>Yes</Button>
-              <Button className="mx-2" onClick={handleUnsoldChange}>No</Button>
-            </>
-          }
-          title="Are you sure to sell the Player?"
-          trigger="click"
-          open={openUnsoldPopover}
-          placement="bottom"
-          onOpenChange={handleUnsoldChange}
-        >
-        <Button
-          type="primary"
-          ghost
-          danger
-          onClick={handleUnsoldChange}
-          className=" text-white bg-green-500"
-          icon={<DislikeFilled />}
-        >
-          Drop
-        </Button>
-        </Popover>
       </>
     ) : (
       <Button
@@ -169,6 +175,7 @@ function Buttons(props: {
         Revoke
       </Button>
     );
+
   return (
     <>
       <div className="grid grid-flow-col gap-3 mt-5">

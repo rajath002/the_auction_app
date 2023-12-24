@@ -6,14 +6,14 @@ import { Player, PlayerStatus, Team } from "../interface/interfaces";
 import teamList from "@/data/teamslist.json";
 import playersList from "@/data/playerslist.json";
 
-type FilterType = "ALL"|"SOLD"|"UNSOLD";
+type FilterType = "ALL" | "SOLD" | "UNSOLD";
 
 function useAppState() {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0); // Current player index
   const [teams, setTeams] = useState<Team[]>([]);
   // const [playersMasterData, setPlayersMasterData] = useState<Player[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [playerFilter, setPlayerFilter] = useState<FilterType>("ALL")
+  const [playerFilter, setPlayerFilter] = useState<FilterType>("ALL");
   // const [soldPlayers, setSoldPlayers] = useState<Map<number, Player>>(
   //   new Map()
   // );
@@ -23,9 +23,14 @@ function useAppState() {
     setPlayers(playersList);
   }, []);
 
-  function getFilteredPlayers (filter: FilterType) {
-    const type = filter === "ALL" ? null : filter;
-    const data = players.filter(p => p.stats.status === type);
+  function getFilteredPlayers(filter: FilterType) {
+    let func = (p: Player) => true || false;
+    if (filter === 'UNSOLD') {
+      func = (p: Player) => (p.stats.status === "UNSOLD");
+    } else {
+      func = (p: Player) => !(p.stats.status === "UNSOLD");
+    }
+    const data = players.filter(func);
     // setPlayers(data);
     return data;
   }
@@ -40,13 +45,13 @@ function useAppState() {
     setTeams(() => updatedTeams);
   }
 
-  function updatePlayerPoints(playerId: number, team: Team, points: number) {
+  function updatePlayerPoints(playerId: number, team: Team, points: number, status?: any) {
     setPlayers((players) => {
       return players.map((playr) => {
         if (playr.id === playerId) {
           playr.stats.bidValue = points;
           playr.stats.currentTeamId = team.id;
-          playr.stats.status=null;
+          playr.stats.status = status || null;
         }
         return playr;
       });
@@ -84,10 +89,36 @@ function useAppState() {
       return player;
     });
 
+    function updatePlayerAndTeamPoints(updatePlayer: Player, teamObj: Team) {
+      let teams_: Team[]|null =null;
+      const players_ = players.map((player) => {
+        if (player.id === updatePlayer.id) {
+
+        teams_ = teams.map((t) => {
+          if (t.id === player.stats.currentTeamId) {
+            t.purse = t.purse + player.stats.bidValue;
+          }
+          return t;
+        });
+      }
+      })
+
+    }
+
     // const teams_ = teams.find
 
     if (players_.length) setPlayers(() => players_);
     if (teams_.length) setTeams(teams_);
+    
+    const filter = playerFilter === "ALL" ? null : playerFilter;
+    const players_and_status = players_.filter(
+      (p) => p.stats.status === filter
+    );
+    if (currentPlayerIndex === players_and_status.length) {
+      if (currentPlayerIndex - 1 !== -1) {
+        setCurrentPlayerIndex(currentPlayerIndex - 1);
+      } 
+    }
   }
 
   function getPlayersOfTeam(teamId: number) {
