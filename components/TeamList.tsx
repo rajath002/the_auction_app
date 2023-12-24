@@ -62,8 +62,6 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable }: 
               Bid
             </Button>
           </div>
-          {isPlayersAvailable ? "TR": "FL"}<br/>
-          {disableButton ? "D-TR": "D_FL"}
           <div className="text-center mt-2">
             <div className="text-lg bg-teal-700 rounded">{team.purse}</div>
           </div>
