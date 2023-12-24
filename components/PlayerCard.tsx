@@ -6,6 +6,7 @@ import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
 // React function components
 export const PlayerCard = ({
   player,
+  index,
   onSell,
   onRevoke,
   onResetPlayer,
@@ -16,6 +17,7 @@ export const PlayerCard = ({
   onRevoke: (player: Player) => void;
   onResetPlayer: (player: Player) => void;
   onUnsold: (player: Player) => void;
+  index: number | undefined;
 }) => {
   // const [image, setImage] = useState<unknown>(null);
 
@@ -34,7 +36,8 @@ export const PlayerCard = ({
           )}
         </div>
         <div className="  bottom-0 text-white">
-          <h2 className="text-4xl font-bold">{player?.name}</h2>
+          <div className="">{index + 1}</div>
+          <h2 className="text-4xl font-bold"> {player?.name}</h2>
           <ul className="text-sm mt-2">
             <h1 className="text-lg">{player?.type}🏏</h1>
             Base Points: {player?.stats?.baseValue}

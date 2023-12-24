@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { PlayerCard } from "./PlayerCard";
 import { TeamList } from "./TeamList";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Radio } from "antd";
 import { useAppContext } from "@/context/useAppState";
 import { Team } from "@/interface/interfaces";
 
@@ -13,11 +13,13 @@ export const AuctionContainer = () => {
     teams,
     players,
     currentPlayerIndex,
+    playerFilter,
     updatePurse,
     updatePlayerPoints,
     resetPlayerTeamAndPoints,
     updatePlayerStatus,
     setCurrentPlayerIndex,
+    setPlayerFilter,
   } = useAppContext();
 
   // Fetch player data (replace with your actual data fetching logic)
@@ -60,12 +62,11 @@ export const AuctionContainer = () => {
   };
 
   const onUnsoldHandler = () => {
-    updatePlayerStatus(players[currentPlayerIndex], "UNSOLD")
-  }
+    updatePlayerStatus(players[currentPlayerIndex], "UNSOLD");
+  };
 
   return (
     <div className="flex flex-col md:w-4/5 my-0 mx-auto">
-
       {players && (
         <PlayerCard
           player={players[currentPlayerIndex]}
@@ -73,6 +74,7 @@ export const AuctionContainer = () => {
           onRevoke={handleRevokeClick}
           onResetPlayer={resetPlayerTeamAndPoints}
           onUnsold={onUnsoldHandler}
+          index={currentPlayerIndex}
         />
       )}
       <div className="flex justify-between mb-4">
@@ -84,6 +86,16 @@ export const AuctionContainer = () => {
         >
           <ArrowLeftOutlined style={{ color: "white" }} />
         </Button>
+        <div>
+          <Radio.Group value={playerFilter} onChange={(e) => {
+            console.log("cliecked", e)
+            setPlayerFilter(e.target.value)
+            }}>
+            <Radio.Button value="ALL">ALL</Radio.Button>
+            <Radio.Button value="SOLD">SOLD</Radio.Button>
+            <Radio.Button value="UNSOLD">UNSOLD</Radio.Button>
+          </Radio.Group>
+        </div>
         <Button
           onClick={() =>
             setCurrentPlayerIndex(
