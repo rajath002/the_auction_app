@@ -5,10 +5,11 @@ import { TeamList } from "./TeamList";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { Button, Radio } from "antd";
 import { useAppContext } from "@/context/useAppState";
-import { Team } from "@/interface/interfaces";
+import { Player, Team } from "@/interface/interfaces";
 
 const INCREMENTAL_POINTS = 50;
 export const AuctionContainer = () => {
+  const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
   const {
     teams,
     players,
@@ -20,15 +21,25 @@ export const AuctionContainer = () => {
     updatePlayerStatus,
     setCurrentPlayerIndex,
     setPlayerFilter,
+    getFilteredPlayers,
   } = useAppContext();
 
   // Fetch player data (replace with your actual data fetching logic)
   useEffect(() => {
-    // fetch("/api/players")
-    //   .then((response) => response.json())
-    //   .then((data) => setPlayers(data));
-    // setPlayers(playersList);
-  }, []);
+    const players_ = getFilteredPlayers(playerFilter);
+    if (!players_.length) {
+      let idx = 0;
+      if(currentPlayerIndex + 1 > players_?.length) {
+        idx = currentPlayerIndex + 1 
+      } else {
+        idx = currentPlayerIndex - 1
+      }
+      setCurrentPlayerIndex(idx)
+
+      setCurrentPlayerIndex(0);
+    }
+    setFilteredPlayers(() => players_);
+  }, [currentPlayerIndex, getFilteredPlayers, playerFilter, setCurrentPlayerIndex]);
 
   const updateTeamAndPlayerPoints = (team: Team) => {
     const playerInfo = players[currentPlayerIndex];
@@ -67,9 +78,9 @@ export const AuctionContainer = () => {
 
   return (
     <div className="flex flex-col md:w-4/5 my-0 mx-auto">
-      {players && (
+      {filteredPlayers && filteredPlayers.length && (
         <PlayerCard
-          player={players[currentPlayerIndex]}
+          player={filteredPlayers[currentPlayerIndex]}
           onSell={handleBidClick}
           onRevoke={handleRevokeClick}
           onResetPlayer={resetPlayerTeamAndPoints}
@@ -77,42 +88,52 @@ export const AuctionContainer = () => {
           index={currentPlayerIndex}
         />
       )}
+      {filteredPlayers && filteredPlayers.length === 0 && (
+        <div className="text-5xl rounded-lg my-10 p-5 text-yellow-700 bg-yellow-200 border border-yellow-500">
+          Players Not Found!
+        </div>
+      )}
       <div className="flex justify-between mb-4">
         <Button
-          onClick={() =>
-            setCurrentPlayerIndex(Math.max(currentPlayerIndex - 1, 0))
-          }
+          onClick={() => {
+            setCurrentPlayerIndex(Math.max(currentPlayerIndex - 1, 0));
+          }}
           className="grid items-center"
         >
           <ArrowLeftOutlined style={{ color: "white" }} />
         </Button>
         <div>
-          <Radio.Group value={playerFilter} onChange={(e) => {
-            console.log("cliecked", e)
-            setPlayerFilter(e.target.value)
-            }}>
+          <Radio.Group
+            value={playerFilter}
+            onChange={(e) => {
+              console.log("cliecked", e);
+              setPlayerFilter(e.target.value);
+            }}
+          >
             <Radio.Button value="ALL">ALL</Radio.Button>
-            <Radio.Button value="SOLD">SOLD</Radio.Button>
+            {/* <Radio.Button value="SOLD">SOLD</Radio.Button> */}
             <Radio.Button value="UNSOLD">UNSOLD</Radio.Button>
           </Radio.Group>
         </div>
         <Button
-          onClick={() =>
+          onClick={() => {
+            const list = filteredPlayers;
             setCurrentPlayerIndex(
-              Math.min(currentPlayerIndex + 1, players.length - 1)
-            )
-          }
+              Math.min(currentPlayerIndex + 1, list.length - 1)
+            );
+          }}
           className="grid items-center"
         >
           <ArrowRightOutlined style={{ color: "white" }} />
         </Button>
       </div>
-      {players && teams && (
+      {currentPlayerIndex}
+      {filteredPlayers && teams && (
         <TeamList
           teams={teams}
           updateTeamAndPlayerPoints={updateTeamAndPlayerPoints}
-          disabled={players[currentPlayerIndex]?.stats.status === "SOLD"}
-          latedBiddedTeam={players[currentPlayerIndex]?.stats.currentTeamId}
+          disabled={filteredPlayers[currentPlayerIndex]?.stats.status === "SOLD"}
+          latedBiddedTeam={filteredPlayers[currentPlayerIndex]?.stats.currentTeamId}
         />
       )}
     </div>

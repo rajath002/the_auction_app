@@ -6,11 +6,14 @@ import { Player, PlayerStatus, Team } from "../interface/interfaces";
 import teamList from "@/data/teamslist.json";
 import playersList from "@/data/playerslist.json";
 
+type FilterType = "ALL"|"SOLD"|"UNSOLD";
+
 function useAppState() {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0); // Current player index
   const [teams, setTeams] = useState<Team[]>([]);
+  // const [playersMasterData, setPlayersMasterData] = useState<Player[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [filters, setFilters] = useState<string[]>([]);
+  const [playerFilter, setPlayerFilter] = useState<FilterType>("ALL")
   // const [soldPlayers, setSoldPlayers] = useState<Map<number, Player>>(
   //   new Map()
   // );
@@ -18,7 +21,14 @@ function useAppState() {
   useEffect(() => {
     setTeams(teamList);
     setPlayers(playersList);
-  }, [players]);
+  }, []);
+
+  function getFilteredPlayers (filter: FilterType) {
+    const type = filter === "ALL" ? null : filter;
+    const data = players.filter(p => p.stats.status === type);
+    // setPlayers(data);
+    return data;
+  }
 
   function updatePurse(team: Team, points: number) {
     const updatedTeams = teams.map((t) => {
@@ -113,6 +123,7 @@ function useAppState() {
     teams,
     players,
     currentPlayerIndex,
+    playerFilter,
     setPlayers,
     updatePurse,
     updatePlayerPoints,
@@ -120,6 +131,8 @@ function useAppState() {
     getPlayersOfTeam,
     resetPlayerTeamAndPoints,
     setCurrentPlayerIndex,
+    setPlayerFilter,
+    getFilteredPlayers,
   };
 }
 
