@@ -8,6 +8,7 @@ import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
 
 const INCREMENTAL_POINTS = 50;
+
 export const AuctionContainer = () => {
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
   const {
@@ -42,7 +43,7 @@ export const AuctionContainer = () => {
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
     updatePlayerPoints(player.id, team, player.stats.bidValue+INCREMENTAL_POINTS, player.stats.status);
-    updatePurse(team, team.purse - INCREMENTAL_POINTS)
+    updatePurse(team, team.purse - INCREMENTAL_POINTS);
   }
 
   const updateTeamAndPlayerPoints = (team: Team) => {
@@ -66,7 +67,8 @@ export const AuctionContainer = () => {
     // Deduct points from previos team
     if (playerInfo.stats.currentTeamId) {
       const oldTeam = teams.find((oldTeam) => oldTeam.id === oldTeamId);
-      updatePurse(oldTeam, oldTeam.purse + oldBidValue);
+      if (oldTeam)
+        updatePurse(oldTeam, oldTeam.purse + oldBidValue);
     }
   };
 

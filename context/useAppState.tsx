@@ -5,6 +5,8 @@ import { Player, PlayerStatus, Team } from "../interface/interfaces";
 
 import teamList from "@/data/teamslist.json";
 import playersList from "@/data/playerslist.json";
+import { getTeams } from "@/services/teams";
+import { getPlayers } from "@/services/player";
 
 type FilterType = "ALL" | "SOLD" | "UNSOLD";
 
@@ -19,16 +21,22 @@ function useAppState() {
   // );
 
   useEffect(() => {
+    initDataValues();
+  }, []);
+
+  async function initDataValues() {
+    const teamList = await getTeams();
+    const playersList = await getPlayers();
     setTeams(teamList);
     setPlayers(playersList);
-  }, []);
+  }
 
   function getFilteredPlayers(filter: FilterType) {
     let func = (p: Player) => true || false;
-    if (filter === 'UNSOLD') {
-      func = (p: Player) => (p.stats.status === "UNSOLD");
+    if (filter === "UNSOLD") {
+      func = (p: Player) => p.stats.status === "UNSOLD";
     } else {
-      func = (p: Player) => !(p.stats.status === "UNSOLD");
+      func = (p: Player) => true;
     }
     const data = players.filter(func);
     // setPlayers(data);
@@ -45,7 +53,12 @@ function useAppState() {
     setTeams(() => updatedTeams);
   }
 
-  function updatePlayerPoints(playerId: number, team: Team, points: number, status?: any) {
+  function updatePlayerPoints(
+    playerId: number,
+    team: Team,
+    points: number,
+    status?: any
+  ) {
     setPlayers((players) => {
       return players.map((playr) => {
         if (playr.id === playerId) {
@@ -89,27 +102,11 @@ function useAppState() {
       return player;
     });
 
-    function updatePlayerAndTeamPoints(updatePlayer: Player, teamObj: Team) {
-      let teams_: Team[]|null =null;
-      const players_ = players.map((player) => {
-        if (player.id === updatePlayer.id) {
-
-        teams_ = teams.map((t) => {
-          if (t.id === player.stats.currentTeamId) {
-            t.purse = t.purse + player.stats.bidValue;
-          }
-          return t;
-        });
-      }
-      })
-
-    }
-
     // const teams_ = teams.find
 
     if (players_.length) setPlayers(() => players_);
     if (teams_.length) setTeams(teams_);
-    
+
     const filter = playerFilter === "ALL" ? null : playerFilter;
     const players_and_status = players_.filter(
       (p) => p.stats.status === filter
@@ -117,7 +114,7 @@ function useAppState() {
     if (currentPlayerIndex === players_and_status.length) {
       if (currentPlayerIndex - 1 !== -1) {
         setCurrentPlayerIndex(currentPlayerIndex - 1);
-      } 
+      }
     }
   }
 

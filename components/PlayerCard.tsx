@@ -3,6 +3,9 @@ import { Player } from "../interface/interfaces";
 import { useState } from "react";
 import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
 
+const IURI =
+"https://raw.githubusercontent.com/rajath002/24car4rwrwKPLHOSThgjt/main";
+
 // React function components
 export const PlayerCard = ({
   player,
@@ -19,7 +22,6 @@ export const PlayerCard = ({
   onUnsold: (player: Player) => void;
   index: number | undefined;
 }) => {
-  // const [image, setImage] = useState<unknown>(null);
 
   return (
     <div className="flex flex-col p-4 relative">
@@ -28,7 +30,8 @@ export const PlayerCard = ({
         <div className="flex justify-center ">
           {player?.image && (
             <Image
-              src={window.origin + "/profiles/" + player?.image}
+              // src={window.origin + "/profiles/" + player?.image}
+              src={IURI + "/" + player.image}
               alt={player?.name}
               width={300}
               height={300}
@@ -138,7 +141,8 @@ function Buttons(props: {
     return <>{unsoldBtn}</>;
   }
   const btn =
-    props.player?.stats.status === null || props.player?.stats.status ===  "UNSOLD" ? (
+    props.player?.stats.status === null ||
+    props.player?.stats.status === "UNSOLD" ? (
       <>
         <Popover
           content={

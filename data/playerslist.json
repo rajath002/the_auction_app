@@ -10,7 +10,8 @@
       "status": null
     },
     "currentBid": 100,
-    "type": "Batsman"
+    "type": "Batsman",
+    "category": "L1"
   },
   {
     "id": 2,
@@ -23,7 +24,8 @@
       "status": null
     },
     "currentBid": 10,
-    "type": "All Rounder"
+    "type": "All Rounder",
+    "category": "L1"
   },
   {
     "id": 3,
@@ -36,7 +38,8 @@
       "status": null
     },
     "currentBid": 10,
-    "type": "Batsman"
+    "type": "Batsman",
+    "category": "L1"
   },
   {
     "id": 4,
@@ -49,6 +52,7 @@
       "status": null
     },
     "currentBid": 10,
-    "type": "All Rounder"
+    "type": "All Rounder",
+    "category": "L1"
   }
 ]

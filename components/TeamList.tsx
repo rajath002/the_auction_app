@@ -10,7 +10,7 @@ interface TeamListType {
   updateTeamAndPlayerPoints: (team: Team) => void;
   teams: Team[];
   disabled: boolean;
-  latedBiddedTeam: number;
+  latedBiddedTeam: number | null;
   isPlayersAvailable: boolean;
 }
 
