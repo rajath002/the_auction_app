@@ -10,7 +10,8 @@ interface TeamListType {
   updateTeamAndPlayerPoints: (team: Team) => void;
   teams: Team[];
   disabled: boolean;
-  latedBiddedTeam: number;
+  latedBiddedTeam: number | null;
+  isPlayersAvailable: boolean;
 }
 
 export const TeamList = (props: TeamListType) => {
@@ -26,6 +27,7 @@ export const TeamList = (props: TeamListType) => {
           onBid={updatePurse}
           disableButton={props.disabled}
           isBiddedTeam={props.latedBiddedTeam === t.id}
+          isPlayersAvailable={props.isPlayersAvailable}
         />
       ))}
     </div>
@@ -37,9 +39,10 @@ interface TeamType {
   disableButton: boolean;
   onBid: (team: Team) => void;
   isBiddedTeam: boolean;
+  isPlayersAvailable: boolean;
 }
 
-function Team({ team, onBid, disableButton, isBiddedTeam }: TeamType) {
+function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable }: TeamType) {
   return (
     <>
       <div
@@ -54,7 +57,7 @@ function Team({ team, onBid, disableButton, isBiddedTeam }: TeamType) {
               type="primary"
               className="text-white bg-blue-600 disabled:text-white"
               onClick={() => onBid(team)}
-              disabled={disableButton}
+              disabled={disableButton || !isPlayersAvailable}
             >
               Bid
             </Button>

@@ -5,27 +5,40 @@ import { Player, PlayerStatus, Team } from "../interface/interfaces";
 
 import teamList from "@/data/teamslist.json";
 import playersList from "@/data/playerslist.json";
+import { getTeams } from "@/services/teams";
+import { getPlayers } from "@/services/player";
 
-type FilterType = "ALL"|"SOLD"|"UNSOLD";
+type FilterType = "ALL" | "SOLD" | "UNSOLD";
 
 function useAppState() {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0); // Current player index
   const [teams, setTeams] = useState<Team[]>([]);
   // const [playersMasterData, setPlayersMasterData] = useState<Player[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
-  const [playerFilter, setPlayerFilter] = useState<FilterType>("ALL")
+  const [playerFilter, setPlayerFilter] = useState<FilterType>("ALL");
   // const [soldPlayers, setSoldPlayers] = useState<Map<number, Player>>(
   //   new Map()
   // );
 
   useEffect(() => {
-    setTeams(teamList);
-    setPlayers(playersList);
+    initDataValues();
   }, []);
 
-  function getFilteredPlayers (filter: FilterType) {
-    const type = filter === "ALL" ? null : filter;
-    const data = players.filter(p => p.stats.status === type);
+  async function initDataValues() {
+    const teamList = await getTeams();
+    const playersList = await getPlayers();
+    setTeams(teamList);
+    setPlayers(playersList);
+  }
+
+  function getFilteredPlayers(filter: FilterType) {
+    let func = (p: Player) => true || false;
+    if (filter === "UNSOLD") {
+      func = (p: Player) => p.stats.status === "UNSOLD";
+    } else {
+      func = (p: Player) => true;
+    }
+    const data = players.filter(func);
     // setPlayers(data);
     return data;
   }
@@ -40,13 +53,18 @@ function useAppState() {
     setTeams(() => updatedTeams);
   }
 
-  function updatePlayerPoints(playerId: number, team: Team, points: number) {
+  function updatePlayerPoints(
+    playerId: number,
+    team: Team,
+    points: number,
+    status?: any
+  ) {
     setPlayers((players) => {
       return players.map((playr) => {
         if (playr.id === playerId) {
           playr.stats.bidValue = points;
           playr.stats.currentTeamId = team.id;
-          playr.stats.status=null;
+          playr.stats.status = status || null;
         }
         return playr;
       });
@@ -88,6 +106,16 @@ function useAppState() {
 
     if (players_.length) setPlayers(() => players_);
     if (teams_.length) setTeams(teams_);
+
+    const filter = playerFilter === "ALL" ? null : playerFilter;
+    const players_and_status = players_.filter(
+      (p) => p.stats.status === filter
+    );
+    if (currentPlayerIndex === players_and_status.length) {
+      if (currentPlayerIndex - 1 !== -1) {
+        setCurrentPlayerIndex(currentPlayerIndex - 1);
+      }
+    }
   }
 
   function getPlayersOfTeam(teamId: number) {

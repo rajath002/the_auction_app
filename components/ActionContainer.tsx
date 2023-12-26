@@ -8,6 +8,7 @@ import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
 
 const INCREMENTAL_POINTS = 50;
+
 export const AuctionContainer = () => {
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
   const {
@@ -27,23 +28,31 @@ export const AuctionContainer = () => {
   // Fetch player data (replace with your actual data fetching logic)
   useEffect(() => {
     const players_ = getFilteredPlayers(playerFilter);
-    if (!players_.length) {
-      let idx = 0;
-      if(currentPlayerIndex + 1 > players_?.length) {
-        idx = currentPlayerIndex + 1 
-      } else {
-        idx = currentPlayerIndex - 1
-      }
-      setCurrentPlayerIndex(idx)
-
-      setCurrentPlayerIndex(0);
-    }
+    // if (players_.length) {
+    //   let idx = 0;
+    //   if(currentPlayerIndex + 1 > players_?.length) {
+    //     idx = currentPlayerIndex + 1 
+    //   } else {
+    //     idx = currentPlayerIndex - 1
+    //   }
+    //   // setCurrentPlayerIndex(idx)
+    // }
+    // setCurrentPlayerIndex(0)
     setFilteredPlayers(() => players_);
   }, [currentPlayerIndex, getFilteredPlayers, playerFilter, setCurrentPlayerIndex]);
 
+  const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
+    updatePlayerPoints(player.id, team, player.stats.bidValue+INCREMENTAL_POINTS, player.stats.status);
+    updatePurse(team, team.purse - INCREMENTAL_POINTS);
+  }
+
   const updateTeamAndPlayerPoints = (team: Team) => {
-    const playerInfo = players[currentPlayerIndex];
+    const playerInfo = filteredPlayers[currentPlayerIndex];
     if (team.id === playerInfo.stats.currentTeamId) {
+      return;
+    }
+    if (playerInfo.stats.status === "UNSOLD") {
+      updateUnsoldPlayerTeamAndPoints(playerInfo, team);
       return;
     }
     let value = playerInfo.stats.bidValue;
@@ -58,22 +67,23 @@ export const AuctionContainer = () => {
     // Deduct points from previos team
     if (playerInfo.stats.currentTeamId) {
       const oldTeam = teams.find((oldTeam) => oldTeam.id === oldTeamId);
-      updatePurse(oldTeam, oldTeam.purse + oldBidValue);
+      if (oldTeam)
+        updatePurse(oldTeam, oldTeam.purse + oldBidValue);
     }
   };
 
   const handleBidClick = () => {
     // Implement bid logic like updating currentBid in player object and potentially sending bid data to server
     // playerSold(players[currentPlayerIndex])
-    updatePlayerStatus(players[currentPlayerIndex], "SOLD");
+    updatePlayerStatus(filteredPlayers[currentPlayerIndex], "SOLD");
   };
 
   const handleRevokeClick = () => {
-    updatePlayerStatus(players[currentPlayerIndex], null);
+    updatePlayerStatus(filteredPlayers[currentPlayerIndex], null);
   };
 
-  const onUnsoldHandler = () => {
-    updatePlayerStatus(players[currentPlayerIndex], "UNSOLD");
+  const onUnsoldHandler = (player:Player) => {
+    updatePlayerStatus(filteredPlayers[currentPlayerIndex], "UNSOLD");
   };
 
   return (
@@ -118,7 +128,7 @@ export const AuctionContainer = () => {
         <Button
           onClick={() => {
             const list = filteredPlayers;
-            setCurrentPlayerIndex(
+             setCurrentPlayerIndex(
               Math.min(currentPlayerIndex + 1, list.length - 1)
             );
           }}
@@ -131,6 +141,7 @@ export const AuctionContainer = () => {
       {filteredPlayers && teams && (
         <TeamList
           teams={teams}
+          isPlayersAvailable={filteredPlayers.length !== 0}
           updateTeamAndPlayerPoints={updateTeamAndPlayerPoints}
           disabled={filteredPlayers[currentPlayerIndex]?.stats.status === "SOLD"}
           latedBiddedTeam={filteredPlayers[currentPlayerIndex]?.stats.currentTeamId}
