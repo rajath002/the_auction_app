@@ -1,6 +1,6 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Add below values to readme.md file
+## Add below values to .env file in your local or to Environment setting in you deployment server.
 ```bash
 dbUserName="<USERNAME>"
 dbPassword="<PASSWORD>"
