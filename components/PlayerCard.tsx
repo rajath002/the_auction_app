@@ -6,6 +6,9 @@ import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
 const IURI =
 "https://raw.githubusercontent.com/rajath002/24car4rwrwKPLHOSThgjt/main";
 
+const URI_DOMAIN = "https://lh3.google.com/u/1/d/";
+const URI_SIZE = "=w1920-h912-iv1";
+
 // React function components
 export const PlayerCard = ({
   player,
@@ -31,7 +34,8 @@ export const PlayerCard = ({
           {player?.image && (
             <Image
               // src={window.origin + "/profiles/" + player?.image}
-              src={IURI + "/" + player.image}
+              // src={IURI + "/" + player.image}
+              src={URI_DOMAIN+player.image+URI_SIZE}
               alt={player?.name}
               width={300}
               height={300}
