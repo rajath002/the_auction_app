@@ -6,6 +6,6 @@ export default function Home() {
   return (
     <main className="bg-">
       <HomeBase />
-    </main>
+   </main>
   );
 }
