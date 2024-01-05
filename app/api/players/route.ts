@@ -7,12 +7,13 @@ export async function POST(request: NextRequest) {
     await connectToMongoDB();
     const playersCollection = database.collection("players");
     const result = await playersCollection.insertMany(players);
-    return NextResponse.json(result);
+    NextResponse.json(result);
   } catch (error) {
     NextResponse.json({ message: "Something went Wrong!" }, { status: 500 });
   } finally {
     client.close();
   }
+  return;
 }
 
 export async function PATCH(req: NextRequest) {
@@ -42,14 +43,16 @@ export async function GET(req: NextRequest) {
     await client.connect();
     const playersCollection = database.collection("players");
     const result = await playersCollection.find().toArray();
-    return NextResponse.json(result, { status: 200 });
+    NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.log("Error : ", error);
   } finally {
     closeConnection();
   }
+  return;
 }
 
 export async function DELETE() {
+  NextResponse.json({ message: "Not Implemented" }, { status: 501 });
   return;
 }
