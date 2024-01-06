@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
+
 interface IImageWithFallback {
   src: string;
   fallbackSrc: StaticImport | string;
@@ -10,17 +11,15 @@ interface IImageWithFallback {
   height?: number;
 }
 function ImageWithFallback(props: IImageWithFallback) {
-  const { src, fallbackSrc, alt, width, height, priority, ...rest } = props;
+  const { src, fallbackSrc, alt, width, height, priority } = props;
   const [imgSrc, setImgSrc] = useState<StaticImport | string>(src);
 
-  console.log("THE SRC", src)
+  console.log("THE SRC", src);
   return (
     <Image
       width={width}
       height={height}
-      priority={!!priority}
-      {...rest}
-      src={'https://lh3.google.com/u/1/d/1NWjXbzH-Ubs7gOZ3YhqcxrObMxsOx05V=w1920-h912-iv1'}
+      src={imgSrc as any}
       alt={alt}
       onError={() => {
         setImgSrc(fallbackSrc);
