@@ -2,9 +2,11 @@ import { Button, Image, Popover, Tag } from "antd";
 import { Player } from "../interface/interfaces";
 import { useState } from "react";
 import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
+import ImageWithFallback from "./ImageWithFallback";
+import kplImage from "../assets/kpl-logo-large.jpeg";
 
 const IURI =
-"https://raw.githubusercontent.com/rajath002/24car4rwrwKPLHOSThgjt/main";
+  "https://raw.githubusercontent.com/rajath002/24car4rwrwKPLHOSThgjt/main";
 
 const URI_DOMAIN = "https://lh3.google.com/u/1/d/";
 const URI_SIZE = "=w1920-h912-iv1";
@@ -25,7 +27,6 @@ export const PlayerCard = ({
   onUnsold: (player: Player) => void;
   index: number | undefined;
 }) => {
-
   return (
     <div className="flex flex-col p-4 relative">
       <div className="grid md:grid-flow-col gap-2 md:grid-cols-2">
@@ -40,6 +41,12 @@ export const PlayerCard = ({
               width={300}
               height={300}
             />
+            // <ImageWithFallback
+            //   src={URI_DOMAIN + player.image + URI_SIZE}
+            //   fallbackSrc={""}
+            //   width={300}
+            //   height={300}
+            // />
           )}
         </div>
         <div className="  bottom-0 text-white">

@@ -39,30 +39,39 @@ async function makeConnection() {
 
 // Connect to MongoDB
 async function connectToMongoDB() {
+  let count = 0;
   while (IS_LOCKED) {
+    count++;
     console.log("Going to sleep mode..");
     await new Promise((resolve) => {
       setTimeout(() => {
         resolve(1);
       }, 1000);
     });
+    if (count > 6) {
+      throw Error("DB locked for more than 10 ticks", {
+        cause: "DB locked for more than 10 ticks",
+      });
+    }
   }
   return makeConnection();
 }
 
 async function closeConnection() {
   console.log("Closing connection..");
-  
+
   try {
     await client.close();
     console.log("Connection Closed...! ");
+    IS_LOCKED = false;
     return;
   } catch (error) {
     console.error("Err: Something went wrong!.. ", error);
+    IS_LOCKED = false;
     throw error;
   } finally {
     IS_LOCKED = false;
-    console.log("Making connection false : ", IS_LOCKED);
+    console.log("Making connection FALSE : ", IS_LOCKED);
   }
 }
 // Export MongoDB client and connect function
