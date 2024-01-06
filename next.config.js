@@ -10,16 +10,15 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "raw.githubusercontent.com",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
         hostname: "lh3.google.com",
         port: "",
         pathname: "/**",
       },
+      {
+        protocol:"https",
+        hostname: "**",
+        pathname: "**"
+      }
     ],
   },
 };
