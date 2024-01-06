@@ -24,21 +24,22 @@ export async function PATCH(req: NextRequest) {
     const playersCollection = database.collection("players");
     console.log("Request received here");
     const data = await req.json();
-    const result = await playersCollection.updateOne(
-      { id: data.id },
-      { $set: { data } }
-    );
+    const id = data.id;
+    // const _id = data._id;
+    delete data.id;
+    delete data._id;
+    await playersCollection.updateOne({ id }, { $set: { ...data } });
     return NextResponse.json({ success: "raj", result: data });
   } catch (error) {
     console.error("something went wrong", error);
+    return NextResponse.json(error, { status: 500 });
   } finally {
     closeConnection();
     console.log("finally executed");
   }
-  return NextResponse.json({}, { status: 400 });
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     debugger;
     connectToMongoDB();
@@ -48,10 +49,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.log("Error : ", error);
-    return NextResponse.json(
-      { message: "Something went wrong" },
-      { status: 500 }
-    );
+    return NextResponse.json(error, { status: 500 });
   } finally {
     closeConnection();
   }
