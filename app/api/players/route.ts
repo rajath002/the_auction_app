@@ -7,13 +7,15 @@ export async function POST(request: NextRequest) {
     await connectToMongoDB();
     const playersCollection = database.collection("players");
     const result = await playersCollection.insertMany(players);
-    NextResponse.json(result);
+    return NextResponse.json(result);
   } catch (error) {
-    NextResponse.json({ message: "Something went Wrong!" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Something went Wrong!" },
+      { status: 500 }
+    );
   } finally {
     client.close();
   }
-  return;
 }
 
 export async function PATCH(req: NextRequest) {
@@ -43,16 +45,18 @@ export async function GET(req: NextRequest) {
     await client.connect();
     const playersCollection = database.collection("players");
     const result = await playersCollection.find().toArray();
-    NextResponse.json(result, { status: 200 });
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.log("Error : ", error);
+    return NextResponse.json(
+      { message: "Something went wrong" },
+      { status: 500 }
+    );
   } finally {
     closeConnection();
   }
-  return;
 }
 
 export async function DELETE() {
-  NextResponse.json({ message: "Not Implemented" }, { status: 501 });
-  return;
+  return NextResponse.json({ message: "Not Implemented" }, { status: 501 });
 }
