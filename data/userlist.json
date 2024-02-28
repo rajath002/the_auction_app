@@ -1,0 +1,33 @@
+[
+    {
+      "id": 1,
+      "name": "Nikhil",
+      "password": "nikshu",
+      "age": 18
+    },
+    {
+      "id": 2,
+      "name": "Niraj",
+      "password": "raj",
+      "age": 18
+    },
+    {
+      "id": 3,
+      "name": "sagar",
+      "password": "raje",
+      "age": 18
+    },
+    {
+      "id": 4,
+      "name": "rajath",
+      "password": "rajs",
+      "age": 18
+    },
+    {
+      "id": 5,
+      "name": "rohith",
+      "password": "rajt",
+      "age": 18
+    }
+  ]
+  

@@ -1,0 +1,43 @@
+[
+    {
+      "id": 1,
+      "name": "Nikhil",
+      "password": "nikshu",
+      "confirm_password":"nishu",
+      "age": 18,
+      "Gender":"male"
+    },
+    {
+      "id": 2,
+      "name": "Niraj",
+      "password": "raj",
+      "confirm_password":"raj",
+      "age": 18,
+      "Gender":"male"
+    },
+    {
+      "id": 3,
+      "name": "sagar",
+      "password": "raje",
+      "confirm_password":"raje",
+      "age": 18,
+      "Gender":"male"
+    },
+    {
+      "id": 4,
+      "name": "rajath",
+      "password": "rajs",
+      "confirm_password":"rajs",
+      "age": 18,
+      "Gender":"male"
+    },
+    {
+      "id": 5,
+      "name": "rohith",
+      "password": "rajt",
+      "confirm_password":"rajt",
+      "age": 18,
+      "Gender":"male"
+    }
+  ]
+  
