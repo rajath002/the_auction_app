@@ -14,6 +14,11 @@ export default function Header() {
             </Link>
           </li>
           <li>
+            <Link className="hover:text-gray-300" href="/players-list">
+              Players
+            </Link>
+          </li>
+          <li>
             <Link className="hover:text-gray-300" href="/auction">
               Auction
             </Link>
@@ -21,6 +26,16 @@ export default function Header() {
           <li>
             <Link className="hover:text-gray-300" href="/teams">
               Teams
+            </Link>
+          </li>
+          <li>
+            <Link className="hover:text-gray-300" href="/teams">
+              Teams
+            </Link>
+          </li>
+          <li>
+            <Link className="hover:text-gray-300" href="/player-registration">
+              Player Registration
             </Link>
           </li>
         </ul>
