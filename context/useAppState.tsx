@@ -8,7 +8,7 @@ import playersList from "@/data/playerslist.json";
 import { getTeams } from "@/services/teams";
 import { getPlayers } from "@/services/player";
 
-type FilterType = "ALL" | "SOLD" | "UNSOLD";
+type FilterType = "ALL" | "SOLD" | "UNSOLD" | "AUCTION";
 
 function useAppState() {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0); // Current player index
@@ -35,6 +35,10 @@ function useAppState() {
     let func = (p: Player) => true || false;
     if (filter === "UNSOLD") {
       func = (p: Player) => p.stats.status === "UNSOLD";
+    } else if (filter === "SOLD") {
+      func = (p: Player) => p.stats.status === "SOLD";
+    } else if (filter === "AUCTION") {
+      func = (p: Player) => !(p.stats.status === "SOLD" || p.stats.status === "UNSOLD");
     } else {
       func = (p: Player) => true;
     }

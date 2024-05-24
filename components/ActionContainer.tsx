@@ -121,7 +121,7 @@ export const AuctionContainer = () => {
             }}
           >
             <Radio.Button value="ALL">ALL</Radio.Button>
-            {/* <Radio.Button value="SOLD">SOLD</Radio.Button> */}
+            <Radio.Button value="SOLD">SOLD</Radio.Button>
             <Radio.Button value="UNSOLD">UNSOLD</Radio.Button>
           </Radio.Group>
         </div>

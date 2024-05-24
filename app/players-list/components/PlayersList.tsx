@@ -114,7 +114,7 @@ export default function PlayersList() {
 
   useEffect(() => {
     // getPlayers().then((players) => setPlayers(players));
-    setPlayers(playersJsonList);
+    setPlayers(playersJsonList as Player[]);
   }, []);
 
   return (
@@ -134,57 +134,8 @@ type GetSingle<T> = T extends (infer U)[] ? U : never;
 type Sorts = GetSingle<Parameters<OnChange>[2]>;
 
 function DataTable(props: DataTableType) {
-  const [bottom, setBottom] = useState<TablePaginationPosition>("bottomRight");
   const [filteredInfo, setFilteredInfo] = useState<Filters>({});
   const [sortedInfo, setSortedInfo] = useState<Sorts>({});
-
-  const playersColumns: ColumnsType<Player> = [
-    {
-      title: "Id",
-      dataIndex: "id",
-      key: "id",
-      sorter: (a, b) => a.id - b.id,
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      filterSearch: true,
-      // filteredValue: filteredInfo.name || null,
-      // onFilter: (value: string, record) => record.name.includes(value),
-      sorter: (a, b) => b.name.localeCompare(a.name),
-      // sortOrder: sortedInfo.columnKey === "name" ? sortedInfo.order : null,
-      ellipsis: true,
-      sortDirections: ["ascend", "descend"]
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      onFilter: (value: string, record) => record.type.startsWith(value),
-    },
-    {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      filters: [
-        {
-          text: 'L1',
-          value: 'L1',
-        },
-        {
-          text: 'L2',
-          value: 'L2',
-        },
-        {
-          text: 'L3',
-          value: 'L3',
-        },
-      ],
-      onFilter: (value, record) => record.category.indexOf(value as string) === 0,
-      sorter: (a, b) => b.category.localeCompare(a.category),
-    },
-  ];
 
   return (
     <ConfigProvider
@@ -198,12 +149,59 @@ function DataTable(props: DataTableType) {
       }}
     >
       <div>
-        <Table
-          columns={playersColumns}
-          pagination={{ position: [bottom] }}
-          dataSource={props.players}
-        />
+        {/* <div className="flex flex-wrap justify-center gap-6 min-h-screen"> */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6 p-6 min-h-screen">
+          {props.players.map((player) => (
+            <PlayerCard key={player.id} player={player} />
+          ))}
+        </div>
       </div>
     </ConfigProvider>
+  );
+}
+
+// bg-black bg-opacity-50
+const sampleUrls = [
+  "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+  "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+  "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+  "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+  "https://library.sportingnews.com/styles/crop_style_16_9_desktop/s3/2024-03/Dinesh%20Karthik.jpg?h=920929c4&itok=I13vGcki",
+  "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+];
+function PlayerCard({ player }) {
+  const randomIndex = Math.floor(Math.random() * sampleUrls.length);
+  const url = sampleUrls[randomIndex];
+  const color = player.stats.status
+    ? player.stats.status === "UNSOLD"
+      ? "text-red-500"
+      : "text-green-500"
+    : "";
+  return (
+    <div className="rounded overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+      <div className="relative">
+        <img className="w-full h-60 object-cover" src={sampleUrls[randomIndex]} alt={player.name} />
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
+          <div className="font-bold text-xl">{player.name}</div>
+        </div>
+      </div>
+      <div className="px-6 py-4">
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Type: {player.type}
+        </p>
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Category: {player.category}
+        </p>
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Status:
+          <span className={`text-base ${color}`}>
+            &nbsp;{player.stats.status}
+          </span>
+        </p>
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Current Bid: ${player.currentBid}
+        </p>
+      </div>
+    </div>
   );
 }

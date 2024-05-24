@@ -1,9 +1,10 @@
 import { Button, Image, Popover, Tag } from "antd";
 import { Player } from "../interface/interfaces";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
 import ImageWithFallback from "./ImageWithFallback";
 import kplImage from "../assets/kpl-logo-large.jpeg";
+import Confetti from 'react-confetti';
 
 const sampleURL =
   "https://images.unsplash.com/photo-1595210382051-4d2c31fcc2f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -88,6 +89,19 @@ function Buttons(props: {
   const [openPopover, setOpenPopover] = useState(false);
   const [openSoldPopover, setOpenSoldPopover] = useState(false);
   const [openUnsoldPopover, setOpenUnsoldPopover] = useState(false);
+  const [isExploading, setIsExploading] = useState(false);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (isExploading) {
+      timer = setTimeout(() => {
+        setIsExploading(() => false);
+      }, 3000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [isExploading])
 
   const handleOpenChange = () => setOpenPopover(!openPopover);
   const reset = () => {
@@ -98,19 +112,22 @@ function Buttons(props: {
   };
 
   const handleSoldChange = () => setOpenSoldPopover(!openSoldPopover);
+
   const onSoldHandler = () => {
     setOpenSoldPopover(() => false);
     setTimeout(() => {
       props.onSell(props.player);
     }, 600);
+    setIsExploading(() => true);
   };
 
   const handleUnsoldChange = () => setOpenUnsoldPopover(!openUnsoldPopover);
+
   const onUnsoldHandler = () => {
     setOpenUnsoldPopover(() => false);
     setTimeout(() => {
       props.onUnsold(props.player);
-    }, 600);
+    }, 5000);
   };
 
   const unsoldBtn = props.player?.stats.status === null && (
@@ -185,7 +202,8 @@ function Buttons(props: {
     );
 
   return (
-    <>
+    <>  
+      {isExploading && <Confetti recycle={false}/>}
       <div className="grid grid-flow-col gap-3 mt-5">
         {btn}
         <Popover
