@@ -29,11 +29,6 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link className="hover:text-gray-300" href="/teams">
-              Teams
-            </Link>
-          </li>
-          <li>
             <Link className="hover:text-gray-300" href="/player-registration">
               Player Registration
             </Link>
