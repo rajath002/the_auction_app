@@ -1,18 +1,10 @@
 "use client";
 import { Player } from "@/interface/interfaces";
-import { getPlayers } from "@/services/player";
 import { useEffect, useState } from "react";
-import { ConfigProvider, Radio, Space, Table, Tag } from "antd";
-import { TableProps, theme } from "antd";
+import { Col, ConfigProvider, Form, Input, Row, Select } from "antd";
+import { theme } from "antd";
 import playersJsonList from "./players.json";
-
-type ColumnsType<T extends object> = TableProps<T>["columns"];
-type TablePagination<T extends object> = NonNullable<
-  Exclude<TableProps<T>["pagination"], boolean>
->;
-type TablePaginationPosition = NonNullable<
-  TablePagination<any>["position"]
->[number];
+import { SearchOutlined } from "@ant-design/icons";
 
 interface DataType {
   key: string;
@@ -22,120 +14,51 @@ interface DataType {
   tags: string[];
 }
 
-const topOptions = [
-  { label: "topLeft", value: "topLeft" },
-  { label: "topCenter", value: "topCenter" },
-  { label: "topRight", value: "topRight" },
-  { label: "none", value: "none" },
-];
-
-const bottomOptions = [
-  { label: "bottomLeft", value: "bottomLeft" },
-  { label: "bottomCenter", value: "bottomCenter" },
-  { label: "bottomRight", value: "bottomRight" },
-  { label: "none", value: "none" },
-];
-
-const columns: ColumnsType<any> = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "Age",
-    dataIndex: "age",
-    key: "age",
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-    key: "address",
-  },
-  {
-    title: "Tags",
-    key: "tags",
-    dataIndex: "tags",
-    render: (tags: string[]) => (
-      <span>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? "geekblue" : "green";
-          if (tag === "loser") {
-            color = "volcano";
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </span>
-    ),
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
-  },
-  {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
-  },
-  {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
-  },
-];
+type Filters = {
+  category: string | null;
+  searchText: string;
+};
 
 export default function PlayersList() {
   const [players, setPlayers] = useState<Player[]>([]);
+  const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
 
+  const [filteredInfo, setFilteredInfo] = useState<Filters>({
+    category: null,
+    searchText: "",
+  });
   useEffect(() => {
     // getPlayers().then((players) => setPlayers(players));
     setPlayers(playersJsonList as Player[]);
   }, []);
 
-  return (
-    <>
-      <DataTable players={players} />
-    </>
-  );
-}
+  useEffect(() => {
+    setFilteredPlayers(() =>
+      players.filter((p) => {
+        const matchesSearchText = filteredInfo.searchText
+          ? p.name.includes(filteredInfo.searchText)
+          : true;
+        const matchesCategory = filteredInfo.category
+          ? p.category === filteredInfo.category
+          : true;
+        return matchesSearchText && matchesCategory;
+      })
+    );
+  }, [filteredInfo, players]);
 
-type DataTableType = {
-  players: Player[];
-};
+  const setCategory = (category: string) => {
+    setFilteredInfo({
+      ...filteredInfo,
+      category,
+    });
+  };
 
-type OnChange = NonNullable<TableProps<DataType>["onChange"]>;
-type Filters = Parameters<OnChange>[1];
-type GetSingle<T> = T extends (infer U)[] ? U : never;
-type Sorts = GetSingle<Parameters<OnChange>[2]>;
-
-function DataTable(props: DataTableType) {
-  const [filteredInfo, setFilteredInfo] = useState<Filters>({});
-  const [sortedInfo, setSortedInfo] = useState<Sorts>({});
+  const setSearchText = (searchText: string) => {
+    setFilteredInfo({
+      ...filteredInfo,
+      searchText,
+    });
+  };
 
   return (
     <ConfigProvider
@@ -149,9 +72,12 @@ function DataTable(props: DataTableType) {
       }}
     >
       <div>
+        <div>
+          <SearchBar setCategory={setCategory} setSearchText={setSearchText} />
+        </div>
         {/* <div className="flex flex-wrap justify-center gap-6 min-h-screen"> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6 p-6 min-h-screen">
-          {props.players.map((player) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5 gap-3 md:gap-6 p-6 min-h-screen">
+          {filteredPlayers.map((player) => (
             <PlayerCard key={player.id} player={player} />
           ))}
         </div>
@@ -161,26 +87,22 @@ function DataTable(props: DataTableType) {
 }
 
 // bg-black bg-opacity-50
-const sampleUrls = [
-  "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
-  "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
-  "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
-  "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
-  "https://library.sportingnews.com/styles/crop_style_16_9_desktop/s3/2024-03/Dinesh%20Karthik.jpg?h=920929c4&itok=I13vGcki",
-  "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
-];
-function PlayerCard({ player }) {
-  const randomIndex = Math.floor(Math.random() * sampleUrls.length);
-  const url = sampleUrls[randomIndex];
-  const color = player.stats.status
+function PlayerCard({ player }: {player: Player}) {
+
+  const statusColor = player.stats.status
     ? player.stats.status === "UNSOLD"
       ? "text-red-500"
       : "text-green-500"
     : "";
+  // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
   return (
-    <div className="rounded overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+    <div className="transition ease-in-out delay-200 md:hover:scale-110 hover:border-yellow-600 border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
       <div className="relative">
-        <img className="w-full h-60 object-cover" src={sampleUrls[randomIndex]} alt={player.name} />
+        <img
+          className="w-full h-60 object-cover"
+          src={player.image}
+          alt={player.name}
+        />
         <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
           <div className="font-bold text-xl">{player.name}</div>
         </div>
@@ -194,7 +116,7 @@ function PlayerCard({ player }) {
         </p>
         <p className="text-gray-700 dark:text-gray-300 text-base">
           Status:
-          <span className={`text-base ${color}`}>
+          <span className={`text-base ${statusColor}`}>
             &nbsp;{player.stats.status}
           </span>
         </p>
@@ -202,6 +124,71 @@ function PlayerCard({ player }) {
           Current Bid: ${player.currentBid}
         </p>
       </div>
+    </div>
+  );
+}
+
+// Sample data
+const data = [
+  { id: 1, name: "Level 1", category: "L1" },
+  { id: 2, name: "Level 2", category: "L2" },
+  { id: 3, name: "Level 3", category: "L3" },
+  { id: 4, name: "Level 4", category: "L4" },
+  { id: 5, name: "Level 5", category: "L5" },
+];
+
+type SearchBarType = {
+  setCategory: (category: string | null) => void;
+  setSearchText: (text: string) => void;
+};
+function SearchBar(props: SearchBarType) {
+  const handleSearch = (e) => {
+    props.setSearchText(e.target.value);
+  };
+
+  const handleCategoryChange = (value) => {
+    value === "All" ? props.setCategory(null) : props.setCategory(value);
+  };
+
+  const categories = ["All", ...new Set(data.map((item) => item.category))];
+
+  return (
+    <div className="px-5">
+      <Form
+        name="dependencies"
+        autoComplete="off"
+        style={{ maxWidth: 600 }}
+        layout="vertical"
+      >
+        <Row>
+          <Col span={4} xs={24} md={10} className="px-2">
+            <Form.Item label="Select Category" name="selectCategory">
+              <Select
+                defaultValue="All"
+                // style={{ width: 200, marginBottom: "16px" }}
+                className="w-full"
+                onChange={handleCategoryChange}
+              >
+                {categories.map((category) => (
+                  <Select.Option key={category} value={category}>
+                    {category}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={4} xs={24} md={10} className="px-2">
+            <Form.Item label="Search Players" name="searchplayers">
+              <Input
+                placeholder="Search..."
+                prefix={<SearchOutlined />}
+                onChange={handleSearch}
+                style={{ marginBottom: "16px" }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 }

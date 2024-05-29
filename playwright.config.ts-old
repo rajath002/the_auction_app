@@ -1,0 +1,53 @@
+import { PlaywrightTestConfig } from '@playwright/test';
+
+const config: PlaywrightTestConfig = {
+	// look for tests in the "e2e" directory
+	testDir: 'src/e2e',
+	testMatch: '**/*.spec.ts',
+
+	// Run tests in Parallel
+	fullyParallel: true,
+
+	reporter: 'html',
+
+	use: {
+		// Base URL to use in actions like `await page.goto('/')`.
+		baseURL: 'http://127.0.0.1:3000',
+
+		// Collect trace when retrying the failed test.
+		trace: 'on-first-retry',
+		screenshot: 'only-on-failure',
+	},
+
+	outputDir: 'test-results',
+
+	// path to the global setup files.
+	// globalSetup: require.resolve('./global-setup'),
+
+	// path to the global teardown files.
+	// globalTeardown: require.resolve('./global-teardown'),
+
+	// Each test is given 30 seconds.
+	timeout: 30000,
+
+	projects: [
+		{
+			name: 'Chromium',
+			use: {
+				// Configure the browser to use.
+				browserName: 'chromium',
+				// Any Chromium-specific options.
+			},
+		},
+	],
+
+	// webServer: {
+	// 	command: 'npm run start',
+	// 	url: 'http://localhost:3000',
+	// 	// port: 3000,
+	// 	timeout: 120 * 1000,
+	// 	reuseExistingServer: false,
+	// },
+};
+
+export default config;
