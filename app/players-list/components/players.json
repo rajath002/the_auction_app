@@ -1,702 +1,702 @@
 [
   {
-    "id": 1,
-    "image": "sagar.jpeg",
-    "name": "Player One",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 1,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player One",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 2,
-    "image": "player2.jpeg",
-    "name": "Player Two",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 2,
+      "image": "https://library.sportingnews.com/styles/crop_style_16_9_desktop/s3/2024-03/Dinesh%20Karthik.jpg?h=920929c4&itok=I13vGcki",
+      "name": "Player Two",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 3,
-    "image": "player3.jpeg",
-    "name": "Player Three",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 3,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Three",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 4,
-    "image": "player4.jpeg",
-    "name": "Player Four",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 4,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Four",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 5,
-    "image": "player5.jpeg",
-    "name": "Player Five",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 5,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Five",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 6,
-    "image": "player6.jpeg",
-    "name": "Player Six",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 6,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Six",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 7,
-    "image": "player7.jpeg",
-    "name": "Player Seven",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 7,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Seven",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 8,
-    "image": "player8.jpeg",
-    "name": "Player Eight",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 8,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Eight",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 9,
-    "image": "player9.jpeg",
-    "name": "Player Nine",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 9,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Nine",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 10,
-    "image": "player10.jpeg",
-    "name": "Player Ten",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 10,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Ten",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 11,
-    "image": "player11.jpeg",
-    "name": "Player Eleven",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 11,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Eleven",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 12,
-    "image": "player12.jpeg",
-    "name": "Player Twelve",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 12,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Twelve",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 13,
-    "image": "player13.jpeg",
-    "name": "Player Thirteen",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 13,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Thirteen",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 14,
-    "image": "player14.jpeg",
-    "name": "Player Fourteen",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 14,
+      "image": "https://library.sportingnews.com/styles/crop_style_16_9_desktop/s3/2024-03/Dinesh%20Karthik.jpg?h=920929c4&itok=I13vGcki",
+      "name": "Player Fourteen",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 15,
-    "image": "player15.jpeg",
-    "name": "Player Fifteen",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 15,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Fifteen",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 16,
-    "image": "player16.jpeg",
-    "name": "Player Sixteen",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 16,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Sixteen",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 17,
-    "image": "player17.jpeg",
-    "name": "Player Seventeen",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 17,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Seventeen",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 18,
-    "image": "player18.jpeg",
-    "name": "Player Eighteen",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 18,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Eighteen",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 19,
-    "image": "player19.jpeg",
-    "name": "Player Nineteen",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 19,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Nineteen",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 20,
-    "image": "player20.jpeg",
-    "name": "Player Twenty",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 20,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Twenty",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 21,
-    "image": "player21.jpeg",
-    "name": "Player Twenty-One",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 21,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Twenty-One",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 22,
-    "image": "player22.jpeg",
-    "name": "Player Twenty-Two",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 22,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Twenty-Two",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 23,
-    "image": "player23.jpeg",
-    "name": "Player Twenty-Three",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 23,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Twenty-Three",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 24,
-    "image": "player24.jpeg",
-    "name": "Player Twenty-Four",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 24,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Twenty-Four",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 25,
-    "image": "player25.jpeg",
-    "name": "Player Twenty-Five",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 25,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Twenty-Five",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 26,
-    "image": "player26.jpeg",
-    "name": "Player Twenty-Six",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 26,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Twenty-Six",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 27,
-    "image": "player27.jpeg",
-    "name": "Player Twenty-Seven",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 27,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Twenty-Seven",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 28,
-    "image": "player28.jpeg",
-    "name": "Player Twenty-Eight",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 28,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Twenty-Eight",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 29,
-    "image": "player29.jpeg",
-    "name": "Player Twenty-Nine",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 29,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Twenty-Nine",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 30,
-    "image": "player30.jpeg",
-    "name": "Player Thirty",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 30,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Thirty",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 31,
-    "image": "player31.jpeg",
-    "name": "Player Thirty-One",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 31,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Thirty-One",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 32,
-    "image": "player32.jpeg",
-    "name": "Player Thirty-Two",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 32,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Thirty-Two",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 33,
-    "image": "player33.jpeg",
-    "name": "Player Thirty-Three",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 33,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Thirty-Three",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 34,
-    "image": "player34.jpeg",
-    "name": "Player Thirty-Four",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "SOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 34,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Thirty-Four",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "SOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 35,
-    "image": "player35.jpeg",
-    "name": "Player Thirty-Five",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 35,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Thirty-Five",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 36,
-    "image": "player36.jpeg",
-    "name": "Player Thirty-Six",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 36,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Thirty-Six",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 37,
-    "image": "player37.jpeg",
-    "name": "Player Thirty-Seven",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 37,
+      "image": "https://library.sportingnews.com/styles/crop_style_16_9_desktop/s3/2024-03/Dinesh%20Karthik.jpg?h=920929c4&itok=I13vGcki",
+      "name": "Player Thirty-Seven",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 38,
-    "image": "player38.jpeg",
-    "name": "Player Thirty-Eight",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 38,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Thirty-Eight",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 39,
-    "image": "player39.jpeg",
-    "name": "Player Thirty-Nine",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 39,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Thirty-Nine",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 40,
-    "image": "player40.jpeg",
-    "name": "Player Forty",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 40,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Forty",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 41,
-    "image": "player41.jpeg",
-    "name": "Player Forty-One",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 41,
+      "image": "https://library.sportingnews.com/styles/crop_style_16_9_desktop/s3/2024-03/Dinesh%20Karthik.jpg?h=920929c4&itok=I13vGcki",
+      "name": "Player Forty-One",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 42,
-    "image": "player42.jpeg",
-    "name": "Player Forty-Two",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 42,
+      "image": "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/316600/316605.png",
+      "name": "Player Forty-Two",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 43,
-    "image": "player43.jpeg",
-    "name": "Player Forty-Three",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 43,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Forty-Three",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 44,
-    "image": "player44.jpeg",
-    "name": "Player Forty-Four",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 44,
+      "image": "https://crictoday.com/wp-content/uploads/2024/02/Dhoni.webp",
+      "name": "Player Forty-Four",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 45,
-    "image": "player45.jpeg",
-    "name": "Player Forty-Five",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 45,
+      "image": "https://cdn-wp.thesportsrush.com/2022/11/3c08dc77-untitled-design-2022-11-15t234223.843.jpg?format=auto&w=3840&q=75",
+      "name": "Player Forty-Five",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 46,
-    "image": "player46.jpeg",
-    "name": "Player Forty-Six",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 46,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Forty-Six",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   },
   {
-    "id": 47,
-    "image": "player47.jpeg",
-    "name": "Player Forty-Seven",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Bowler",
-    "category": "L2"
+      "id": 47,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Forty-Seven",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Bowler",
+      "category": "L2"
   },
   {
-    "id": 48,
-    "image": "player48.jpeg",
-    "name": "Player Forty-Eight",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "All-Rounder",
-    "category": "L3"
+      "id": 48,
+      "image": "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202404/will-jacks-11182032-16x9_0.jpeg?VersionId=HTAs3GZWAKV_OUhF3pZoRnmwr3V3rqLd&size=690:388",
+      "name": "Player Forty-Eight",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "All-Rounder",
+      "category": "L3"
   },
   {
-    "id": 49,
-    "image": "player49.jpeg",
-    "name": "Player Forty-Nine",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Wicketkeeper",
-    "category": "L4"
+      "id": 49,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Forty-Nine",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Wicketkeeper",
+      "category": "L4"
   },
   {
-    "id": 50,
-    "image": "player50.jpeg",
-    "name": "Player Fifty",
-    "stats": {
-      "baseValue": 200,
-      "bidValue": 200,
-      "currentTeamId": null,
-      "status": "UNSOLD"
-    },
-    "currentBid": 100,
-    "type": "Batsman",
-    "category": "L1"
+      "id": 50,
+      "image": "https://thedailyguardian.com/wp-content/uploads/2024/05/1702662144385.png",
+      "name": "Player Fifty",
+      "stats": {
+          "baseValue": 200,
+          "bidValue": 200,
+          "currentTeamId": null,
+          "status": "UNSOLD"
+      },
+      "currentBid": 100,
+      "type": "Batsman",
+      "category": "L1"
   }
 ]

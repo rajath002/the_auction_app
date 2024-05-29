@@ -1,4 +1,4 @@
-
+"use client"
 import PlayersList from "./components/PlayersList";
 export default function PlayersListPage() {
 
