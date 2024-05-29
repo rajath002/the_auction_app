@@ -14,7 +14,7 @@ export default function HomeBase() {
           alt={"kpl-logo"}
           width={300}
           height={300}
-          className="rounded-xl"
+          className="rounded-xl logo-light"
         ></Image>
       </section>
       <section className="mt-5">

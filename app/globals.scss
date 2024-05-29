@@ -14,3 +14,29 @@
 // }
 
 
+.home-background {
+  background: url('/moving_Waves.svg');
+  // background: #4a607e;
+  background-size: cover; /* Ensures the image covers the container */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  height: 100vh; /* Sets the height of the container to 100% of the viewport height */
+  width: 100%; /* Sets the width of the container to 100% of its parent */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.logo-light {
+  animation: shadows 2s infinite
+}
+
+@keyframes shadows {
+  0% { box-shadow: orange 0 0 10px; }
+  0% { box-shadow: violet 0 0 10px; }
+  50% { box-shadow: blue 0 0 10px; }
+  75% { box-shadow: red 0 0 10px;}
+  100% { box-shadow: green 0 0 10px; }
+ }
