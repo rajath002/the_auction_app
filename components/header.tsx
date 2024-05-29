@@ -1,9 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
+import kplLogo from "@/assets/kpl-logo-large.jpeg";
 
 export default function Header() {
   return (
     <header className="bg-gray-800 text-white py-4 px-6 flex items-center justify-between">
-      <Link href="/" className="font-bold text-xl">
+      <Link href="/" className="font-bold text-xl flex items-center">
+      <Image
+          src={kplLogo}
+          alt={"kpl-logo"}
+          width={30}
+          height={30}
+          className="rounded-xl"
+        ></Image>
         KPL
       </Link>
       <nav>
