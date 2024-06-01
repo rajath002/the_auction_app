@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
@@ -21,6 +22,7 @@ function ImageWithFallback(props: IImageWithFallback) {
       height={height}
       src={imgSrc as any}
       alt={alt}
+      style={{objectFit: 'contain'}}
       onError={() => {
         setImgSrc(fallbackSrc);
       }}

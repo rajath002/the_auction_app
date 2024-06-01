@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import players from "@/data/playerslist.json";
+import playersOld from "@/data/playerslist-old.json";
 import { connectToMongoDB, database, client, closeConnection } from "../config";
+import players from "@/data/players.json";
 
 export async function POST(request: NextRequest) {
   try {
     await connectToMongoDB();
     const playersCollection = database.collection("players");
-    const result = await playersCollection.insertMany(players);
+    const result = await playersCollection.insertMany(playersOld);
     return NextResponse.json(result);
   } catch (error) {
     return NextResponse.json(
@@ -42,16 +43,17 @@ export async function PATCH(req: NextRequest) {
 export async function GET() {
   try {
     debugger;
-    connectToMongoDB();
-    await client.connect();
-    const playersCollection = database.collection("players");
-    const result = await playersCollection.find().toArray();
+    // connectToMongoDB();
+    // await client.connect();
+    // const playersCollection = database.collection("players");
+    // const result = await playersCollection.find().toArray();
+    const result = players;
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.log("Error : ", error);
     return NextResponse.json(error, { status: 500 });
   } finally {
-    closeConnection();
+    // closeConnection();
   }
 }
 

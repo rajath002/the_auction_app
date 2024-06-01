@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
 import ImageWithFallback from "./ImageWithFallback";
 import kplImage from "../assets/kpl-logo-large.jpeg";
-import Confetti from 'react-confetti';
+import Confetti from "react-confetti";
 
 const sampleURL =
   "https://images.unsplash.com/photo-1595210382051-4d2c31fcc2f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -34,12 +34,20 @@ export const PlayerCard = ({
         {/* <div className=" top-52 left-0 right-0 bottom-0  bg-gradient-to-t from-slate-200 to-slate-700 opacity-75" /> */}
         <div className="flex justify-center ">
           {player?.image && (
-            <ImageWithFallback
-              src={sampleURL}
-              fallbackSrc={kplImage}
-              width={300}
+            // <ImageWithFallback
+            //   src={player.image}
+            //   fallbackSrc={kplImage}
+            //   width={300}
+            //   height={300}
+            //   alt={player.name}
+            // />
+            <Image
+              src={player.image}
+              width={450}
               height={300}
-              alt={"Player Image"}
+              alt={player.name}
+              // style={{objectFit: 'cover'}}
+              className="object-cover border-2 rounded-md border-x-fuchsia-300 border-y-red-300"
             />
           )}
         </div>
@@ -101,7 +109,7 @@ function Buttons(props: {
     }
 
     return () => clearTimeout(timer);
-  }, [isExploading])
+  }, [isExploading]);
 
   const handleOpenChange = () => setOpenPopover(!openPopover);
   const reset = () => {
@@ -202,8 +210,8 @@ function Buttons(props: {
     );
 
   return (
-    <>  
-      {isExploading && <Confetti recycle={false}/>}
+    <>
+      {isExploading && <Confetti recycle={false} />}
       <div className="grid grid-flow-col gap-3 mt-5">
         {btn}
         <Popover
