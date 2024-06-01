@@ -3,7 +3,7 @@ import { Player } from "@/interface/interfaces";
 import { useEffect, useState } from "react";
 import { Col, ConfigProvider, Form, Input, Row, Select } from "antd";
 import { theme } from "antd";
-import playersJsonList from "./players.json";
+import playersJsonList from "@/data/players.json";
 import { SearchOutlined } from "@ant-design/icons";
 
 interface DataType {
@@ -96,7 +96,7 @@ function PlayerCard({ player }: {player: Player}) {
     : "";
   // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
   return (
-    <div className="transition ease-in-out delay-200 md:hover:scale-110 hover:border-yellow-600 border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
+    <div className="transition ease-in-out delay-200 md:hover:scale-110 hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
       <div className="relative">
         <img
           className="w-full h-60 object-cover"

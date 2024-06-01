@@ -28,17 +28,10 @@ export const AuctionContainer = () => {
   // Fetch player data (replace with your actual data fetching logic)
   useEffect(() => {
     const players_ = getFilteredPlayers(playerFilter);
-    // if (players_.length) {
-    //   let idx = 0;
-    //   if(currentPlayerIndex + 1 > players_?.length) {
-    //     idx = currentPlayerIndex + 1 
-    //   } else {
-    //     idx = currentPlayerIndex - 1
-    //   }
-    //   // setCurrentPlayerIndex(idx)
-    // }
-    // setCurrentPlayerIndex(0)
     setFilteredPlayers(() => players_);
+    return () => {
+      getFilteredPlayers("ALL");
+    }
   }, [currentPlayerIndex, getFilteredPlayers, playerFilter, setCurrentPlayerIndex]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {

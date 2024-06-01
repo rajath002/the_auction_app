@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import kplLogo from "@/assets/kpl-logo-large.jpeg";
+import kplLogoTransparent from "@/assets/kpl-logo-transparent.png";
 import { useAppContext } from "@/context/useAppState";
 import { Team } from "@/interface/interfaces";
 
@@ -10,15 +11,15 @@ export default function HomeBase() {
     <>
       <section className="grid justify-center pt-5">
         <Image
-          src={kplLogo}
+          src={kplLogoTransparent}
           alt={"kpl-logo"}
           width={300}
           height={300}
-          className="rounded-xl logo-light"
+          className="rounded-xl "
         ></Image>
       </section>
       <section className="mt-5">
-        <h1 className="text-center font-semibold">Teams</h1>
+        {/* <h1 className="text-center font-semibold">Teams</h1> */}
         <div className="flex flex-wrap justify-center gap-10">
           {teams.map((t: Team) => (
             <ShowTeam key={t.id} team={t} />

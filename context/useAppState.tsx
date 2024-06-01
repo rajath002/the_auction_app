@@ -4,7 +4,7 @@ import constate from "constate";
 import { Player, PlayerStatus, Team } from "../interface/interfaces";
 
 import teamList from "@/data/teamslist.json";
-import playersList from "@/data/playerslist.json";
+// import playersList from "@/data/playerslist.json";
 import { getTeams } from "@/services/teams";
 import { getPlayers } from "@/services/player";
 
@@ -16,6 +16,7 @@ function useAppState() {
   // const [playersMasterData, setPlayersMasterData] = useState<Player[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [playerFilter, setPlayerFilter] = useState<FilterType>("ALL");
+  const [filteredPlayers, setFilteredPlayers]=useState<Player[]>([]);
   // const [soldPlayers, setSoldPlayers] = useState<Map<number, Player>>(
   //   new Map()
   // );
@@ -44,6 +45,7 @@ function useAppState() {
     }
     const data = players.filter(func);
     // setPlayers(data);
+    setFilteredPlayers(() => data);
     return data;
   }
 
@@ -156,6 +158,7 @@ function useAppState() {
     players,
     currentPlayerIndex,
     playerFilter,
+    filteredPlayers,
     setPlayers,
     updatePurse,
     updatePlayerPoints,
