@@ -5,7 +5,8 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="home-background">
+    <main >
+      <div className="home-background"></div>
       <div>
       <HomeBase />
       </div>

@@ -17,6 +17,10 @@ function useAppState() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [playerFilter, setPlayerFilter] = useState<FilterType>("ALL");
   const [filteredPlayers, setFilteredPlayers]=useState<Player[]>([]);
+  const [totalPlayersAvaiableForBid, setTotalPlayersAvaiableForBid] = useState(0);
+  const [totalSoldPlayers, setTotalSoldPlayers] = useState(0);
+  const [totalUnsoldPlayers, setTotalUnsoldPlayers] = useState(0);
+  const [totalNoStatusPlayers, setTotalNoStatusPlayers] = useState(0);
   // const [soldPlayers, setSoldPlayers] = useState<Map<number, Player>>(
   //   new Map()
   // );
@@ -33,7 +37,7 @@ function useAppState() {
   }
 
   function getFilteredPlayers(filter: FilterType) {
-    let func = (p: Player) => true || false;
+    let func: ((p: Player) => boolean) | null;
     if (filter === "UNSOLD") {
       func = (p: Player) => p.stats.status === "UNSOLD";
     } else if (filter === "SOLD") {
@@ -41,9 +45,9 @@ function useAppState() {
     } else if (filter === "AUCTION") {
       func = (p: Player) => !(p.stats.status === "SOLD" || p.stats.status === "UNSOLD");
     } else {
-      func = (p: Player) => true;
+      func = null;
     }
-    const data = players.filter(func);
+    const data = func ? players.filter(func) : players;
     // setPlayers(data);
     setFilteredPlayers(() => data);
     return data;
@@ -88,6 +92,9 @@ function useAppState() {
   function updatePlayerStatus(updatePlayer: Player, status: PlayerStatus) {
     let teams_: Team[] = [];
     let teamPointsToDeduct: number | null = null;
+    let _totalSoldPlayers = 0;
+    let _totalUnSoldPlayers = 0;
+    let _noStatusPlayers= 0
     const players_ = players.map((player) => {
       if (player.id === updatePlayer.id) {
         player.stats.status = status;
@@ -105,8 +112,20 @@ function useAppState() {
           player.stats.currentTeamId = null;
         }
       }
+      // check Total Players status SOLD and UNSOLD
+      if (player.stats.status === "SOLD") {
+        _totalSoldPlayers ++;
+      } else if (player.stats.status === "UNSOLD") {
+        _totalUnSoldPlayers ++;
+      } else {
+        _noStatusPlayers ++;
+      }
       return player;
     });
+
+    setTotalSoldPlayers(_totalSoldPlayers);
+    setTotalUnsoldPlayers(_totalUnSoldPlayers);
+    setTotalNoStatusPlayers(_noStatusPlayers);
 
     // const teams_ = teams.find
 
@@ -159,6 +178,9 @@ function useAppState() {
     currentPlayerIndex,
     playerFilter,
     filteredPlayers,
+    totalSoldPlayers,
+    totalUnsoldPlayers,
+    totalNoStatusPlayers,
     setPlayers,
     updatePurse,
     updatePlayerPoints,
