@@ -16,6 +16,8 @@ export const AuctionContainer = () => {
     players,
     currentPlayerIndex,
     playerFilter,
+    totalSoldPlayers,
+    totalUnsoldPlayers,
     updatePurse,
     updatePlayerPoints,
     resetPlayerTeamAndPoints,

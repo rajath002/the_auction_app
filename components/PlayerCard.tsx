@@ -43,11 +43,10 @@ export const PlayerCard = ({
             // />
             <Image
               src={player.image}
-              width={450}
-              height={300}
+              width={420}
+              height={280}
               alt={player.name}
-              // style={{objectFit: 'cover'}}
-              className="object-cover border-2 rounded-md border-x-fuchsia-300 border-y-red-300"
+              className="object-cover border-2 rounded-md border-slate-600"
             />
           )}
         </div>
@@ -56,7 +55,8 @@ export const PlayerCard = ({
           <h2 className="text-4xl font-bold"> {player?.name}</h2>
           <ul className="text-sm mt-2">
             <h1 className="text-lg">{player?.type}🏏</h1>
-            Base Points: {player?.stats?.baseValue}
+            <p>Base Points: {player?.stats?.baseValue}</p>
+            <p>Category: {player.category}</p>
           </ul>
           <Buttons
             player={player}

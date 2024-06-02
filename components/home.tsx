@@ -43,6 +43,8 @@ function ShowTeam({ team }: { team: Team }) {
       <Image
         src={kplLogo}
         alt="Image"
+        height={100}
+        width={100}
         className="w-full md:w-60 md:h-44 rounded-t-lg"
       />
       <div className="mt-1 px-2">
