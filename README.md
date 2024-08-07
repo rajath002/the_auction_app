@@ -8,6 +8,14 @@ cluster="<CLUSTER NAME>.mongodb.net"
 imageLink="<IMAGE STORAGE>"
 LOG_LEVEL="debug"
 NEXT_PUBLIC_URL="http://localhost:3000"
+
+FB_API_KEY=""
+FB_AUTH_DOMAIN=""
+FB_PROJECT_ID=""
+FB_STORAGE_BUCKET=""
+FB_MESSAGING_SENDER_ID=""
+FB_APPID=""
+FB_MEASUREMENT_ID=""
 ```
 
 ## Getting Started
