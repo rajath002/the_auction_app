@@ -1,7 +1,7 @@
 "use client";
 import { Player } from "@/interface/interfaces";
 import { useEffect, useState } from "react";
-import { Col, ConfigProvider, Form, Input, Row, Select } from "antd";
+import { Badge, Col, ConfigProvider, Form, Input, Row, Select } from "antd";
 import { theme } from "antd";
 import playersJsonList from "@/data/players.json";
 import { SearchOutlined } from "@ant-design/icons";
@@ -87,8 +87,7 @@ export default function PlayersList() {
 }
 
 // bg-black bg-opacity-50
-function PlayerCard({ player }: {player: Player}) {
-
+function PlayerCard({ player }: { player: Player }) {
   const statusColor = player.stats.status
     ? player.stats.status === "UNSOLD"
       ? "text-red-500"
@@ -96,34 +95,38 @@ function PlayerCard({ player }: {player: Player}) {
     : "";
   // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
   return (
-    <div className="transition ease-in-out delay-200 md:hover:scale-110 hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
-      <div className="relative">
-        <img
-          className="w-full h-60 object-cover"
-          src={player.image}
-          alt={player.name}
-        />
-        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
-          <div className="font-bold text-xl">{player.name}</div>
+    <div className="transition ease-in-out delay-200 md:hover:scale-105">
+      <Badge.Ribbon text={player.stats.bidValue || player.stats.baseValue} color="gold">
+        <div className="hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
+          <div className="relative">
+            <img
+              className="w-full h-60 object-cover"
+              src={player.image}
+              alt={player.name}
+            />
+            <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
+              <div className="font-bold text-xl">{player.name}</div>
+            </div>
+          </div>
+          <div className="px-6 py-4">
+            <p className="text-gray-700 dark:text-gray-300 text-base">
+              Type: {player.type}
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-base">
+              Category: {player.category}
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-base">
+              Status:
+              <span className={`text-base ${statusColor}`}>
+                &nbsp;{player.stats.status}
+              </span>
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-base">
+              Current Bid: ${player.currentBid}
+            </p>
+          </div>
         </div>
-      </div>
-      <div className="px-6 py-4">
-        <p className="text-gray-700 dark:text-gray-300 text-base">
-          Type: {player.type}
-        </p>
-        <p className="text-gray-700 dark:text-gray-300 text-base">
-          Category: {player.category}
-        </p>
-        <p className="text-gray-700 dark:text-gray-300 text-base">
-          Status:
-          <span className={`text-base ${statusColor}`}>
-            &nbsp;{player.stats.status}
-          </span>
-        </p>
-        <p className="text-gray-700 dark:text-gray-300 text-base">
-          Current Bid: ${player.currentBid}
-        </p>
-      </div>
+      </Badge.Ribbon>
     </div>
   );
 }

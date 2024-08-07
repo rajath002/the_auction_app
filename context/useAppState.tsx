@@ -21,9 +21,7 @@ function useAppState() {
   const [totalSoldPlayers, setTotalSoldPlayers] = useState(0);
   const [totalUnsoldPlayers, setTotalUnsoldPlayers] = useState(0);
   const [totalNoStatusPlayers, setTotalNoStatusPlayers] = useState(0);
-  // const [soldPlayers, setSoldPlayers] = useState<Map<number, Player>>(
-  //   new Map()
-  // );
+  const [selectedCategory, setSelectedCategory] = useState<string|null>(null);
 
   useEffect(() => {
     initDataValues();
@@ -36,16 +34,18 @@ function useAppState() {
     setPlayers(playersList);
   }
 
-  function getFilteredPlayers(filter: FilterType) {
+  function getFilteredPlayers(filter: FilterType, category?: string | null) {
     let func: ((p: Player) => boolean) | null;
-    if (filter === "UNSOLD") {
-      func = (p: Player) => p.stats.status === "UNSOLD";
-    } else if (filter === "SOLD") {
-      func = (p: Player) => p.stats.status === "SOLD";
+    if (filter === "UNSOLD" || filter === "SOLD") {
+      func = (p: Player) => p.stats.status === filter && (category ? p.category === category : true);
     } else if (filter === "AUCTION") {
-      func = (p: Player) => !(p.stats.status === "SOLD" || p.stats.status === "UNSOLD");
+      func = (p: Player) => !(p.stats.status === "SOLD" || p.stats.status === "UNSOLD") && (category ? p.category === category : true);
     } else {
-      func = null;
+      if (category) {
+        func = (p: Player) => p.category === category;
+      } else {
+        func = null;
+      }
     }
     const data = func ? players.filter(func) : players;
     // setPlayers(data);
@@ -172,6 +172,13 @@ function useAppState() {
     setPlayers(playersData);
   }
 
+  function updateSelectedCategory (category: string | null) {
+    if (category !== selectedCategory) {
+      setSelectedCategory(category);
+      setCurrentPlayerIndex(() => 0);
+    }
+  }
+
   return {
     teams,
     players,
@@ -181,6 +188,7 @@ function useAppState() {
     totalSoldPlayers,
     totalUnsoldPlayers,
     totalNoStatusPlayers,
+    selectedCategory,
     setPlayers,
     updatePurse,
     updatePlayerPoints,
@@ -190,6 +198,7 @@ function useAppState() {
     setCurrentPlayerIndex,
     setPlayerFilter,
     getFilteredPlayers,
+    updateSelectedCategory,
   };
 }
 
