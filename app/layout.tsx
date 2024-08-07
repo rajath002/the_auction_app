@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import "./globals.scss";
 import Header from "@/components/header";
 import { AppProvider } from "@/context/useAppState";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "KPL",
@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AppProvider >
-      <body className={[inter.className, "relative", "text-white", "bg-slate-700", ].join(" ")}>
+      <body className={[
+        // inter.className, 
+        "relative", "text-white", "bg-slate-700", ].join(" ")}>
         <Header />
         {children}
       </body>

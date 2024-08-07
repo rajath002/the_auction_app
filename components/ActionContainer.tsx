@@ -3,11 +3,21 @@ import { useEffect, useState } from "react";
 import { PlayerCard } from "./PlayerCard";
 import { TeamList } from "./TeamList";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Radio } from "antd";
+import { Button, Col, Form, Radio, Row, Select, Statistic } from "antd";
 import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
 
 const INCREMENTAL_POINTS = 50;
+
+// Sample data
+const data = [
+  { id: 1, name: "Level 1", category: "L1" },
+  { id: 2, name: "Level 2", category: "L2" },
+  { id: 3, name: "Level 3", category: "L3" },
+  { id: 4, name: "Level 4", category: "L4" },
+  { id: 5, name: "Level 5", category: "L5" },
+];
+const categories = ["All", ...new Set(data.map((item) => item.category))];
 
 export const AuctionContainer = () => {
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
@@ -18,6 +28,7 @@ export const AuctionContainer = () => {
     playerFilter,
     totalSoldPlayers,
     totalUnsoldPlayers,
+    selectedCategory,
     updatePurse,
     updatePlayerPoints,
     resetPlayerTeamAndPoints,
@@ -25,16 +36,17 @@ export const AuctionContainer = () => {
     setCurrentPlayerIndex,
     setPlayerFilter,
     getFilteredPlayers,
+    updateSelectedCategory
   } = useAppContext();
 
   // Fetch player data (replace with your actual data fetching logic)
   useEffect(() => {
-    const players_ = getFilteredPlayers(playerFilter);
+    const players_ = getFilteredPlayers(playerFilter, selectedCategory);
     setFilteredPlayers(() => players_);
     return () => {
-      getFilteredPlayers("ALL");
+      // getFilteredPlayers("ALL");
     }
-  }, [currentPlayerIndex, getFilteredPlayers, playerFilter, setCurrentPlayerIndex]);
+  }, [getFilteredPlayers, playerFilter, selectedCategory]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
     updatePlayerPoints(player.id, team, player.stats.bidValue+INCREMENTAL_POINTS, player.stats.status);
@@ -81,8 +93,34 @@ export const AuctionContainer = () => {
     updatePlayerStatus(filteredPlayers[currentPlayerIndex], "UNSOLD");
   };
 
+  const handleCategoryChange = (value) => {
+    if (value === "All") {
+      updateSelectedCategory(null);
+    } else {
+      updateSelectedCategory(value);
+    }
+  };
+
   return (
     <div className="flex flex-col md:w-4/5 my-0 mx-auto">
+      <div className="w-full flex items-center flex-wrap">
+        Toal Players Sold: {totalSoldPlayers}, 
+        Toal Players UnSold: {totalUnsoldPlayers}
+            <div className="ml-auto flex">
+            <p className="px-2">Players by category</p>
+              <Select
+                className="min-w-52"
+                placeholder="Players by category"
+                title="Search by Category"
+                onChange={handleCategoryChange}
+              >
+                {categories.map((category) => (
+                  <Select.Option key={category} value={category}>
+                    {category}
+                  </Select.Option>
+                ))}
+              </Select></div>
+      </div>
       {filteredPlayers && filteredPlayers.length && (
         <PlayerCard
           player={filteredPlayers[currentPlayerIndex]}

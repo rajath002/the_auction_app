@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { closeConnection, connectToMongoDB, database } from "../config";
+import teamList from "../../../data/teamslist.json";
 
 export async function POST(request: NextRequest) {
   const js = await request.json();
@@ -13,9 +14,10 @@ export async function PATCH() {
 
 export async function GET() {
   try {
-    await connectToMongoDB();
-    const teamCollection = database.collection("teams");
-    const teamsValues = await teamCollection.find({}).toArray();
+    // await connectToMongoDB();
+    // const teamCollection = database.collection("teams");
+    // const teamsValues = await teamCollection.find({}).toArray();
+    const teamsValues = teamList;
     return NextResponse.json(teamsValues);
   } catch (e) {
     console.log("Error !!!: ", e);
@@ -24,6 +26,6 @@ export async function GET() {
       { status: 400 }
     );
   } finally {
-    await closeConnection();
+    // await closeConnection();
   }
 }
