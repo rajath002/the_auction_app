@@ -13,8 +13,6 @@ import {
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 
-const { TextArea } = Input;
-
 interface SubmissionFormType {
   onFinish: (e: React.FormEvent<HTMLFormElement>) => void;
   disableForm: boolean;
@@ -33,7 +31,7 @@ export default function RegistrationForm(props: SubmissionFormType) {
             onFinish={props.onFinish}
             disabled={props.disableForm}
           >
-            <Form.Item label="Name" name="name">
+            <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please enter your name' }]}>
               <Input placeholder="Enter your name" />
             </Form.Item>
             <Form.Item label="Level" name="level">
@@ -43,10 +41,10 @@ export default function RegistrationForm(props: SubmissionFormType) {
                 <Select.Option value="L3">L3</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Date Of Birth" name="dateOfBirth">
+            <Form.Item label="Date Of Birth" name="dateOfBirth" rules={[{ required: true, message: 'Please select your date of birth' }]}>
               <DatePicker placeholder="Select Date Of Birth" />
             </Form.Item>
-            <Form.Item label="Contact No. " name="contactNo">
+            <Form.Item label="Contact No " name="contactNo" rules={[{ required: true, message: 'Please enter your contact number' }]}>
               <InputNumber
                 maxLength={10}
                 addonBefore="+91"
@@ -54,8 +52,8 @@ export default function RegistrationForm(props: SubmissionFormType) {
                 className="w-100"
               />
             </Form.Item>
-            <Form.Item label="Comments" name="comments">
-              <TextArea rows={4} placeholder="Add Comments" />
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Please enter your email' }]}>
+              <Input type="email" placeholder="Enter your email" />
             </Form.Item>
             <Space>
               <Form.Item>
