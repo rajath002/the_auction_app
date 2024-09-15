@@ -39,8 +39,13 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link className="hover:text-gray-300" href="/player-registration">
+            <Link className="hover:text-gray-300" href="/registration/player-registration">
               Player Registration
+            </Link>
+          </li>
+          <li>
+            <Link className="hover:text-gray-300" href="/registration/bulk-player-registration">
+              Bulk Player Registration
             </Link>
           </li>
         </ul>

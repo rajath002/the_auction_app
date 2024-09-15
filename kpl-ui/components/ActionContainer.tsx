@@ -49,7 +49,7 @@ export const AuctionContainer = () => {
   }, [getFilteredPlayers, playerFilter, selectedCategory]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
-    updatePlayerPoints(player.id, team, player.stats.bidValue+INCREMENTAL_POINTS, player.stats.status);
+    updatePlayerPoints(player.vID, team, player.stats.bidValue+INCREMENTAL_POINTS, player.stats.status);
     updatePurse(team, team.purse - INCREMENTAL_POINTS);
   }
 
@@ -70,7 +70,7 @@ export const AuctionContainer = () => {
     }
 
     updatePurse(team, team.purse - value);
-    updatePlayerPoints(playerInfo.id, team, value);
+    updatePlayerPoints(playerInfo.vID, team, value);
     // Deduct points from previos team
     if (playerInfo.stats.currentTeamId) {
       const oldTeam = teams.find((oldTeam) => oldTeam.id === oldTeamId);
