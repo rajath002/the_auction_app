@@ -17,6 +17,7 @@ import {
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { useCallback, useState } from "react";
 import SubmitButton from "@/app/components/SubmitButton";
+import { host } from "@/config";
 
 interface SubmissionFormType {
   onFinish: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -44,14 +45,21 @@ export default function BulkPlayerRegistrationForm() {
       <Col>
         <Card style={{ width: 800 }} title="Please enter below details">
           <Form
-            labelCol={{ span: 4 }}
+            labelCol={{ span: 10 }}
             wrapperCol={{ span: 14 }}
             layout="horizontal"
             style={{ maxWidth: 600 }}
             onFinish={onSubmit}
-            // disabled={props.disableForm}
+            encType="multipart/form-data"
           >
-
+            {/* Download the sample copy */}
+            <Form.Item label="Download Sample" style={{ marginBottom: 0 }}>
+            <Space style={{ paddingBottom: 16 }} >
+              <Button href={host+"/player_data_template.xlsx"} target="_blank" type="primary">
+                Download Sample Template
+              </Button>
+            </Space >
+            </Form.Item>
             {/* Upload image */}
             <Form.Item label="Upload" valuePropName="fileList">
               <Upload fileList={fileList} listType="picture-card" maxCount={1} onChange={handleFileChange}>

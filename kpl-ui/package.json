@@ -22,7 +22,8 @@
     "react-confetti": "^6.1.0",
     "react-confetti-explosion": "^2.1.2",
     "react-dom": "^18",
-    "sass": "^1.69.5"
+    "sass": "^1.69.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
