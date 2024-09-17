@@ -1,10 +1,10 @@
 // create a new page component for bulk player registration
-import BulkRegistrationForm from "./components/bulkPlayerRegistration";
+import BulkPlayerRegistrationForm from "./components/bulkPlayerRegistration";
 
 export default function BulkPlayerRegistration() {
   return (
     <>
-      <BulkRegistrationForm />
+      <BulkPlayerRegistrationForm />
     </>
   );
 }

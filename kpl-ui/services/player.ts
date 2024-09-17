@@ -15,6 +15,9 @@ export async function getPlayers(): Promise<Player[]> {
   }
 }
 
+/**
+ * @deprecated
+ */
 export async function downloadPlayersExcelSheet(apiLink: string): Promise<boolean> {
   try {
     const fileLink =  process.env.NEXT_PUBLIC_URL + "/player_data_template.xlsx";
@@ -30,6 +33,16 @@ export async function downloadPlayersExcelSheet(apiLink: string): Promise<boolea
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+    return true;
+  } catch (error) {
+    console.log("Error in player fetch ", error);
+    return false;
+  }
+}
+
+export async function uploadPlayersExcelSheet(payload: string[][]): Promise<boolean> {
+  try {
+    await axios.post("/api/players/upload", payload);
     return true;
   } catch (error) {
     console.log("Error in player fetch ", error);

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     const newID = crypto.randomUUID();
     const uploadedFile = await formData.get("uploadedFile") as File;
-    const buffer = Buffer.from(await uploadedFile.arrayBuffer());
+    // const buffer = Buffer.from(await uploadedFile.arrayBuffer());
     const [name, phone, email, imageName] = await Promise.all([
       formData.get("name"),
       formData.get("phone"),

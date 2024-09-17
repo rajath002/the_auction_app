@@ -13,27 +13,42 @@ import {
   Col,
   Spin,
   Upload,
+  FormInstance,
 } from "antd";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import SubmitButton from "@/app/components/SubmitButton";
 import { host } from "@/config";
+import { uploadPlayersExcelSheet } from "@/services/player";
+import { ReadExcelFileData } from "@/utils/fileUtils";
 
 interface SubmissionFormType {
-  onFinish: (e: React.FormEvent<HTMLFormElement>) => void;
+  onFinish: (e: FormData) => void;
   disableForm: boolean;
 }
 
 export default function BulkPlayerRegistrationForm() {
   const [fileList, setFileList] = useState<any[]>([]);
+  const formRef = useRef<FormInstance>(null);
 
+  /**
+   * @deprecated will be removed in future
+   */
   const onSubmit = useCallback((e: any) => {
     console.log("onSubmit", e);
-    // props.onFinish({
-    //   ...e,
-    //   uploadedFile: fileList[0]
-    // });
-  }, [fileList])
+
+    const originFileObj = e.upload.fileList[0].originFileObj;
+    const formData = new FormData();
+    formData.append("uploadedFile", originFileObj);
+
+    // uploadPlayersExcelSheet(formData);
+  }, [])
+
+  const onSubmitV2 = useCallback(async (e: {upload: {fileList: any[]}}) => {
+    const originFileObj = e.upload.fileList[0].originFileObj;
+    const jsonData = await ReadExcelFileData(originFileObj);
+    uploadPlayersExcelSheet(jsonData);
+  }, []);
 
   // Handle file change (AntD Upload component)
   const handleFileChange = useCallback((param) => {
@@ -45,11 +60,12 @@ export default function BulkPlayerRegistrationForm() {
       <Col>
         <Card style={{ width: 800 }} title="Please enter below details">
           <Form
+          ref={formRef}
             labelCol={{ span: 10 }}
             wrapperCol={{ span: 14 }}
             layout="horizontal"
             style={{ maxWidth: 600 }}
-            onFinish={onSubmit}
+            onFinish={onSubmitV2}
             encType="multipart/form-data"
           >
             {/* Download the sample copy */}
@@ -61,7 +77,7 @@ export default function BulkPlayerRegistrationForm() {
             </Space >
             </Form.Item>
             {/* Upload image */}
-            <Form.Item label="Upload" valuePropName="fileList">
+            <Form.Item label="Upload" name="upload">
               <Upload fileList={fileList} listType="picture-card" maxCount={1} onChange={handleFileChange}>
                 <button style={{ border: 0, background: 'none' }} type="button">
                   <PlusOutlined />

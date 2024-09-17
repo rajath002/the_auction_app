@@ -7,12 +7,11 @@ import {
   doc,
   updateDoc,
   getDoc,
+  writeBatch,
 } from "firebase/firestore";
 import { PLAYERS_COLLECTION, EVENTS_COLLECTION } from "@/utils/constants";
 import { Event } from "@/interface/interfaces";
-import { ref } from "firebase/database";
-import { getDownloadURL, ref as storageRef } from "firebase/storage";
-import { uploadBytes, uploadBytesResumable } from "firebase/storage";
+import { getDownloadURL, ref as storageRef, uploadBytesResumable } from "firebase/storage";
 
 /**
  * Inserts a player into the Firestore database.
@@ -26,6 +25,34 @@ export async function insertPlayer(player: Player) {
   const res = await addDoc(playersCollection, player);
   console.log("Player added with ID: ", res.id);
   return res.id;
+}
+
+/**
+ * Insert multiple players into the Firestore database.
+ * @param players - The list of players to be inserted.
+ * @returns The IDs of the inserted players.
+ * @returns null if the insertion fails.
+ */
+export async function insertMultiplePlayers(players: Player[]): Promise<true | Error> {
+
+  // Insert player data into the firestore database
+  const batch = writeBatch(db);  // Initialize the batch
+  const playersCollectionRef = collection(db, PLAYERS_COLLECTION);
+
+  players.forEach((player) => {
+    const newPlayerRef = doc(playersCollectionRef);  // Generate a new document reference
+    batch.set(newPlayerRef, player);  // Add player data to the batch
+  });
+
+  try {
+    await batch.commit();  // Commit the batch request
+    console.log("Players successfully added to the database!");
+  } catch (error) {
+    console.error("Error adding players to the database: ", error);
+    throw error
+  }
+
+  return true;
 }
 
 /**
