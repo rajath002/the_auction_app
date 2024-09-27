@@ -64,14 +64,14 @@ function useAppState() {
   }
 
   function updatePlayerPoints(
-    playerId: number,
+    playerId: number|string,
     team: Team,
     points: number,
     status?: any
   ) {
     setPlayers((players) => {
       return players.map((playr) => {
-        if (playr.id === playerId) {
+        if (playr.vID === playerId) {
           playr.stats.bidValue = points;
           playr.stats.currentTeamId = team.id;
           playr.stats.status = status || null;
@@ -86,7 +86,7 @@ function useAppState() {
   // }
 
   // function playerSold(player: Player) {
-  //   setSoldPlayers(soldPlayers.set(player.id, player));
+  //   setSoldPlayers(soldPlayers.set(player.vID, player));
   // }
 
   function updatePlayerStatus(updatePlayer: Player, status: PlayerStatus) {
@@ -96,7 +96,7 @@ function useAppState() {
     let _totalUnSoldPlayers = 0;
     let _noStatusPlayers= 0
     const players_ = players.map((player) => {
-      if (player.id === updatePlayer.id) {
+      if (player.vID === updatePlayer.vID) {
         player.stats.status = status;
         if (status === "UNSOLD" && player.stats.currentTeamId) {
           teams_ = teams.map((t) => {
@@ -161,7 +161,7 @@ function useAppState() {
       return t;
     });
     let playersData = players.map((p) => {
-      if (p.id === player.id) {
+      if (p.vID === player.vID) {
         p.stats.currentTeamId = null;
         p.stats.status = null;
         p.stats.bidValue = p.stats.baseValue;

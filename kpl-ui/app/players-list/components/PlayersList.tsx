@@ -1,7 +1,7 @@
 "use client";
 import { Player } from "@/interface/interfaces";
 import { useEffect, useState } from "react";
-import { Badge, Col, ConfigProvider, Form, Input, Row, Select } from "antd";
+import { Badge, Button, Col, ConfigProvider, Form, Input, Row, Select } from "antd";
 import { theme } from "antd";
 import playersJsonList from "@/data/players.json";
 import { SearchOutlined } from "@ant-design/icons";
@@ -19,7 +19,13 @@ type Filters = {
   searchText: string;
 };
 
-export default function PlayersList() {
+/**
+ * Renders a list of players with filtering and search functionality.
+ *
+ * @param {Object} props
+ * @returns {JSX.Element} The rendered PlayersList component.
+ */
+export default function PlayersList(props: {players: Player[]}) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
 
@@ -28,9 +34,9 @@ export default function PlayersList() {
     searchText: "",
   });
   useEffect(() => {
-    // getPlayers().then((players) => setPlayers(players));
-    setPlayers(playersJsonList as Player[]);
-  }, []);
+    props.players && setPlayers(props.players);
+    // setPlayers(playersJsonList as Player[]);
+  }, [props.players]);
 
   useEffect(() => {
     setFilteredPlayers(() =>
@@ -78,7 +84,7 @@ export default function PlayersList() {
         {/* <div className="flex flex-wrap justify-center gap-6 min-h-screen"> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5 gap-3 md:gap-6 p-6 min-h-screen">
           {filteredPlayers.map((player) => (
-            <PlayerCard key={player.id} player={player} />
+            <PlayerCard key={player.vID} player={player} />
           ))}
         </div>
       </div>
@@ -144,6 +150,13 @@ type SearchBarType = {
   setCategory: (category: string | null) => void;
   setSearchText: (text: string) => void;
 };
+
+/**
+ * Renders a search bar component.
+ *
+ * @param props - The props for the SearchBar component.
+ * @returns The rendered SearchBar component.
+ */
 function SearchBar(props: SearchBarType) {
   const handleSearch = (e) => {
     props.setSearchText(e.target.value);
