@@ -1,9 +1,25 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import kplLogo from "@/assets/kpl-logo-large.jpeg";
 import kplLogoTransp from "@/assets/kpl-logo-transparent.png";
+import { usePathname } from "next/navigation";
+
+enum NavLinks {
+  HOME = "/",
+  PLAYERS = "/players-list",
+  AUCTION = "/auction",
+  TEAMS = "/teams",
+  PLAYER_REGISTRATION = "/player-registration"
+}
 
 export default function Header() {
+  // get current nav link active
+  const pathName = usePathname();
+  const isActive = (href: string) => {
+    return pathName === href ? "text-gray-300" : "";
+  }
+
   return (
     <header className="bg-gray-800 text-white py-4 px-6 flex items-center justify-between">
       <Link href="/" className="font-bold text-xl flex items-center">
@@ -14,32 +30,32 @@ export default function Header() {
           height={30}
           className="rounded-xl"
         ></Image>
-        KPL
+        KPL &nbsp; <div className="bg-gradient-conic from-red-500 via-purple-300 to-yellow-600 bg-clip-text text-transparent">2025</div>
       </Link>
       <nav>
         <ul className="flex items-center space-x-4">
-          <li>
-            <Link className="hover:text-gray-300" href="/">
+          <li className={pathName === NavLinks.HOME ? "border-b-4 border-yellow-300": ""}>
+            <Link className="hover:text-gray-300" href={NavLinks.HOME}>
               Home
             </Link>
           </li>
-          <li>
-            <Link className="hover:text-gray-300" href="/players-list">
+          <li className={pathName === NavLinks.PLAYERS ? "border-b-4 border-yellow-300": ""}>
+            <Link className="hover:text-gray-300" href={NavLinks.PLAYERS}>
               Players
             </Link>
           </li>
-          <li>
-            <Link className="hover:text-gray-300" href="/auction">
+          <li className={pathName === NavLinks.AUCTION ? "border-b-4 border-yellow-300": ""}>
+            <Link className="hover:text-gray-300" href={NavLinks.AUCTION}>
               Auction
             </Link>
           </li>
-          <li>
-            <Link className="hover:text-gray-300" href="/teams">
+          <li className={pathName === NavLinks.TEAMS ? "border-b-4 border-yellow-300": ""}>
+            <Link className="hover:text-gray-300" href={NavLinks.TEAMS}>
               Teams
             </Link>
           </li>
-          <li>
-            <Link className="hover:text-gray-300" href="/player-registration">
+          <li className={pathName === NavLinks.PLAYER_REGISTRATION ? "border-b-4 border-yellow-300": ""}>
+            <Link className="hover:text-gray-300" href={NavLinks.PLAYER_REGISTRATION}>
               Player Registration
             </Link>
           </li>

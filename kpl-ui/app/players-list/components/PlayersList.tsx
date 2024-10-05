@@ -71,7 +71,7 @@ export default function PlayersList() {
         },
       }}
     >
-      <div>
+      {players.length > 0 && <div>
         <div>
           <SearchBar setCategory={setCategory} setSearchText={setSearchText} />
         </div>
@@ -81,7 +81,7 @@ export default function PlayersList() {
             <PlayerCard key={player.id} player={player} />
           ))}
         </div>
-      </div>
+      </div>}
     </ConfigProvider>
   );
 }

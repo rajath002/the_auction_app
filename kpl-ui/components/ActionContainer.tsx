@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { PlayerCard } from "./PlayerCard";
 import { TeamList } from "./TeamList";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Col, Form, Radio, Row, Select, Statistic } from "antd";
+import { Button, Col, ConfigProvider, Form, Radio, Row, Select, Statistic } from "antd";
 import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
 
@@ -102,6 +102,7 @@ export const AuctionContainer = () => {
   };
 
   return (
+    <ConfigProvider
     <div className="flex flex-col md:w-4/5 my-0 mx-auto">
       <div className="w-full flex items-center flex-wrap">
         Toal Players Sold: {totalSoldPlayers}, 
@@ -181,5 +182,6 @@ export const AuctionContainer = () => {
         />
       )}
     </div>
+    </ConfigProvider>
   );
 };

@@ -8,7 +8,12 @@ import teamList from "@/data/teamslist.json";
 import { getTeams } from "@/services/teams";
 import { getPlayers } from "@/services/player";
 
-type FilterType = "ALL" | "SOLD" | "UNSOLD" | "AUCTION";
+enum FilterType {
+  ALL = "ALL",
+  SOLD = "SOLD",
+  UNSOLD = "UNSOLD",
+  AUCTION = "AUCTION",
+}
 
 function useAppState() {
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0); // Current player index
@@ -36,10 +41,10 @@ function useAppState() {
 
   function getFilteredPlayers(filter: FilterType, category?: string | null) {
     let func: ((p: Player) => boolean) | null;
-    if (filter === "UNSOLD" || filter === "SOLD") {
+    if (filter === FilterType.UNSOLD || filter === FilterType.SOLD) {
       func = (p: Player) => p.stats.status === filter && (category ? p.category === category : true);
-    } else if (filter === "AUCTION") {
-      func = (p: Player) => !(p.stats.status === "SOLD" || p.stats.status === "UNSOLD") && (category ? p.category === category : true);
+    } else if (filter === FilterType.AUCTION) {
+      func = (p: Player) => !(p.stats.status === FilterType.SOLD || p.stats.status === FilterType.UNSOLD) && (category ? p.category === category : true);
     } else {
       if (category) {
         func = (p: Player) => p.category === category;
