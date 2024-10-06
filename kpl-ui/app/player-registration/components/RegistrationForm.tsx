@@ -20,9 +20,9 @@ interface SubmissionFormType {
 
 export default function RegistrationForm(props: SubmissionFormType) {
   return (
-    <Row gutter={16} align={"middle"} justify={"center"}>
-      <Col>
-        <Card style={{ width: 800 }} title="Please enter below details">
+    <Row align={"middle"} justify={"center"}>
+      <Col className="relative w-2/3">
+        <Card title="Please enter below details">
           <Form
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 14 }}

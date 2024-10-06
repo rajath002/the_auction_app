@@ -10,7 +10,8 @@ enum NavLinks {
   PLAYERS = "/players-list",
   AUCTION = "/auction",
   TEAMS = "/teams",
-  PLAYER_REGISTRATION = "/player-registration"
+  PLAYER_REGISTRATION = "/player-registration",
+  ABOUT_US = "/about-us",
 }
 
 export default function Header() {
@@ -21,7 +22,8 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-gray-800 text-white py-4 px-6 flex items-center justify-between">
+    <>
+    <header className="bg-gray-800 text-white py-4 px-6 flex items-center justify-between top-0 left-0 fixed w-full z-10">
       <Link href="/" className="font-bold text-xl flex items-center">
       <Image
           src={kplLogoTransp}
@@ -59,8 +61,15 @@ export default function Header() {
               Player Registration
             </Link>
           </li>
+          <li className={pathName === NavLinks.ABOUT_US ? "border-b-4 border-yellow-300": ""}>
+            <Link className="hover:text-gray-300" href={NavLinks.ABOUT_US}>
+              About Us
+            </Link>
+          </li>
         </ul>
       </nav>
     </header>
+    <div className="h-16"></div>
+    </>
   );
 }
