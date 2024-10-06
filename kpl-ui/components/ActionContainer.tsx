@@ -102,7 +102,7 @@ export const AuctionContainer = () => {
   };
 
   return (
-    <ConfigProvider
+    <ConfigProvider>
     <div className="flex flex-col md:w-4/5 my-0 mx-auto">
       <div className="w-full flex items-center flex-wrap">
         Toal Players Sold: {totalSoldPlayers}, 

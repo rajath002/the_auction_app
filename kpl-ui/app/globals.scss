@@ -38,3 +38,16 @@
   75% { box-shadow: red 0 0 10px;}
   100% { box-shadow: green 0 0 10px; }
  }
+
+ .gradient-shadow::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  background: linear-gradient(135deg, #4f46e5, #ec4899, #10b981);
+  z-index: -1;
+  border-radius: inherit;
+  filter: blur(15px);
+}

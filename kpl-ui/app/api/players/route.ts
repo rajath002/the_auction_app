@@ -42,7 +42,6 @@ export async function PATCH(req: NextRequest) {
 
 export async function GET() {
   try {
-    debugger;
     // connectToMongoDB();
     // await client.connect();
     // const playersCollection = database.collection("players");
