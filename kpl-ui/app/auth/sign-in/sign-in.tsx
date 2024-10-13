@@ -6,6 +6,7 @@ import {
   Form,
   FormInstance,
   Input,
+  message,
   Radio,
   Row,
   Typography,
@@ -15,15 +16,11 @@ import Link from "next/link";
 
 const { Text, Title } = Typography;
 
-const SigninComponent: FC = (props: { pageTitle: string }) => {
+const SigninComponent: FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
-  const [formTitle, setFormTitle] = useState(props.pageTitle);
-
-  useEffect(() => {
-    setFormTitle(props.pageTitle);
-  }, [props.pageTitle]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const formRef = useRef<FormInstance>();
 
@@ -31,42 +28,43 @@ const SigninComponent: FC = (props: { pageTitle: string }) => {
     try {
       const payload = formRef.current?.getFieldsValue();
       let result;
+      setLoading(true);
       if (isSignUp) {
         result = await signUp(payload);
+        messageApi.success("Sign Up Successful");
       } else {
         result = await signIn(payload);
+        messageApi.success("Sign In Successful");
       }
 
       console.log("Token:", result);
       setUser(user);
     } catch (error) {
       console.error("Error during sign in:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [isSignUp, user]);
+  }, [isSignUp, messageApi, user]);
 
   const setDummyUser = useCallback(() => {
     formRef.current?.setFieldsValue({
-      email: "abctest@gmail.com",
       password: "123456",
+      confirmPassword: "123456",
+      userName: "Abc Test",
+      gender: "m",
+      phone: "1234567890",
     });
   }, []);
 
   const changeForm = useCallback(() => {
     formRef.current?.resetFields();
-
-    // if the user is signing up, change the form title to Sign In
-    if (isSignUp) {
-      setFormTitle("Sign In");
-    } else {
-      setFormTitle("Sign Up");
-    }
-
     setIsSignUp(!isSignUp);
   }, [isSignUp]);
 
   return (
     <>
-      <Title>{formTitle}</Title>
+    {contextHolder}
+      <Title>{isSignUp ? "Sign Up" : "Sign In"}</Title>
       {/* Create a form, accept email and password  */}
       <Form
         ref={formRef as any}
@@ -79,7 +77,7 @@ const SigninComponent: FC = (props: { pageTitle: string }) => {
           <>
             <Form.Item
               label="Username"
-              name="username"
+              name="userName"
               rules={[
                 { required: true, message: "Please enter your User name!" },
               ]}
@@ -102,7 +100,7 @@ const SigninComponent: FC = (props: { pageTitle: string }) => {
 
             <Form.Item
               label="Phone Number"
-              name="phoneNumber"
+              name="phone"
               rules={[
                 { required: true, message: "Please Enter Phone Number!" },
               ]}
@@ -142,7 +140,7 @@ const SigninComponent: FC = (props: { pageTitle: string }) => {
 
         {/* create a submit and reset button */}
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={loading}>
             {isSignUp ? "Sign Up" : "Sign In"}
           </Button>
 

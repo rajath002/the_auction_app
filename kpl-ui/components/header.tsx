@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import Image from "next/image";
 import kplLogo from "@/assets/kpl-logo-large.jpeg";

@@ -41,3 +41,10 @@ export interface Event {
   status: string;
   isDeleted: boolean;
 }
+
+export interface User {
+  userName: string;
+  gender: string;
+  email: string;
+  phone: number;
+}
