@@ -1,8 +1,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import kplLogo from "@/assets/kpl-logo-large.jpeg";
 import kplLogoTransp from "@/assets/kpl-logo-transparent.png";
+import { SignoutLinkBtn } from "./SignoutLinkBtn";
 
 export default function Header() {
   return (
@@ -48,6 +48,9 @@ export default function Header() {
             <Link className="hover:text-gray-300" href="/registration/bulk-player-registration">
               Bulk Player Registration
             </Link>
+          </li>
+          <li>
+            <SignoutLinkBtn />
           </li>
         </ul>
       </nav>

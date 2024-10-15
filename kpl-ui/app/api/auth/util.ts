@@ -2,6 +2,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  getAuth,
 } from "firebase/auth";
 
 // auth is imported from firebase.ts
@@ -18,3 +19,9 @@ export const signIn = (email: string, password: string) => {
 export const logOut = () => {
   return signOut(auth);
 };
+
+// export const verifyIdToken = (idToken: string) => {
+//   // TODO: Implement this function
+//   getAuth().verifyIdToken(idToken);
+  
+// }

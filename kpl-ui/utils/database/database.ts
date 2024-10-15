@@ -111,7 +111,7 @@ export async function fetchPlayers() {
   querySnapshot.forEach((doc) => {
     players.push(doc.data() as Player);
   });
-  console.log("Players fetched: ", players);
+  // console.log("Players fetched: ", players);
   return players;
 }
 

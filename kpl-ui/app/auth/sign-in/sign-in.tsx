@@ -11,6 +11,7 @@ import {
   Row,
   Typography,
 } from "antd";
+import { signIn as signInAuth } from "next-auth/react";
 import { signIn, signUp } from "@/services/auth";
 import Link from "next/link";
 
@@ -33,8 +34,20 @@ const SigninComponent: FC = () => {
         result = await signUp(payload);
         messageApi.success("Sign Up Successful");
       } else {
-        result = await signIn(payload);
+        // result = await signIn(payload);
+        const res = await signInAuth("credentials", {
+          email: payload.email,
+          password: payload.password,
+        });
+        if (!res?.error) {
+          // Handle successful sign-in
+          console.log("Logged in!");
+        } else {
+          // setError(res.error);
+          console.error("Error during sign in:", res.error);
+        }
         messageApi.success("Sign In Successful");
+        console.log("Token:", result);
       }
 
       console.log("Token:", result);
@@ -56,6 +69,13 @@ const SigninComponent: FC = () => {
     });
   }, []);
 
+  const setDummyUserSignin = useCallback(() => {
+    formRef.current?.setFieldsValue({
+      email: "helo@fg.nm",
+      password: "123456",
+    });
+  }, []);
+
   const changeForm = useCallback(() => {
     formRef.current?.resetFields();
     setIsSignUp(!isSignUp);
@@ -63,7 +83,7 @@ const SigninComponent: FC = () => {
 
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <Title>{isSignUp ? "Sign Up" : "Sign In"}</Title>
       {/* Create a form, accept email and password  */}
       <Form
@@ -151,7 +171,10 @@ const SigninComponent: FC = () => {
             Reset
           </Button>
           <Button htmlType="button" onClick={setDummyUser}>
-            Set Dummy User
+            Set Dummy User -signup
+          </Button>
+          <Button htmlType="button" onClick={setDummyUserSignin}>
+            Set Dummy User -sign-in
           </Button>
         </Form.Item>
 
