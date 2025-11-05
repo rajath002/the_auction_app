@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.scss";
 import Header from "@/components/header";
 import { AppProvider } from "@/context/useAppState";
+import PageLoader from "@/components/PageLoader";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className={[
         // inter.className, 
         "relative", "text-white", "bg-slate-700", ].join(" ")}>
+        <PageLoader />
         <Header />
         {children}
       </body>
