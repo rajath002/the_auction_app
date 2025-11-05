@@ -56,7 +56,7 @@ export const PlayerCard = ({
           <ul className="text-sm mt-2">
             <h1 className="text-lg">{player?.type}🏏</h1>
             <p>Base Points: {player?.stats?.baseValue}</p>
-            <p>Category: {player.category}</p>
+            <p>Category: {player?.category}</p>
           </ul>
           <Buttons
             player={player}
