@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { ConfigProvider, theme, Typography } from "antd";
+import { ConfigProvider, theme } from "antd";
 import ConfirmationDialog from "./components/ConfirmationDialog";
 import RegistrationForm from "./components/RegistrationForm";
 
-const { Title } = Typography;
+// const { Title } = Typography;
 
 export default function PlayersRegistrationPage() {
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(null);
@@ -22,9 +22,9 @@ export default function PlayersRegistrationPage() {
 
   return (
     <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-      <Title className="text-center p-10" level={2}>
+      {/* <Title className="text-center p-10" level={2}>
         Player Registration
-      </Title>
+      </Title> */}
       <RegistrationForm onFinish={onFinish} disableForm={disableForm} />
       <ConfirmationDialog isSuccess={submissionSuccess} />
     </ConfigProvider>
