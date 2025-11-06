@@ -20,7 +20,7 @@ export default function HomeBase() {
       </section>
       <section className="mt-5">
         {/* <h1 className="text-center font-semibold">Teams</h1> */}
-        <div className="flex flex-wrap justify-center gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center">
           {teams.map((t: Team) => (
             <ShowTeam key={t.id} team={t} />
           ))}
@@ -32,47 +32,60 @@ export default function HomeBase() {
 
 function ShowTeam({ team }: { team: Team }) {
   return (
-    // <div className="px-14 m-10">
-    //   <div>{details.name}</div>
-    // </div>
-    <div className="bg-slate-400 shadow-md rounded-lg w-auto">
-      <div className="flex items-center justify-between">
-        {/* <h2 className="text-lg font-semibold">Card Title</h2> */}
-        {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Action</button> */}
+    <article className="w-64 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
+      {/* Hero image (bigger visual footprint) */}
+      <div className="w-full h-44 overflow-hidden">
+        <Image
+          src={kplLogo}
+          alt={`${team.name} banner`}
+          width={560}
+          height={176}
+          className="w-full h-44 object-cover"
+        />
       </div>
-      <Image
-        src={kplLogo}
-        alt="Image"
-        height={100}
-        width={100}
-        className="w-full md:w-60 md:h-44 rounded-t-lg"
-      />
-      <div className="mt-1 px-2">
-        <h2 className="uppercase text-center bg-blue-700 rounded font-bold">
-          {team.name}
-        </h2>
 
-        <div className="">
-          <div className="flex">
-            <div className="text-blue-950 font-semibold bg-red w-16">Owner</div>
-            <h3 className="font-bold text-slate-600 text-left text-lg">
-              {team.owner}
-            </h3>
-          </div>
-          <div className="flex">
-            <div className="text-blue-950 font-semibold bg-red w-16">Mentor</div>
-            <h4 className="font-bold text-slate-600 text-left text-lg">
-              {team.mentor}
-            </h4>
-          </div>
-          <div className="flex">
-            <div className="text-blue-950 font-semibold bg-red w-16">Icon</div>
-            <h5 className="font-bold text-slate-600 text-left text-lg">
-              {team.iconPlayer}
-            </h5>
+      {/* Header */}
+      <header className="px-3 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center font-semibold uppercase text-sm">
+        <h2 className="truncate">{team.name}</h2>
+      </header>
+
+      {/* Body */}
+      <div className="p-3 space-y-2">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-semibold">🏷️</span>
+          <div className="flex-1">
+            <div className="text-xs text-slate-500 uppercase">Owner</div>
+            <div className="text-sm font-semibold text-slate-700 truncate">{team.owner || '—'}</div>
           </div>
         </div>
+
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-amber-100 text-amber-700 font-semibold">🧭</span>
+          <div className="flex-1">
+            <div className="text-xs text-slate-500 uppercase">Mentor</div>
+            <div className="text-sm font-semibold text-slate-700 truncate">{team.mentor || '—'}</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 font-semibold">⭐</span>
+          <div className="flex-1">
+            <div className="text-xs text-slate-500 uppercase">Icon Player</div>
+            <div className="text-sm font-semibold text-slate-700 truncate">{team.iconPlayer || '—'}</div>
+          </div>
+        </div>
+
+        {/* CTA / actions placeholder */}
+        <div className="pt-1">
+          <button
+            type="button"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-indigo-500 to-blue-500 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            aria-label={`View ${team.name}`}
+          >
+            View
+          </button>
+        </div>
       </div>
-    </div>
+    </article>
   );
 }
