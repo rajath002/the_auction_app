@@ -21,6 +21,9 @@ export default function Header() {
   const isActive = (href: string) => {
     return pathName === href ? "text-gray-300" : "";
   }
+  const isRegistrationActive =
+    pathName === NavLinks.PLAYER_REGISTRATION ||
+    pathName === NavLinks.BULK_PLAYER_REGISTRATION;
 
   return (
     <>
@@ -57,15 +60,46 @@ export default function Header() {
               Teams
             </Link>
           </li>
-          <li className={pathName === NavLinks.PLAYER_REGISTRATION ? "border-b-4 border-yellow-300": ""}>
-            <Link className="hover:text-gray-300" href={NavLinks.PLAYER_REGISTRATION}>
-              Player Registration
-            </Link>
-          </li>
-          <li className={pathName === NavLinks.BULK_PLAYER_REGISTRATION ? "border-b-4 border-yellow-300": ""}>
-            <Link className="hover:text-gray-300" href={NavLinks.BULK_PLAYER_REGISTRATION}>
-              Bulk Player Registration
-            </Link>
+          <li className={isRegistrationActive ? "border-b-4 border-yellow-300" : ""}>
+            <div className="relative group">
+              <button
+                type="button"
+                className="hover:text-gray-300 flex items-center focus:outline-none"
+                aria-haspopup="menu"
+                aria-expanded={isRegistrationActive}
+              >
+                Registration
+                <svg
+                  className="w-4 h-4 ml-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Dropdown menu - appears on hover/focus */}
+              <ul className="absolute left-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded shadow-lg transform scale-95 opacity-0 invisible group-hover:visible group-hover:opacity-100 group-hover:scale-100 transition-all duration-150 z-20">
+                <li>
+                  <Link
+                    href={NavLinks.PLAYER_REGISTRATION}
+                    className={`block px-4 py-2 hover:bg-gray-700 ${pathName === NavLinks.PLAYER_REGISTRATION ? "text-gray-300" : "text-white"}`}
+                  >
+                    Player Registration
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href={NavLinks.BULK_PLAYER_REGISTRATION}
+                    className={`block px-4 py-2 hover:bg-gray-700 ${pathName === NavLinks.BULK_PLAYER_REGISTRATION ? "text-gray-300" : "text-white"}`}
+                  >
+                    Bulk Player Registration
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </li>
           <li className={pathName === NavLinks.ABOUT_US ? "border-b-4 border-yellow-300": ""}>
             <Link className="hover:text-gray-300" href={NavLinks.ABOUT_US}>
