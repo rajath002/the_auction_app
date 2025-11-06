@@ -6,7 +6,12 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main >
-      <div className="home-background"></div>
+      <div className="home-background">
+        <div className="splash splash-1"></div>
+        <div className="splash splash-2"></div>
+        <div className="splash splash-3"></div>
+        <div className="splash splash-4"></div>
+      </div>
       <div>
       <HomeBase />
       </div>
