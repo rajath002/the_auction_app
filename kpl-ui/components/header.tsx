@@ -11,6 +11,7 @@ enum NavLinks {
   AUCTION = "/auction",
   TEAMS = "/teams",
   PLAYER_REGISTRATION = "/player-registration",
+  BULK_PLAYER_REGISTRATION = "/bulk-player-registration",
   ABOUT_US = "/about-us",
 }
 
@@ -59,6 +60,11 @@ export default function Header() {
           <li className={pathName === NavLinks.PLAYER_REGISTRATION ? "border-b-4 border-yellow-300": ""}>
             <Link className="hover:text-gray-300" href={NavLinks.PLAYER_REGISTRATION}>
               Player Registration
+            </Link>
+          </li>
+          <li className={pathName === NavLinks.BULK_PLAYER_REGISTRATION ? "border-b-4 border-yellow-300": ""}>
+            <Link className="hover:text-gray-300" href={NavLinks.BULK_PLAYER_REGISTRATION}>
+              Bulk Player Registration
             </Link>
           </li>
           <li className={pathName === NavLinks.ABOUT_US ? "border-b-4 border-yellow-300": ""}>
