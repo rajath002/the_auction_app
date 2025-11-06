@@ -5,6 +5,7 @@ import { Badge, Col, ConfigProvider, Form, Input, Row, Select } from "antd";
 import { theme } from "antd";
 import playersJsonList from "@/data/players.json";
 import { SearchOutlined } from "@ant-design/icons";
+import PlayerStats from "./PlayerStats";
 
 interface DataType {
   key: string;
@@ -72,6 +73,9 @@ export default function PlayersList() {
       }}
     >
       {players.length > 0 && <div>
+        
+        <PlayerStats filteredPlayers={filteredPlayers} />
+        
         <div>
           <SearchBar setCategory={setCategory} setSearchText={setSearchText} />
         </div>
@@ -163,9 +167,9 @@ function SearchBar(props: SearchBarType) {
         style={{ maxWidth: 600 }}
         layout="vertical"
       >
-        <Row>
-          <Col span={4} xs={24} md={10} className="px-2">
-            <Form.Item label="Select Category" name="selectCategory">
+        <Row data-testid="search-bar" gutter={16}>
+          <Col span={4} xs={24} md={10} className="px-2" data-testid="select-category-col">
+            <Form.Item data-testid="select-category" label="Select Category" name="selectCategory">
               <Select
                 defaultValue="All"
                 // style={{ width: 200, marginBottom: "16px" }}
@@ -186,7 +190,7 @@ function SearchBar(props: SearchBarType) {
                 placeholder="Search..."
                 prefix={<SearchOutlined />}
                 onChange={handleSearch}
-                style={{ marginBottom: "16px" }}
+                // style={{ marginBottom: "16px" }}
               />
             </Form.Item>
           </Col>
