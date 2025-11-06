@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './home-background.scss';
+
 :root {
   // --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 112, 128, 144
@@ -13,19 +15,6 @@
 //   background: rgb(var(--background-start-rgb));
 // }
 
-
-.home-background {
-  background: url('/moving_Waves.svg');
-  // background: #4a607e;
-  background-size: cover;
-  background-position: center;
-  z-index: -1; /* Make sure the background is behind the content */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%; 
-}
 
 .logo-light {
   animation: shadows 2s infinite
