@@ -50,7 +50,7 @@ export default function LoginPage() {
           <p className="text-gray-400 mt-2">Sign in to your account</p>
         </div>
 
-        <Alert
+        {/* <Alert
           message="Demo Accounts Available"
           description={
             <div>
@@ -60,7 +60,7 @@ export default function LoginPage() {
           }
           type="info"
           className="mb-4"
-        />
+        /> */}
 
         {error && (
           <Alert
@@ -116,12 +116,14 @@ export default function LoginPage() {
           </Form.Item>
         </Form>
 
-        <div className="text-center mt-4">
-          <span className="text-gray-400">Don&apos;t have an account? </span>
-          <Link href="/auth/register" className="text-blue-400 hover:text-blue-300">
-            View demo accounts
-          </Link>
-        </div>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="text-center mt-4">
+            <span className="text-gray-400">Don&apos;t have an account? </span>
+            <Link href="/auth/register" className="text-blue-400 hover:text-blue-300">
+              View demo accounts
+            </Link>
+          </div>
+        )}
       </Card>
     </div>
   );
