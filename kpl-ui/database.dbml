@@ -1,0 +1,144 @@
+// KPL Auction App Database Schema 
+Project KPL_Auction {
+  database_type: 'PostgreSQL'
+  Note: 'KPL (Kerala Premier League) Auction Application Database Schema'
+}
+
+// Teams Table
+Table teams {
+  id serial [pk, note: 'Unique team identifier']
+  name varchar(255) [not null, unique, note: 'Team name']
+  purse integer [not null, default: 10000, note: 'Available budget for auction']
+  owner varchar(255) [not null, note: 'Team owner name']
+  mentor varchar(255) [not null, note: 'Team mentor name']
+  icon_player varchar(255) [note: 'Icon player name for the team']
+  
+  created_at timestamp [default: `now()`, note: 'Record creation timestamp']
+  updated_at timestamp [default: `now()`, note: 'Record update timestamp']
+  
+  Note: 'Teams participating in the auction'
+}
+
+// Players Table
+Table players {
+  id serial [pk, note: 'Unique player identifier']
+  name varchar(255) [not null, note: 'Player name']
+  image text [note: 'Player profile image URL']
+  type player_type_enum [not null, note: 'Player type: Batsman, Bowler, All-Rounder, Wicket-Keeper']
+  category player_category_enum [not null, note: 'Player category: L1, L2, L3, etc.']
+  current_bid integer [default: 0, note: 'Current bid amount during auction']
+  
+  base_value integer [not null, note: 'Base auction value']
+  bid_value integer [note: 'Final bid value after auction']
+  current_team_id integer [ref: > teams.id, note: 'Reference to the team that owns the player']
+  status player_status_enum [note: 'Player auction status: SOLD, UNSOLD, or NULL']
+  
+  created_at timestamp [default: `now()`, note: 'Record creation timestamp']
+  updated_at timestamp [default: `now()`, note: 'Record update timestamp']
+  
+  Indexes {
+    type
+    category
+    status
+    current_team_id
+    (name) [name: 'idx_players_name']
+  }
+  
+  Note: 'Players available for auction'
+}
+
+// Users Table (Authentication)
+Table users {
+  id serial [pk, note: 'Unique user identifier']
+  name varchar(255) [not null, note: 'User full name']
+  email varchar(255) [unique, not null, note: 'User email address']
+  password varchar(255) [not null, note: 'Hashed password (bcrypt)']
+  role user_role_enum [not null, default: 'user', note: 'User role: admin or user']
+  
+  created_at timestamp [default: `now()`, note: 'Account creation timestamp']
+  updated_at timestamp [default: `now()`, note: 'Account update timestamp']
+  last_login timestamp [note: 'Last login timestamp']
+  
+  Indexes {
+    (email) [unique, name: 'idx_users_email']
+    role
+  }
+  
+  Note: 'Application users for authentication and authorization'
+}
+
+// Sessions Table (NextAuth)
+Table sessions {
+  id serial [pk, note: 'Unique session identifier']
+  user_id integer [ref: > users.id, not null, note: 'Reference to user']
+  session_token text [unique, not null, note: 'JWT session token']
+  expires timestamp [not null, note: 'Session expiration timestamp']
+  
+  created_at timestamp [default: `now()`, note: 'Session creation timestamp']
+  
+  Indexes {
+    user_id
+    (session_token) [unique, name: 'idx_sessions_token']
+    expires
+  }
+  
+  Note: 'User session management for NextAuth'
+}
+
+// Auction Events Table
+Table auction_events {
+  id serial [pk, note: 'Unique auction event identifier']
+  player_id integer [ref: > players.id, not null, note: 'Reference to player being auctioned']
+  team_id integer [ref: > teams.id, not null, note: 'Reference to bidding team']
+  bid_amount integer [not null, note: 'Bid amount']
+  event_type varchar(50) [not null, default: 'BID', note: 'Event type: BID, SOLD, UNSOLD']
+  bidder_name varchar(255) [note: 'Name of the person who placed the bid']
+  created_at timestamp [default: `now()`, note: 'Bid timestamp']
+  
+  Indexes {
+    player_id
+    team_id
+    created_at
+    (player_id, created_at) [name: 'idx_auction_player_time']
+  }
+  
+  Note: 'Auction bidding history and events'
+}
+
+// Enums
+Enum player_status_enum {
+  SOLD
+  UNSOLD
+  AVAILABLE
+}
+
+Enum player_type_enum {
+  Batsman
+  Bowler
+  "All-Rounder"
+  "Wicket-Keeper"
+}
+
+Enum player_category_enum {
+  L1
+  L2
+  L3
+  L4
+}
+
+Enum user_role_enum {
+  admin
+  user
+}
+
+// Table Groups for visualization
+TableGroup AuctionCore {
+  teams
+  players
+  auction_events
+}
+
+TableGroup Authentication {
+  users
+  sessions
+}

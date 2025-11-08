@@ -1,0 +1,169 @@
+// Example: Protecting a page (Server Component)
+// app/some-protected-page/page.tsx
+
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
+export default async function ProtectedPage() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect("/auth/login");
+  }
+  
+  return (
+    <div>
+      <h1>Welcome, {session.user.name}!</h1>
+      <p>Your email: {session.user.email}</p>
+      <p>Your role: {session.user.role}</p>
+    </div>
+  );
+}
+
+// ============================================
+
+// Example: Using session in Client Component
+// components/UserProfile.tsx
+
+"use client";
+import { useSession, signOut } from "next-auth/react";
+import { Button } from "antd";
+
+export default function UserProfile() {
+  const { data: session, status } = useSession();
+  
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+  
+  if (!session) {
+    return <div>Not authenticated</div>;
+  }
+  
+  return (
+    <div>
+      <p>Logged in as: {session.user.name}</p>
+      <Button onClick={() => signOut()}>Sign Out</Button>
+    </div>
+  );
+}
+
+// ============================================
+
+// Example: Protected API Route
+// app/api/protected-data/route.ts
+
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+export async function GET(request: Request) {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+  
+  // Your protected API logic here
+  return NextResponse.json({
+    message: "This is protected data",
+    user: session.user
+  });
+}
+
+// ============================================
+
+// Example: Role-based access control
+// app/admin/page.tsx
+
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
+export default async function AdminPage() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect("/auth/login");
+  }
+  
+  if (session.user.role !== "admin") {
+    redirect("/"); // Redirect non-admins
+  }
+  
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+      <p>Only admins can see this page</p>
+    </div>
+  );
+}
+
+// ============================================
+
+// Example: Conditional rendering based on auth
+// components/ConditionalContent.tsx
+
+"use client";
+import { useSession } from "next-auth/react";
+
+export default function ConditionalContent() {
+  const { data: session } = useSession();
+  
+  return (
+    <div>
+      {session ? (
+        <div>
+          <h2>Authenticated Content</h2>
+          <p>Welcome back, {session.user.name}!</p>
+        </div>
+      ) : (
+        <div>
+          <h2>Public Content</h2>
+          <p>Please log in to see more</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================
+
+// Example: Programmatic sign in
+// components/LoginForm.tsx
+
+"use client";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+
+export default function CustomLoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    
+    if (result?.error) {
+      console.error("Login failed:", result.error);
+    } else {
+      // Redirect or show success message
+      window.location.href = "/";
+    }
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form fields */}
+    </form>
+  );
+}

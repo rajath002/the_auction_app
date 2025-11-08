@@ -52,7 +52,7 @@ function ShowTeam({ team }: { team: Team }) {
       {/* Body */}
       <div className="p-3 space-y-2">
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-semibold">🏷️</span>
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-semibold">😎</span>
           <div className="flex-1">
             <div className="text-xs text-slate-500 uppercase">Owner</div>
             <div className="text-sm font-semibold text-slate-700 truncate">{team.owner || '—'}</div>
@@ -68,7 +68,7 @@ function ShowTeam({ team }: { team: Team }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 font-semibold">⭐</span>
+          <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 font-semibold">🦸‍♂️</span>
           <div className="flex-1">
             <div className="text-xs text-slate-500 uppercase">Icon Player</div>
             <div className="text-sm font-semibold text-slate-700 truncate">{team.iconPlayer || '—'}</div>
