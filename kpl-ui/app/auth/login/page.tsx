@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Form, Input, Button, Alert, Card } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import SplashBackground from "@/components/SplashBackground";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,12 +39,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="home-background">
-        <div className="splash splash-1"></div>
-        <div className="splash splash-2"></div>
-        <div className="splash splash-3"></div>
-        <div className="splash splash-4"></div>
-      </div>
+      <SplashBackground />
       <Card className="w-full max-w-md" style={{ backgroundColor: "#1f2937" }}>
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-white">Login</h1>
