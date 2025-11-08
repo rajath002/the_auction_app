@@ -1,0 +1,30 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "admin",
+    "database": "auction_dev",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres",
+    "seederStorage": "sequelize",
+    "migrationStorageTableName": "sequelize_meta"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "admin",
+    "database": "kpl_auction_test",
+    "host": "localhost",
+    "port": 5432,
+    "dialect": "postgres"
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  }
+}

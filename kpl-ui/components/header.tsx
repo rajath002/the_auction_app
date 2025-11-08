@@ -4,6 +4,9 @@ import Image from "next/image";
 import kplLogo from "@/assets/kpl-logo-large.jpeg";
 import kplLogoTransp from "@/assets/kpl-logo-transparent.png";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
+import { Button } from "antd";
+import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
 
 enum NavLinks {
   HOME = "/",
@@ -18,12 +21,18 @@ enum NavLinks {
 export default function Header() {
   // get current nav link active
   const pathName = usePathname();
+  const { data: session, status } = useSession();
+  
   const isActive = (href: string) => {
     return pathName === href ? "text-gray-300" : "";
   }
   const isRegistrationActive =
     pathName === NavLinks.PLAYER_REGISTRATION ||
     pathName === NavLinks.BULK_PLAYER_REGISTRATION;
+
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
 
   return (
     <>
@@ -105,6 +114,35 @@ export default function Header() {
             <Link className="hover:text-gray-300" href={NavLinks.ABOUT_US}>
               About Us
             </Link>
+          </li>
+          
+          {/* Authentication buttons */}
+          <li className="ml-4">
+            {status === "loading" ? (
+              <span className="text-gray-400">Loading...</span>
+            ) : session ? (
+              <div className="flex items-center gap-3">
+                <span className="text-gray-300 flex items-center gap-1">
+                  <UserOutlined />
+                  {session.user?.name}
+                </span>
+                <Button
+                  type="primary"
+                  danger
+                  icon={<LogoutOutlined />}
+                  onClick={handleSignOut}
+                  size="small"
+                >
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Link href="/auth/login">
+                <Button type="primary" icon={<LoginOutlined />} size="small">
+                  Login
+                </Button>
+              </Link>
+            )}
           </li>
         </ul>
       </nav>

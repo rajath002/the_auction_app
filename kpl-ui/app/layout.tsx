@@ -4,6 +4,7 @@ import "./globals.scss";
 import Header from "@/components/header";
 import { AppProvider } from "@/context/useAppState";
 import PageLoader from "@/components/PageLoader";
+import AuthProvider from "@/components/AuthProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -19,15 +20,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <AppProvider >
-      <body className={[
-        // inter.className, 
-        "relative", "text-white", "bg-slate-700", ].join(" ")}>
-        <PageLoader />
-        <Header />
-        {children}
-      </body>
-      </AppProvider>
+      <AuthProvider>
+        <AppProvider>
+          <body className={[
+            // inter.className, 
+            "relative", "text-white", "bg-slate-700", ].join(" ")}>
+            <PageLoader />
+            <Header />
+            {children}
+          </body>
+        </AppProvider>
+      </AuthProvider>
     </html>
   );
 }
