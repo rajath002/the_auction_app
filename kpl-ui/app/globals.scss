@@ -53,3 +53,34 @@
 .animate-loading-bar {
   animation: loading-bar 1.5s ease-in-out infinite;
 }
+
+// Ant Design dark theme overrides
+.ant-btn-primary {
+  background-color: #1890ff !important;
+  border-color: #1890ff !important;
+  color: #fff !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #40a9ff !important;
+  border-color: #40a9ff !important;
+}
+
+.ant-btn-primary:focus {
+  background-color: #1890ff !important;
+  border-color: #1890ff !important;
+}
+
+.ant-btn-primary:active {
+  background-color: #096dd9 !important;
+  border-color: #096dd9 !important;
+}
+
+// Ensure button text is visible
+.ant-btn {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-btn:hover {
+  color: #fff !important;
+}
