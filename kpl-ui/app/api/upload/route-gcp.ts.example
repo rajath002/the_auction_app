@@ -1,0 +1,91 @@
+// Alternative implementation using Google Cloud Storage
+// To use this, replace the content of app/api/upload/route.ts with this code
+// And install: npm install @google-cloud/storage
+
+import { NextRequest, NextResponse } from 'next/server';
+import { Storage } from '@google-cloud/storage';
+import { v4 as uuidv4 } from 'uuid';
+
+// Configure GCP Storage Client
+const storage = new Storage({
+  projectId: process.env.GCP_PROJECT_ID,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+});
+
+const BUCKET_NAME = process.env.GCP_BUCKET_NAME || 'auction-app-images';
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+
+    if (!file) {
+      return NextResponse.json(
+        { error: 'No file uploaded' },
+        { status: 400 }
+      );
+    }
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      return NextResponse.json(
+        { error: 'Invalid file type. Only JPEG, JPG, PNG, and WebP are allowed' },
+        { status: 400 }
+      );
+    }
+
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: 'File size exceeds 5MB limit' },
+        { status: 400 }
+      );
+    }
+
+    // Generate unique filename
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `players/${uuidv4()}.${fileExtension}`;
+
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Get bucket reference
+    const bucket = storage.bucket(BUCKET_NAME);
+    const blob = bucket.file(fileName);
+
+    // Upload to GCP Cloud Storage
+    await blob.save(buffer, {
+      contentType: file.type,
+      metadata: {
+        cacheControl: 'public, max-age=31536000',
+      },
+    });
+
+    // Make the file public (optional)
+    await blob.makePublic();
+
+    // Construct the public URL
+    const imageUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${fileName}`;
+
+    return NextResponse.json({
+      success: true,
+      url: imageUrl,
+      fileName: fileName,
+    });
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    return NextResponse.json(
+      { error: 'Failed to upload file', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
