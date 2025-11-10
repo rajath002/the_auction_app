@@ -52,17 +52,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(players, { status: 201 });
     }
     
+    const {
+      baseValue,
+      bidValue,
+      currentTeamId,
+      status,
+    } = body.stats || {};
+
     // Handle single player creation
     const player = await Player.create({
       name: body.name,
       image: body.image,
       type: body.type as PlayerType,
       category: body.category as PlayerCategory,
-      base_value: body.base_value || body.baseValue,
+      base_value: baseValue || body.baseValue,
       current_bid: body.current_bid || body.currentBid || 0,
-      bid_value: body.bid_value || body.bidValue,
-      current_team_id: body.current_team_id || body.currentTeamId,
-      status: body.status as PlayerStatus,
+      bid_value: bidValue || body.bidValue,
+      current_team_id: currentTeamId || body.currentTeamId,
+      status: status as PlayerStatus,
     });
 
     return NextResponse.json(player, { status: 201 });
