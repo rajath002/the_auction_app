@@ -45,7 +45,7 @@ export default function Header() {
           height={30}
           className="rounded-xl"
         ></Image>
-        KPL &nbsp; <div className="bg-gradient-conic from-red-500 via-purple-300 to-yellow-600 bg-clip-text text-transparent">2025</div>
+        KPL &nbsp; <div className="bg-gradient-conic from-red-500 via-purple-300 to-yellow-600 bg-clip-text text-transparent">{new Date().getFullYear()}</div>
       </Link>
       <nav>
         <ul className="flex items-center space-x-4">

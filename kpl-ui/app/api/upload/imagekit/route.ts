@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import ImageKit from 'imagekit';
+import sharp from 'sharp';
 
 // Initialize ImageKit instance
 const imagekit = new ImageKit({
@@ -63,9 +64,53 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert file to base64 or buffer
+    // Convert file to buffer
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    let buffer = Buffer.from(bytes);
+
+    // Compress image using sharp
+    try {
+      console.log('Original file size:', buffer.length, 'bytes');
+      console.log('Original file type:', file.type);
+      
+      const sharpInstance = sharp(buffer).resize(800, 800, {
+        fit: 'inside',
+        withoutEnlargement: true, // Don't enlarge if image is smaller
+      });
+
+      // Apply format-specific compression
+      if (file.type === 'image/png' || file.type.includes('png')) {
+        buffer = await sharpInstance
+          .png({
+            quality: 80, // PNG quality (1-100)
+            compressionLevel: 9, // Maximum compression (0-9)
+            progressive: true,
+          })
+          .toBuffer();
+      } else if (file.type === 'image/webp' || file.type.includes('webp')) {
+        buffer = await sharpInstance
+          .webp({
+            quality: 80, // WebP quality (1-100)
+          })
+          .toBuffer();
+      } else {
+        // Default to JPEG for other formats (jpeg, jpg, gif, etc.)
+        buffer = await sharpInstance
+          .jpeg({
+            quality: 80, // JPEG quality (1-100)
+            progressive: true,
+          })
+          .toBuffer();
+      }
+      
+      console.log('Compressed file size:', buffer.length, 'bytes');
+      console.log('Compression ratio:', ((1 - buffer.length / bytes.byteLength) * 100).toFixed(2) + '%');
+    } catch (compressionError) {
+      console.error('Image compression failed, using original:', compressionError);
+      // If compression fails, continue with original buffer
+    }
+
+    // Convert to base64
     const base64File = buffer.toString('base64');
 
     // Generate unique filename if not provided
