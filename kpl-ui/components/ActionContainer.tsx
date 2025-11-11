@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { PlayerCard } from "./PlayerCard";
 import { TeamList } from "./TeamList";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Col, ConfigProvider, Form, Radio, Row, Select, Statistic } from "antd";
+import { Button, ConfigProvider, Radio, Select } from "antd";
 import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
 
@@ -103,24 +103,40 @@ export const AuctionContainer = () => {
 
   return (
     <ConfigProvider>
-    <div className="flex flex-col md:w-4/5 my-0 mx-auto">
-      <div className="w-full flex items-center flex-wrap">
-        Toal Players Sold: {totalSoldPlayers}, 
-        Toal Players UnSold: {totalUnsoldPlayers}
-            <div className="ml-auto flex">
-            <p className="px-2">Players by category</p>
-              <Select
-                className="min-w-52"
-                placeholder="Players by category"
-                title="Search by Category"
-                onChange={handleCategoryChange}
-              >
-                {categories.map((category) => (
-                  <Select.Option key={category} value={category}>
-                    {category}
-                  </Select.Option>
-                ))}
-              </Select></div>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 pb-16 pt-10">
+      <div className="rounded-3xl border border-slate-800/60 bg-slate-950/80 px-6 py-5 shadow-[0_24px_60px_rgba(15,23,42,0.45)] backdrop-blur">
+        <div className="flex flex-wrap items-center gap-6 text-slate-200">
+          <div className="flex flex-col gap-2">
+            <span className="text-xs uppercase tracking-[0.35em] text-slate-400">Summary</span>
+            <div className="flex items-center gap-5 text-lg font-semibold">
+              <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-emerald-200">
+                Sold · {totalSoldPlayers}
+              </span>
+              <span className="rounded-full border border-rose-500/30 bg-rose-500/10 px-4 py-1 text-rose-200">
+                Unsold · {totalUnsoldPlayers}
+              </span>
+            </div>
+          </div>
+
+          <div className="ml-auto flex flex-wrap items-center gap-3 text-sm text-slate-300">
+            <span className="text-xs uppercase tracking-[0.35em] text-slate-500">
+              Players by category
+            </span>
+            <Select
+              className="min-w-60 [&_.ant-select-selector]:!rounded-full [&_.ant-select-selector]:!border-slate-700 [&_.ant-select-selector]:!bg-slate-900/80 [&_.ant-select-selector]:!text-slate-100"
+              placeholder="Select category"
+              title="Search by Category"
+              onChange={handleCategoryChange}
+              value={selectedCategory ?? "All"}
+            >
+              {categories.map((category) => (
+                <Select.Option key={category} value={category === "All" ? "All" : category}>
+                  {category}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
+        </div>
       </div>
       {filteredPlayers && filteredPlayers.length && (
         <PlayerCard
@@ -133,30 +149,38 @@ export const AuctionContainer = () => {
         />
       )}
       {filteredPlayers && filteredPlayers.length === 0 && (
-        <div className="text-5xl rounded-lg my-10 p-5 text-yellow-700 bg-yellow-200 border border-yellow-500">
-          Players Not Found!
+        <div className="rounded-3xl border border-amber-500/30 bg-amber-500/10 px-6 py-8 text-center text-2xl font-semibold text-amber-200 shadow-inner">
+          Players Not Found
         </div>
       )}
-      <div className="flex justify-between mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-slate-800/60 bg-slate-950/80 px-5 py-4 shadow-[0_10px_40px_rgba(15,23,42,0.45)]">
         <Button
           onClick={() => {
             setCurrentPlayerIndex(Math.max(currentPlayerIndex - 1, 0));
           }}
-          className="grid items-center"
+          className="!flex !h-12 !w-12 !items-center !justify-center !rounded-full !border-none !bg-gradient-to-br !from-slate-800 !to-slate-900 !text-slate-200 hover:!from-slate-700 hover:!to-slate-800"
         >
-          <ArrowLeftOutlined style={{ color: "white" }} />
+          <ArrowLeftOutlined />
         </Button>
-        <div>
+        <div className="flex flex-col items-center gap-2 text-xs uppercase tracking-[0.35em] text-slate-500">
+          <span>Filter Players</span>
           <Radio.Group
             value={playerFilter}
             onChange={(e) => {
               console.log("cliecked", e);
               setPlayerFilter(e.target.value);
             }}
+            className="rounded-full border border-slate-800 bg-slate-900/60 px-1 py-1"
           >
-            <Radio.Button value="ALL">ALL</Radio.Button>
-            <Radio.Button value="SOLD">SOLD</Radio.Button>
-            <Radio.Button value="UNSOLD">UNSOLD</Radio.Button>
+            <Radio.Button value="ALL" className="!rounded-full">
+              ALL
+            </Radio.Button>
+            <Radio.Button value="SOLD" className="!rounded-full">
+              SOLD
+            </Radio.Button>
+            <Radio.Button value="UNSOLD" className="!rounded-full">
+              UNSOLD
+            </Radio.Button>
           </Radio.Group>
         </div>
         <Button
@@ -166,12 +190,12 @@ export const AuctionContainer = () => {
               Math.min(currentPlayerIndex + 1, list.length - 1)
             );
           }}
-          className="grid items-center"
+          className="!flex !h-12 !w-12 !items-center !justify-center !rounded-full !border-none !bg-gradient-to-br !from-slate-800 !to-slate-900 !text-slate-200 hover:!from-slate-700 hover:!to-slate-800"
         >
-          <ArrowRightOutlined style={{ color: "white" }} />
+          <ArrowRightOutlined />
         </Button>
       </div>
-      {currentPlayerIndex}
+      {/* {currentPlayerIndex} */}
       {filteredPlayers && teams && (
         <TeamList
           teams={teams}

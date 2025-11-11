@@ -1,6 +1,6 @@
-import { Button, Image, Popover, Tag } from "antd";
+import { Button, Popover, Tag } from "antd";
 import { Player } from "../interface/interfaces";
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
 import ImageWithFallback from "./ImageWithFallback";
 import kplImage from "../assets/kpl-logo-large.jpeg";
@@ -11,6 +11,50 @@ const sampleURL =
 
 const URI_DOMAIN = "https://lh3.google.com/u/1/d/";
 const URI_SIZE = "=w1920-h912-iv1";
+
+const numberFormatter = new Intl.NumberFormat("en-IN", {
+  maximumFractionDigits: 0,
+});
+
+type StatusKey = "SOLD" | "UNSOLD" | "AVAILABLE";
+
+interface StatusMeta {
+  label: string;
+  badgeClass: string;
+  panelClass?: string;
+  panelText?: string;
+}
+
+const STATUS_STYLES: Record<StatusKey, StatusMeta> = {
+  SOLD: {
+    label: "Sold",
+    badgeClass: "bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-400/50",
+    panelClass: "border border-emerald-500/40 bg-emerald-500/10 text-emerald-200",
+    panelText: "Player marked as Sold",
+  },
+  UNSOLD: {
+    label: "Unsold",
+    badgeClass: "bg-rose-500/20 text-rose-200 ring-1 ring-rose-400/50",
+    panelClass: "border border-rose-500/40 bg-rose-500/10 text-rose-200",
+    panelText: "Player marked as Unsold",
+  },
+  AVAILABLE: {
+    label: "Available",
+    badgeClass: "bg-sky-500/15 text-sky-200 ring-1 ring-sky-400/40",
+  },
+};
+
+const resolvePlayerImage = (image?: string | null) => {
+  if (!image) {
+    return null;
+  }
+
+  if (/^https?:/i.test(image)) {
+    return image;
+  }
+
+  return `${URI_DOMAIN}${image}${URI_SIZE}`;
+};
 
 // React function components
 export const PlayerCard = ({
@@ -28,59 +72,97 @@ export const PlayerCard = ({
   onUnsold: (player: Player) => void;
   index: number | undefined;
 }) => {
+  const statusKey = (player?.status ?? "AVAILABLE") as StatusKey;
+  const statusMeta = STATUS_STYLES[statusKey];
+  const formattedBidValue = numberFormatter.format(player?.bidValue ?? 0);
+  const formattedBaseValue = numberFormatter.format(player?.baseValue ?? 0);
+  const playerImageSrc = resolvePlayerImage(player?.image) ?? sampleURL;
+  const pickNumber = typeof index === "number" ? index + 1 : undefined;
+
   return (
-    <div className="flex flex-col p-4 relative">
-      <div className="grid md:grid-flow-col gap-2 md:grid-cols-2">
-        {/* <div className=" top-52 left-0 right-0 bottom-0  bg-gradient-to-t from-slate-200 to-slate-700 opacity-75" /> */}
-        <div className="flex justify-center ">
-          {player?.image && (
-            // <ImageWithFallback
-            //   src={player.image}
-            //   fallbackSrc={kplImage}
-            //   width={300}
-            //   height={300}
-            //   alt={player.name}
-            // />
-            <Image
-              src={player.image}
-              width={420}
-              height={280}
-              alt={player.name}
-              className="object-cover border-2 rounded-md border-slate-600"
-            />
-          )}
-        </div>
-        <div className="  bottom-0 text-white">
-          {/* <div className="">{index + 1}</div> */}
-          <h2 className="text-4xl font-bold"> {player?.name}</h2>
-          <ul className="text-sm mt-2">
-            <h1 className="text-lg">{player?.type}🏏</h1>
-            <p>Base Points: {player?.baseValue}</p>
-            <p>Category: {player?.category}</p>
-          </ul>
-          <Buttons
-            player={player}
-            onRevoke={onRevoke}
-            onSell={onSell}
-            onResetPlayer={onResetPlayer}
-            onUnsold={onUnsold}
-          />
-          <div className="my-3">
-            <h1 className="text-5xl font-bold text-center">
-              {player?.bidValue}
-            </h1>
+    <div className="relative mx-auto w-full">
+      <div className="relative isolate overflow-hidden rounded-[28px] border border-slate-800/60 bg-slate-950/90 px-6 py-8 shadow-[0_30px_80px_rgba(15,23,42,0.55)] backdrop-blur lg:px-10">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
+        <div className="pointer-events-none absolute -bottom-28 -right-24 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
+
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-center">
+          <div className="flex flex-col items-center gap-5">
+            <div className="relative aspect-[4/3] w-full max-w-xl overflow-hidden rounded-3xl border border-slate-800/60 bg-slate-900/80 shadow-inner">
+              <ImageWithFallback
+                src={playerImageSrc}
+                fallbackSrc={kplImage}
+                alt={player?.name ?? "Player preview"}
+                width={540}
+                height={360}
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent" />
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-3 text-[11px] uppercase tracking-[0.35em] text-slate-300">
+              {player?.type && (
+                <Tag className="!rounded-full !border-none !bg-sky-500/15 !px-4 !py-1 !text-[11px] !font-semibold !text-sky-200">
+                  {player.type}
+                </Tag>
+              )}
+              {player?.category && (
+                <Tag className="!rounded-full !border-none !bg-violet-500/15 !px-4 !py-1 !text-[11px] !font-semibold !text-violet-200">
+                  {`Category ${player.category}`}
+                </Tag>
+              )}
+            </div>
           </div>
 
-          {player?.status === "SOLD" && (
-            <div className="bg-green-300 border border-green-600 text-green-700 text-4xl font-extrabold p-4 text-center rounded-md">
-              SOLD
+          <div className="flex h-full flex-col gap-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              {pickNumber !== undefined && (
+                <span className="rounded-full border border-slate-700/60 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-slate-300">
+                  Pick #{pickNumber}
+                </span>
+              )}
+
+              <span className={`rounded-full px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.4em] ${statusMeta.badgeClass}`}>
+                {statusMeta.label}
+              </span>
             </div>
-          )}
-          {player?.status === "UNSOLD" && (
-            <div className="bg-red-300 border border-red-600 text-red-700 text-4xl font-extrabold p-4 text-center rounded-md">
-              UNSOLD
+
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
+                {player?.name}
+              </h2>
+              <p className="mt-2 text-sm text-slate-300 md:text-base">
+                Base Points · {formattedBaseValue}
+                {player?.type ? `  •  ${player.type}` : ""}
+                {player?.category ? `  •  Category ${player.category}` : ""}
+              </p>
             </div>
-          )}
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <StatTile label="Base Points" value={formattedBaseValue} />
+              <StatTile label="Current Bid" value={`₹${formattedBidValue}`} highlight />
+              <StatTile label="Player Status" value={statusMeta.label} />
+            </div>
+
+            <Buttons
+              player={player}
+              onRevoke={onRevoke}
+              onSell={onSell}
+              onResetPlayer={onResetPlayer}
+              onUnsold={onUnsold}
+            />
+
+            <div className="rounded-3xl border border-emerald-500/20 bg-emerald-500/10 px-6 py-5 text-center shadow-inner">
+              <span className="text-xs uppercase tracking-[0.4em] text-emerald-200">
+                Current Bid
+              </span>
+              <p className="mt-2 text-5xl font-black text-emerald-100">₹{formattedBidValue}</p>
+            </div>
+
+            {statusMeta.panelText && player?.status && (
+              <div className={`rounded-2xl px-4 py-3 text-center text-lg font-semibold ${statusMeta.panelClass}`}>
+                {statusMeta.panelText}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -100,20 +182,24 @@ function Buttons(props: {
   const [isExploading, setIsExploading] = useState(false);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: NodeJS.Timeout | undefined;
 
     if (isExploading) {
       timer = setTimeout(() => {
-        setIsExploading(() => false);
+        setIsExploading(false);
       }, 3000);
     }
 
-    return () => clearTimeout(timer);
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   }, [isExploading]);
 
   const handleOpenChange = () => setOpenPopover(!openPopover);
   const reset = () => {
-    setOpenPopover(() => false);
+    setOpenPopover(false);
     setTimeout(() => {
       props.onResetPlayer(props.player);
     }, 600);
@@ -122,17 +208,17 @@ function Buttons(props: {
   const handleSoldChange = () => setOpenSoldPopover(!openSoldPopover);
 
   const onSoldHandler = () => {
-    setOpenSoldPopover(() => false);
+    setOpenSoldPopover(false);
     setTimeout(() => {
       props.onSell(props.player);
     }, 600);
-    setIsExploading(() => true);
+    setIsExploading(true);
   };
 
   const handleUnsoldChange = () => setOpenUnsoldPopover(!openUnsoldPopover);
 
   const onUnsoldHandler = () => {
-    setOpenUnsoldPopover(() => false);
+    setOpenUnsoldPopover(false);
     setTimeout(() => {
       props.onUnsold(props.player);
     }, 5000);
@@ -141,14 +227,24 @@ function Buttons(props: {
   const unsoldBtn = props.player?.status === null && (
     <Popover
       content={
-        <>
-          <Button type="primary" onClick={onUnsoldHandler}>Yes</Button>
-          <Button type="default" className="mx-2 text-black" onClick={handleUnsoldChange}>
-            <span className="text-blue-500">No</span>
+        <div className="flex items-center gap-2">
+          <Button
+            type="primary"
+            onClick={onUnsoldHandler}
+            className="!rounded-full !border-none !bg-rose-500 !px-4 !py-1.5 !font-semibold !text-white"
+          >
+            Yes
           </Button>
-        </>
+          <Button
+            type="default"
+            onClick={handleUnsoldChange}
+            className="!rounded-full !border-none !bg-transparent !px-3 !py-1.5 !text-slate-500 hover:!text-blue-500"
+          >
+            No
+          </Button>
+        </div>
       }
-      title="Is this Player unsold?"
+      title="Is this player unsold?"
       trigger="click"
       open={openUnsoldPopover}
       placement="bottom"
@@ -158,7 +254,7 @@ function Buttons(props: {
         type="primary"
         danger
         onClick={handleUnsoldChange}
-        className=" text-white bg-green-500"
+        className="!flex !items-center !gap-2 !rounded-full !border-none !bg-rose-500 !px-5 !py-2 !text-sm !font-semibold !text-white !shadow-lg !transition hover:!brightness-110"
         icon={<DislikeFilled />}
       >
         Drop
@@ -167,43 +263,53 @@ function Buttons(props: {
   );
 
   if (!props.player?.currentTeamId) {
-    return <>{unsoldBtn}</>;
-  }
-  const btn =
-    props.player?.status === "AVAILABLE" ||
-    props.player?.status === "UNSOLD" ? (
+    return (
       <>
-        <Popover
-          content={
-            <>
-              <Button type="primary" className="bg-green-500" onClick={onSoldHandler}>Yes</Button>
-              <Button type="default" className="mx-2 text-black" onClick={handleSoldChange}>
-                <span className="text-blue-500">No</span>
-              </Button>
-            </>
-          }
-          title="Are you sure to sell the Player?"
-          trigger="click"
-          open={openSoldPopover}
-          placement="bottom"
-          onOpenChange={handleSoldChange}
-        >
-          <Button
-            type="primary"
-            className=" text-white bg-green-500"
-            onClick={handleSoldChange}
-            icon={<LikeFilled />}
-          >
-            Sell
-          </Button>
-        </Popover>
+        {isExploading && <Confetti recycle={false} />}
+        <div className="mt-6 flex flex-wrap items-center gap-3">{unsoldBtn}</div>
       </>
+    );
+  }
+
+  const sellOrRevokeButton =
+    props.player?.status === "AVAILABLE" || props.player?.status === "UNSOLD" ? (
+      <Popover
+        content={
+          <div className="flex items-center gap-2">
+            <Button
+              type="primary"
+              onClick={onSoldHandler}
+              className="!rounded-full !border-none !bg-emerald-500 !px-4 !py-1.5 !font-semibold !text-white"
+            >
+              Yes
+            </Button>
+            <Button
+              type="default"
+              onClick={handleSoldChange}
+              className="!rounded-full !border-none !bg-transparent !px-3 !py-1.5 !text-slate-500 hover:!text-blue-500"
+            >
+              No
+            </Button>
+          </div>
+        }
+        title="Confirm selling this player"
+        trigger="click"
+        open={openSoldPopover}
+        placement="bottom"
+        onOpenChange={handleSoldChange}
+      >
+        <Button
+          className="!flex !items-center !gap-2 !rounded-full !border-none !bg-emerald-500 !px-6 !py-2 !text-sm !font-semibold !text-white !shadow-lg hover:!bg-emerald-400"
+          onClick={handleSoldChange}
+          icon={<LikeFilled />}
+        >
+          Sell
+        </Button>
+      </Popover>
     ) : (
       <Button
-        type="primary"
-        ghost
         onClick={() => props.onRevoke(props.player)}
-        className=" text-white"
+        className="!rounded-full !border-none !bg-amber-500 !px-6 !py-2 !text-sm !font-semibold !text-slate-900 !shadow-lg hover:!bg-amber-400"
       >
         Revoke
       </Button>
@@ -212,18 +318,28 @@ function Buttons(props: {
   return (
     <>
       {isExploading && <Confetti recycle={false} />}
-      <div className="grid grid-flow-col gap-3 mt-5">
-        {btn}
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        {sellOrRevokeButton}
         <Popover
           content={
-            <>
-              <Button type="primary" onClick={() => reset()}>Yes</Button>
-              <Button type="default" className="text-black" onClick={handleOpenChange}>
-                <span className="text-blue-500">No</span>
+            <div className="flex items-center gap-2">
+              <Button
+                type="primary"
+                onClick={reset}
+                className="!rounded-full !border-none !bg-sky-500 !px-4 !py-1.5 !font-semibold !text-white"
+              >
+                Yes
               </Button>
-            </>
+              <Button
+                type="default"
+                onClick={handleOpenChange}
+                className="!rounded-full !border-none !bg-transparent !px-3 !py-1.5 !text-slate-500 hover:!text-blue-500"
+              >
+                No
+              </Button>
+            </div>
           }
-          title="Are you sure to reset the points and teams?"
+          title="Reset player points and team?"
           trigger="click"
           open={openPopover}
           placement="bottom"
@@ -232,7 +348,7 @@ function Buttons(props: {
           <Button
             type="primary"
             danger
-            className="text-white"
+            className="!flex !items-center !gap-2 !rounded-full !border-none !bg-gradient-to-r !from-sky-500 !to-indigo-600 !px-6 !py-2 !text-sm !font-semibold !text-white !shadow-lg hover:!from-sky-400 hover:!to-indigo-500"
             icon={<UndoOutlined />}
             onClick={handleOpenChange}
           >
@@ -240,6 +356,22 @@ function Buttons(props: {
           </Button>
         </Popover>
       </div>
+      {unsoldBtn}
     </>
+  );
+}
+
+function StatTile({ label, value, highlight = false }: { label: string; value: ReactNode; highlight?: boolean }) {
+  const containerClass = highlight
+    ? "border-emerald-400/35 bg-emerald-500/10"
+    : "border-slate-700/60 bg-slate-900/60";
+  const labelClass = highlight ? "text-emerald-200/80" : "text-slate-400";
+  const valueClass = highlight ? "text-emerald-100" : "text-slate-100";
+
+  return (
+    <div className={`rounded-2xl border px-4 py-4 text-center shadow-inner ${containerClass}`}>
+      <span className={`text-[11px] uppercase tracking-[0.35em] ${labelClass}`}>{label}</span>
+      <div className={`mt-2 text-lg font-semibold ${valueClass}`}>{value}</div>
+    </div>
   );
 }
