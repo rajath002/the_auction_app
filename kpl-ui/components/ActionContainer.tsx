@@ -49,22 +49,22 @@ export const AuctionContainer = () => {
   }, [getFilteredPlayers, playerFilter, selectedCategory]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
-    updatePlayerPoints(player.id, team, player.stats.bidValue+INCREMENTAL_POINTS, player.stats.status);
+    updatePlayerPoints(player.id, team, player.bidValue+INCREMENTAL_POINTS, player.status);
     updatePurse(team, team.purse - INCREMENTAL_POINTS);
   }
 
   const updateTeamAndPlayerPoints = (team: Team) => {
     const playerInfo = filteredPlayers[currentPlayerIndex];
-    if (team.id === playerInfo.stats.currentTeamId) {
+    if (team.id === playerInfo.currentTeamId) {
       return;
     }
-    if (playerInfo.stats.status === "UNSOLD") {
+    if (playerInfo.status === "UNSOLD") {
       updateUnsoldPlayerTeamAndPoints(playerInfo, team);
       return;
     }
-    let value = playerInfo.stats.bidValue;
+    let value = playerInfo.bidValue;
     const oldBidValue = value;
-    const oldTeamId = playerInfo.stats.currentTeamId;
+    const oldTeamId = playerInfo.currentTeamId;
     if (oldTeamId) {
       value = value + INCREMENTAL_POINTS;
     }
@@ -72,7 +72,7 @@ export const AuctionContainer = () => {
     updatePurse(team, team.purse - value);
     updatePlayerPoints(playerInfo.id, team, value);
     // Deduct points from previos team
-    if (playerInfo.stats.currentTeamId) {
+    if (playerInfo.currentTeamId) {
       const oldTeam = teams.find((oldTeam) => oldTeam.id === oldTeamId);
       if (oldTeam)
         updatePurse(oldTeam, oldTeam.purse + oldBidValue);
@@ -86,7 +86,7 @@ export const AuctionContainer = () => {
   };
 
   const handleRevokeClick = () => {
-    updatePlayerStatus(filteredPlayers[currentPlayerIndex], null);
+    updatePlayerStatus(filteredPlayers[currentPlayerIndex], "AVAILABLE");
   };
 
   const onUnsoldHandler = (player:Player) => {
@@ -177,8 +177,8 @@ export const AuctionContainer = () => {
           teams={teams}
           isPlayersAvailable={filteredPlayers.length !== 0}
           updateTeamAndPlayerPoints={updateTeamAndPlayerPoints}
-          disabled={filteredPlayers[currentPlayerIndex]?.stats.status === "SOLD"}
-          latedBiddedTeam={filteredPlayers[currentPlayerIndex]?.stats.currentTeamId}
+          disabled={filteredPlayers[currentPlayerIndex]?.status === "SOLD"}
+          latedBiddedTeam={filteredPlayers[currentPlayerIndex]?.currentTeamId}
         />
       )}
     </div>

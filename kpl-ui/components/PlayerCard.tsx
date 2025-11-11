@@ -55,7 +55,7 @@ export const PlayerCard = ({
           <h2 className="text-4xl font-bold"> {player?.name}</h2>
           <ul className="text-sm mt-2">
             <h1 className="text-lg">{player?.type}🏏</h1>
-            <p>Base Points: {player?.stats?.baseValue}</p>
+            <p>Base Points: {player?.baseValue}</p>
             <p>Category: {player?.category}</p>
           </ul>
           <Buttons
@@ -67,16 +67,16 @@ export const PlayerCard = ({
           />
           <div className="my-3">
             <h1 className="text-5xl font-bold text-center">
-              {player?.stats.bidValue}
+              {player?.bidValue}
             </h1>
           </div>
 
-          {player?.stats.status === "SOLD" && (
+          {player?.status === "SOLD" && (
             <div className="bg-green-300 border border-green-600 text-green-700 text-4xl font-extrabold p-4 text-center rounded-md">
               SOLD
             </div>
           )}
-          {player?.stats.status === "UNSOLD" && (
+          {player?.status === "UNSOLD" && (
             <div className="bg-red-300 border border-red-600 text-red-700 text-4xl font-extrabold p-4 text-center rounded-md">
               UNSOLD
             </div>
@@ -138,17 +138,17 @@ function Buttons(props: {
     }, 5000);
   };
 
-  const unsoldBtn = props.player?.stats.status === null && (
+  const unsoldBtn = props.player?.status === null && (
     <Popover
       content={
         <>
-          <Button onClick={onUnsoldHandler}>Yes</Button>
-          <Button className="mx-2" onClick={handleUnsoldChange}>
-            No
+          <Button type="primary" onClick={onUnsoldHandler}>Yes</Button>
+          <Button type="default" className="mx-2 text-black" onClick={handleUnsoldChange}>
+            <span className="text-blue-500">No</span>
           </Button>
         </>
       }
-      title="Is this Player is Unsold?"
+      title="Is this Player unsold?"
       trigger="click"
       open={openUnsoldPopover}
       placement="bottom"
@@ -166,19 +166,19 @@ function Buttons(props: {
     </Popover>
   );
 
-  if (!props.player?.stats.currentTeamId) {
+  if (!props.player?.currentTeamId) {
     return <>{unsoldBtn}</>;
   }
   const btn =
-    props.player?.stats.status === null ||
-    props.player?.stats.status === "UNSOLD" ? (
+    props.player?.status === "AVAILABLE" ||
+    props.player?.status === "UNSOLD" ? (
       <>
         <Popover
           content={
             <>
-              <Button onClick={onSoldHandler}>Yes</Button>
-              <Button className="mx-2" onClick={handleSoldChange}>
-                No
+              <Button type="primary" className="bg-green-500" onClick={onSoldHandler}>Yes</Button>
+              <Button type="default" className="mx-2 text-black" onClick={handleSoldChange}>
+                <span className="text-blue-500">No</span>
               </Button>
             </>
           }
@@ -217,11 +217,13 @@ function Buttons(props: {
         <Popover
           content={
             <>
-              <Button onClick={() => reset()}>Yes</Button>
-              <Button onClick={handleOpenChange}>No</Button>
+              <Button type="primary" onClick={() => reset()}>Yes</Button>
+              <Button type="default" className="text-black" onClick={handleOpenChange}>
+                <span className="text-blue-500">No</span>
+              </Button>
             </>
           }
-          title="Are you sure to reset the points of the and teams?"
+          title="Are you sure to reset the points and teams?"
           trigger="click"
           open={openPopover}
           placement="bottom"

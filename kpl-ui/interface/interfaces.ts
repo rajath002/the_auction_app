@@ -14,12 +14,10 @@ export interface Player {
   id: number;
   name: string;
   image: string;
-  stats: {
     baseValue: number;
     bidValue: number;
     currentTeamId: number | null;
     status: PlayerStatus;
-  };
   currentBid: number;
   type: string;
   category: string;

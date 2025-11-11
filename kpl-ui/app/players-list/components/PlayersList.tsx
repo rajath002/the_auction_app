@@ -1,11 +1,13 @@
 "use client";
 import { Player } from "@/interface/interfaces";
-import { useEffect, useState } from "react";
+import { experimental_useEffectEvent, useEffect, useMemo, useState } from "react";
 import { Badge, Col, ConfigProvider, Form, Input, Row, Select } from "antd";
 import { theme } from "antd";
 import playersJsonList from "@/data/players.json";
 import { SearchOutlined } from "@ant-design/icons";
 import PlayerStats from "./PlayerStats";
+import { getPlayers } from "@/services/player";
+import Image from "next/image";
 
 interface DataType {
   key: string;
@@ -28,9 +30,9 @@ export default function PlayersList() {
     category: null,
     searchText: "",
   });
+
   useEffect(() => {
-    // getPlayers().then((players) => setPlayers(players));
-    setPlayers(playersJsonList as Player[]);
+    getPlayers().then((response) => setPlayers(response.data));
   }, []);
 
   useEffect(() => {
@@ -92,45 +94,63 @@ export default function PlayersList() {
 
 // bg-black bg-opacity-50
 function PlayerCard({ player }: { player: Player }) {
-  const statusColor = player.stats.status
-    ? player.stats.status === "UNSOLD"
+  const statusColor = player.status
+    ? player.status === "UNSOLD"
       ? "text-red-500"
       : "text-green-500"
     : "";
+  
+  const showBadge = useMemo(() => 
+    player.bidValue || player.baseValue, 
+    [player.bidValue, player.baseValue]
+  );
+  
   // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
+  const cardContent = useMemo(() => (
+    <div className="hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
+      <div className="relative">
+        <Image
+          className="w-full h-60 object-cover"
+          src={player.image}
+          alt={player.name}
+          width={400}
+          height={240}
+        />
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
+          <div className="font-bold text-xl">{player.name}</div>
+        </div>
+      </div>
+      <div className="px-6 py-4">
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Type: {player.type}
+        </p>
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Category: {player.category}
+        </p>
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Status:
+          <span className={`text-base ${statusColor}`}>
+            &nbsp;{player.status}
+          </span>
+        </p>
+        {player.currentBid && (
+          <p className="text-gray-700 dark:text-gray-300 text-base">
+            Current Bid: ${player.currentBid}
+          </p>
+        )}
+      </div>
+    </div>
+  ), [player.image, player.name, player.type, player.category, player.status, player.currentBid, statusColor]);
+  
   return (
     <div className="transition ease-in-out delay-200 md:hover:scale-105">
-      <Badge.Ribbon text={player.stats.bidValue || player.stats.baseValue} color="gold">
-        <div className="hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
-          <div className="relative">
-            <img
-              className="w-full h-60 object-cover"
-              src={player.image}
-              alt={player.name}
-            />
-            <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
-              <div className="font-bold text-xl">{player.name}</div>
-            </div>
-          </div>
-          <div className="px-6 py-4">
-            <p className="text-gray-700 dark:text-gray-300 text-base">
-              Type: {player.type}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 text-base">
-              Category: {player.category}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 text-base">
-              Status:
-              <span className={`text-base ${statusColor}`}>
-                &nbsp;{player.stats.status}
-              </span>
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 text-base">
-              Current Bid: ${player.currentBid}
-            </p>
-          </div>
-        </div>
-      </Badge.Ribbon>
+      {showBadge ? (
+        <Badge.Ribbon text={player.bidValue || player.baseValue} color="gold">
+          {cardContent}
+        </Badge.Ribbon>
+      ) : (
+        cardContent
+      )}
     </div>
   );
 }

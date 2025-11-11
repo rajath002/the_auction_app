@@ -19,7 +19,7 @@ export default function PlayersRegistrationPage() {
     setFormKey(prev => prev + 1); // Force re-render of form
   };
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: any, _imageUrl?: string) => {
     setDisableForm(true);
     try {
       // Map form data to Player interface expected by service
@@ -27,7 +27,7 @@ export default function PlayersRegistrationPage() {
         name: values.name,
         type: values.type, // PlayerType: BATSMAN, BOWLER, ALL_ROUNDER, WICKET_KEEPER
         category: values.level, // PlayerCategory: L1, L2, L3, L4
-        image: imageUrl || "", // Use uploaded image URL or empty string
+        image: _imageUrl || "", // Use uploaded image URL or empty string
         currentBid: 0, // Default current bid
         stats: {
           baseValue: values.baseValue || 0,
