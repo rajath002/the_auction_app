@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import playersOld from "@/data/playerslist-old.json";
 import { connectToMongoDB, database, client, closeConnection } from "../config";
 import players from "@/data/players.json";
+import Player from "@/models/Player";
+import { connectDB } from "@/lib/sequelize";
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,19 +42,69 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // connectToMongoDB();
-    // await client.connect();
-    // const playersCollection = database.collection("players");
-    // const result = await playersCollection.find().toArray();
-    const result = players;
-    return NextResponse.json(result, { status: 200 });
-  } catch (error) {
-    console.log("Error : ", error);
-    return NextResponse.json(error, { status: 500 });
-  } finally {
-    // closeConnection();
+    // Connect to database
+    await connectDB();
+    
+    // Get query parameters for filtering
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status');
+    const type = searchParams.get('type');
+    const category = searchParams.get('category');
+    const teamId = searchParams.get('teamId');
+    
+    // Build where clause based on query parameters
+    const whereClause: any = {};
+    
+    if (status) {
+      whereClause.status = status;
+    }
+    
+    if (type) {
+      whereClause.type = type;
+    }
+    
+    if (category) {
+      whereClause.category = category;
+    }
+    
+    if (teamId) {
+      whereClause.current_team_id = parseInt(teamId);
+    }
+    
+    // Fetch players from database with optional filters
+    const result = await Player.findAll({
+      where: whereClause,
+      order: [['id', 'ASC']],
+      attributes: [
+        'id',
+        'name',
+        'image',
+        'type',
+        'category',
+        'current_bid',
+        'base_value',
+        'bid_value',
+        'current_team_id',
+        'status',
+        'created_at',
+        'updated_at',
+      ],
+    });
+    
+    return NextResponse.json({
+      success: true,
+      count: result.length,
+      data: result,
+    }, { status: 200 });
+  } catch (error: any) {
+    console.error("Error fetching players:", error);
+    return NextResponse.json({
+      success: false,
+      error: 'Failed to fetch players',
+      details: error.message,
+    }, { status: 500 });
   }
 }
 

@@ -125,4 +125,23 @@ Player.init(
   }
 );
 
+// Override toJSON method to transform snake_case to camelCase
+Player.prototype.toJSON = function () {
+  const values = { ...this.get() };
+  return {
+    id: values.id,
+    name: values.name,
+    image: values.image,
+    type: values.type,
+    category: values.category,
+    currentBid: values.current_bid,
+    baseValue: values.base_value, 
+    bidValue: values.bid_value,
+    currentTeamId: values.current_team_id,
+    status: values.status,
+    createdAt: values.created_at,
+    updatedAt: values.updated_at,
+  };
+};
+
 export default Player;

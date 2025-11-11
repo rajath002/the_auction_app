@@ -18,7 +18,7 @@ import { useState } from "react";
 import type { UploadFile, UploadProps } from "antd";
 
 interface SubmissionFormType {
-  onFinish: (values: any) => void;
+  onFinish: (values: any, _imageUrl?: string) => void;
   disableForm: boolean;
   imageUrl: string;
   setImageUrl: (url: string) => void;
@@ -93,7 +93,7 @@ export default function RegistrationForm(props: SubmissionFormType) {
         props.setImageUrl(imageUrl);
         
         // Call the parent's onFinish with updated values
-        props.onFinish(values);
+        props.onFinish(values, imageUrl);
       } catch (error) {
         message.error({ content: 'Failed to upload image', key: 'imageUpload', duration: 3 });
         console.error('Upload error:', error);

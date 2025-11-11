@@ -1,7 +1,7 @@
 "use Client"
 import { Button } from "antd";
 import Image from "next/image";
-import { Team } from "../interface/interfaces";
+import type { Team } from "../interface/interfaces";
 
 const url =
   "https://1000logos.net/wp-content/uploads/2022/02/RCB-Logo-2016.png";
