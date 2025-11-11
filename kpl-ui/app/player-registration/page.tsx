@@ -11,11 +11,16 @@ export default function PlayersRegistrationPage() {
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(null);
   const [disableForm, setDisableForm] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>('');
+  const [formKey, setFormKey] = useState(0);
+
+  const handleReset = () => {
+    setSubmissionSuccess(null);
+    setImageUrl('');
+    setFormKey(prev => prev + 1); // Force re-render of form
+  };
 
   const onFinish = async (values: any) => {
     setDisableForm(true);
-    console.log("Submit form : ", values);
-
     try {
       // Map form data to Player interface expected by service
       const playerData = {
@@ -57,12 +62,13 @@ export default function PlayersRegistrationPage() {
         Player Registration
       </Title> */}
       <RegistrationForm 
+        key={formKey}
         onFinish={onFinish} 
         disableForm={disableForm}
         imageUrl={imageUrl}
         setImageUrl={setImageUrl}
       />
-      <ConfirmationDialog isSuccess={submissionSuccess} />
+      <ConfirmationDialog isSuccess={submissionSuccess} onReset={handleReset} />
     </ConfigProvider>
   );
 }

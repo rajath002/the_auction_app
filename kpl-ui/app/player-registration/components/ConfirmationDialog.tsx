@@ -4,6 +4,7 @@ import Link from "next/link";
 
 interface SuccessType {
   isSuccess: boolean | null;
+  onReset?: () => void;
 }
 function ConfirmationDialog(props: SuccessType) {
   const [isOpen, setOpen] = useState(false);
@@ -21,7 +22,7 @@ function ConfirmationDialog(props: SuccessType) {
       footer={null}
     >
       {props.isSuccess && isOpen && (
-        <Success isSuccess={props.isSuccess} setOpen={setOpen} />
+        <Success isSuccess={props.isSuccess} setOpen={setOpen} onReset={props.onReset} />
       )}
       {props.isSuccess === false && isOpen && (
         <Failure isSuccess={props.isSuccess} setOpen={setOpen} />
@@ -33,6 +34,7 @@ function ConfirmationDialog(props: SuccessType) {
 interface Type {
   isSuccess: boolean;
   setOpen: (e: boolean) => void;
+  onReset?: () => void;
 }
 
 function Success(props: Type) {
@@ -42,6 +44,18 @@ function Success(props: Type) {
       title="Successfully Registered!"
       subTitle="Our Team will get back once they verified your details!"
       extra={[
+        <Button 
+          key="add-more" 
+          type="default" 
+          onClick={() => {
+            props.setOpen(false);
+            if (props.onReset) {
+              props.onReset();
+            }
+          }}
+        >
+          Add More
+        </Button>,
         <Link key="console" href="/">
           <Button type="primary" onClick={() => props.setOpen(false)}>
             Go Back
