@@ -211,18 +211,18 @@ export const AuctionContainer = () => {
             </div>
           </div>
 
-          <aside className="flex h-full flex-col gap-5 rounded-3xl border border-slate-800/60 bg-slate-950/80 px-5 py-6 shadow-[0_20px_60px_rgba(15,23,42,0.45)]">
+          <aside className="flex h-full flex-col gap-2 rounded-3xl border border-slate-800/60 bg-slate-950/80 px-5 py-6 shadow-[0_20px_60px_rgba(15,23,42,0.45)]">
             <div className="flex items-center justify-between text-slate-200">
               <div>
                 <h3 className="text-lg font-semibold uppercase tracking-[0.35em] text-slate-300">Teams</h3>
-                <p className="text-sm text-slate-500">Manage live bidding slots</p>
+                {/* <p className="text-sm text-slate-500">Manage live bidding slots</p> */}
               </div>
               <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-blue-200">
                 {teams.length} Teams
               </span>
             </div>
 
-            <div className="max-h-[calc(100vh-340px)] space-y-4 overflow-y-auto pr-2">
+            <div className="space-y-2 overflow-y-auto pr-2">
               {teams.length ? (
                 <TeamList
                   teams={teams}

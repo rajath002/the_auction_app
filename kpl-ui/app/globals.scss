@@ -84,3 +84,29 @@
 .ant-btn:hover {
   color: #fff !important;
 }
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #16a34a rgba(15, 23, 42, 0.6);
+  scrollbar-gutter: stable both-edges;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #22c55e, #16a34a);
+  border-radius: 9999px;
+  border: 2px solid rgba(15, 23, 42, 0.6);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4ade80, #15803d);
+}
