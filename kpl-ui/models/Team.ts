@@ -27,6 +27,19 @@ class Team extends Model<TeamAttributes, TeamCreationAttributes> implements Team
 
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
+
+  // Override toJSON to transform snake_case to camelCase
+  toJSON(): any {
+    const values = { ...this.get() };
+    return {
+      id: values.id,
+      name: values.name,
+      purse: values.purse,
+      owner: values.owner,
+      mentor: values.mentor,
+      iconPlayer: values.icon_player || '',
+    };
+  }
 }
 
 // Initialize Team model

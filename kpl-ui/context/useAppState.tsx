@@ -5,7 +5,7 @@ import { Player, PlayerStatus, Team } from "../interface/interfaces";
 
 import teamList from "@/data/teamslist.json";
 // import playersList from "@/data/playerslist.json";
-import { getTeams } from "@/services/teams";
+import { getTeams, updateTeam } from "@/services/teams";
 import { getPlayers, updatePlayer } from "@/services/player";
 
 enum FilterType {
@@ -68,6 +68,9 @@ function useAppState() {
       return t;
     });
     setTeams(() => updatedTeams);
+    
+    // Update team purse in database
+    // updateTeam({ id: team.id, purse: points });
   }
 
   function updatePlayerPoints(
@@ -109,6 +112,9 @@ function useAppState() {
           teams_ = teams.map((t) => {
             if (t.id === player.currentTeamId) {
               t.purse = t.purse + player.bidValue;
+              
+              // Update team purse in database
+              // updateTeam({ id: t.id, purse: t.purse });
             }
             return t;
           });
@@ -117,6 +123,14 @@ function useAppState() {
           // remove the team reference
           player.bidValue = player.baseValue;
           player.currentTeamId = null;
+        }
+        
+        // If player is sold, update team purse in database
+        if (status === "SOLD" && player.currentTeamId) {
+          const team = teams.find(t => t.id === player.currentTeamId);
+          if (team) {
+            updateTeam({ id: team.id, purse: team.purse });
+          }
         }
         
         // Update player in database
@@ -171,6 +185,9 @@ function useAppState() {
     let teamData = teams.map((t) => {
       if (t.id === player.currentTeamId) {
         t.purse += player.bidValue;
+        
+        // Update team purse in database
+        updateTeam({ id: t.id, purse: t.purse });
       }
       return t;
     });

@@ -22,7 +22,7 @@ const categories = ["All", ...new Set(data.map((item) => item.category))];
 export const AuctionContainer = () => {
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
   const {
-  teams,
+    teams,
     currentPlayerIndex,
     playerFilter,
     totalSoldPlayers,
