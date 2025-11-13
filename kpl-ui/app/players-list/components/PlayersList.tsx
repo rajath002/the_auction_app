@@ -1,6 +1,11 @@
 "use client";
 import { Player } from "@/interface/interfaces";
-import { experimental_useEffectEvent, useEffect, useMemo, useState } from "react";
+import {
+  experimental_useEffectEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Badge, Col, ConfigProvider, Form, Input, Row, Select } from "antd";
 import { theme } from "antd";
 import playersJsonList from "@/data/players.json";
@@ -74,20 +79,28 @@ export default function PlayersList() {
         },
       }}
     >
-      {players.length > 0 && <div>
-        
-        <PlayerStats filteredPlayers={filteredPlayers} />
-        
+      {players.length > 0 ? (
         <div>
-          <SearchBar setCategory={setCategory} setSearchText={setSearchText} />
+          {/* <PlayerStats filteredPlayers={filteredPlayers} /> */}
+
+          <div>
+            <SearchBar
+              setCategory={setCategory}
+              setSearchText={setSearchText}
+            />
+          </div>
+          {/* <div className="flex flex-wrap justify-center gap-6 min-h-screen"> */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5 gap-3 md:gap-6 p-6 min-h-screen">
+            {filteredPlayers.map((player) => (
+              <PlayerCard key={player.id} player={player} />
+            ))}
+          </div>
         </div>
-        {/* <div className="flex flex-wrap justify-center gap-6 min-h-screen"> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5 gap-3 md:gap-6 p-6 min-h-screen">
-          {filteredPlayers.map((player) => (
-            <PlayerCard key={player.id} player={player} />
-          ))}
+      ) : (
+        <div className="flex justify-center min-h-screen">
+          <p className="text-xl font-semibold">Loading Players...</p>
         </div>
-      </div>}
+      )}
     </ConfigProvider>
   );
 }
@@ -99,49 +112,60 @@ function PlayerCard({ player }: { player: Player }) {
       ? "text-red-500"
       : "text-green-500"
     : "";
-  
-  const showBadge = useMemo(() => 
-    player.bidValue || player.baseValue, 
+
+  const showBadge = useMemo(
+    () => player.bidValue || player.baseValue,
     [player.bidValue, player.baseValue]
   );
-  
+
   // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
-  const cardContent = useMemo(() => (
-    <div className="hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
-      <div className="relative">
-        <Image
-          className="w-full h-60 object-cover"
-          src={player.image}
-          alt={player.name}
-          width={400}
-          height={240}
-        />
-        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
-          <div className="font-bold text-xl">{player.name}</div>
+  const cardContent = useMemo(
+    () => (
+      <div className="hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
+        <div className="relative">
+          <Image
+            className="w-full h-60 object-cover"
+            src={player.image}
+            alt={player.name}
+            width={400}
+            height={240}
+          />
+          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
+            <div className="font-bold text-xl">{player.name}</div>
+          </div>
+        </div>
+        <div className="px-6 py-4">
+          <p className="text-gray-700 dark:text-gray-300 text-base">
+            Type: {player.type}
+          </p>
+          <p className="text-gray-700 dark:text-gray-300 text-base">
+            Category: {player.category}
+          </p>
+          <p className="text-gray-700 dark:text-gray-300 text-base">
+            Status:
+            <span className={`text-base ${statusColor}`}>
+              &nbsp;{player.status}
+            </span>
+          </p>
+          {player.currentBid && (
+            <p className="text-gray-700 dark:text-gray-300 text-base">
+              Current Bid: ${player.currentBid}
+            </p>
+          )}
         </div>
       </div>
-      <div className="px-6 py-4">
-        <p className="text-gray-700 dark:text-gray-300 text-base">
-          Type: {player.type}
-        </p>
-        <p className="text-gray-700 dark:text-gray-300 text-base">
-          Category: {player.category}
-        </p>
-        <p className="text-gray-700 dark:text-gray-300 text-base">
-          Status:
-          <span className={`text-base ${statusColor}`}>
-            &nbsp;{player.status}
-          </span>
-        </p>
-        {player.currentBid && (
-          <p className="text-gray-700 dark:text-gray-300 text-base">
-            Current Bid: ${player.currentBid}
-          </p>
-        )}
-      </div>
-    </div>
-  ), [player.image, player.name, player.type, player.category, player.status, player.currentBid, statusColor]);
-  
+    ),
+    [
+      player.image,
+      player.name,
+      player.type,
+      player.category,
+      player.status,
+      player.currentBid,
+      statusColor,
+    ]
+  );
+
   return (
     <div className="transition ease-in-out delay-200 md:hover:scale-105">
       {showBadge ? (
@@ -184,36 +208,55 @@ function SearchBar(props: SearchBarType) {
       <Form
         name="dependencies"
         autoComplete="off"
-        style={{ maxWidth: 600 }}
+        // style={{ maxWidth: 600 }}
         layout="vertical"
       >
-        <Row data-testid="search-bar" gutter={16}>
-          <Col span={4} xs={24} md={10} className="px-2" data-testid="select-category-col">
-            <Form.Item data-testid="select-category" label="Select Category" name="selectCategory">
-              <Select
-                defaultValue="All"
-                // style={{ width: 200, marginBottom: "16px" }}
-                className="w-full"
-                onChange={handleCategoryChange}
+        <Row
+          data-testid="search-bar"
+          justify="space-between"
+          gutter={16}
+          className="w-full"
+        >
+          <Col className="px-2">
+            <div className="relative text-center">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+                Players List
+              </h1>
+              {/* <p className="text-slate-300 text-lg md:text-xl">Browse and manage all available players</p> */}
+            </div>
+          </Col>
+          <Row>
+            <Col className="px-2" data-testid="select-category-col">
+              <Form.Item
+                data-testid="select-category"
+                label="Select Category"
+                name="selectCategory"
               >
-                {categories.map((category) => (
-                  <Select.Option key={category} value={category}>
-                    {category}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={4} xs={24} md={10} className="px-2">
-            <Form.Item label="Search Players" name="searchplayers">
-              <Input
-                placeholder="Search..."
-                prefix={<SearchOutlined />}
-                onChange={handleSearch}
-                // style={{ marginBottom: "16px" }}
-              />
-            </Form.Item>
-          </Col>
+                <Select
+                  defaultValue="All"
+                  // style={{ width: 200, marginBottom: "16px" }}
+                  className="w-full"
+                  onChange={handleCategoryChange}
+                >
+                  {categories.map((category) => (
+                    <Select.Option key={category} value={category}>
+                      {category}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col className="px-2">
+              <Form.Item label="Search Players" name="searchplayers">
+                <Input
+                  placeholder="Search..."
+                  prefix={<SearchOutlined />}
+                  onChange={handleSearch}
+                  // style={{ marginBottom: "16px" }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
         </Row>
       </Form>
     </div>

@@ -23,22 +23,67 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    await connectToMongoDB();
-    const playersCollection = database.collection("players");
-    console.log("Request received here");
+    // Connect to database
+    await connectDB();
+    
+    // Parse request body
     const data = await req.json();
-    const id = data.id;
-    // const _id = data._id;
-    delete data.id;
-    delete data._id;
-    await playersCollection.updateOne({ id }, { $set: { ...data } });
-    return NextResponse.json({ success: "raj", result: data });
-  } catch (error) {
-    console.error("something went wrong", error);
-    return NextResponse.json(error, { status: 500 });
-  } finally {
-    closeConnection();
-    console.log("finally executed");
+    const { id, ...updateData } = data;
+    
+    // Validate player ID
+    if (!id) {
+      return NextResponse.json({
+        success: false,
+        error: 'Player ID is required',
+      }, { status: 400 });
+    }
+    
+    // Find player by ID
+    const player = await Player.findByPk(id);
+    
+    if (!player) {
+      return NextResponse.json({
+        success: false,
+        error: 'Player not found',
+      }, { status: 404 });
+    }
+    
+    // Map camelCase to snake_case and build update object
+    const fieldMapping: Record<string, string> = {
+      'name': 'name',
+      'image': 'image',
+      'type': 'type',
+      'category': 'category',
+      'currentBid': 'current_bid',
+      'baseValue': 'base_value',
+      'bidValue': 'bid_value',
+      'currentTeamId': 'current_team_id',
+      'status': 'status',
+    };
+    
+    const fieldsToUpdate: any = {};
+    for (const [camelKey, snakeKey] of Object.entries(fieldMapping)) {
+      if (updateData[camelKey] !== undefined) {
+        fieldsToUpdate[snakeKey] = updateData[camelKey];
+      }
+    }
+    
+    // Update player
+    await player.update(fieldsToUpdate);
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Player updated successfully',
+      data: player,
+    }, { status: 200 });
+    
+  } catch (error: any) {
+    console.error("Error updating player:", error);
+    return NextResponse.json({
+      success: false,
+      error: 'Failed to update player',
+      details: error.message,
+    }, { status: 500 });
   }
 }
 
