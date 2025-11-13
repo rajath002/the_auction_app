@@ -2,6 +2,7 @@ import { Button, Popover, Tag } from "antd";
 import { Player } from "../interface/interfaces";
 import { useEffect, useState, ReactNode } from "react";
 import { LikeFilled, DislikeFilled, UndoOutlined } from "@ant-design/icons";
+import Image from "next/image";
 import ImageWithFallback from "./ImageWithFallback";
 import kplImage from "../assets/kpl-logo-large.jpeg";
 import Confetti from "react-confetti";
@@ -97,7 +98,18 @@ export const PlayerCard = ({
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent" />
             </div>
-
+              {statusKey === "SOLD" && (
+                <div className="pointer-events-none absolute left-4 top-4 stamp-print">
+                  <Image
+                    src="/sold-stamp.png"
+                    alt="Sold stamp"
+                    width={400}
+                    height={400}
+                    className="h-40 w-44 -rotate-6 opacity-95 drop-shadow-[0_18px_45px_rgba(22,163,74,0.45)]"
+                    priority
+                  />
+                </div>
+              )}
             <div className="flex flex-wrap justify-center gap-3 text-[11px] uppercase tracking-[0.35em] text-slate-300">
               {player?.type && (
                 <Tag className="!rounded-full !border-none !bg-sky-500/15 !px-4 !py-1 !text-[11px] !font-semibold !text-sky-200">

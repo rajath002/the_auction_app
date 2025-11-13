@@ -9,6 +9,7 @@ export default function HomeBase() {
   const { teams } = useAppContext();
   return (
     <>
+    <div className="h-7"></div>
       <section className="grid justify-center pt-5">
         <Image
           src={kplLogoTransparent}
@@ -31,7 +32,7 @@ export default function HomeBase() {
 }
 
 function ShowTeam({ team }: { team: Team }) {
-  return (
+  return (    
     <article className="w-64 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
       {/* Hero image (bigger visual footprint) */}
       <div className="w-full h-44 overflow-hidden">

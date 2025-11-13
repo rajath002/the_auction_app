@@ -6,7 +6,7 @@ import { Player, PlayerStatus, Team } from "../interface/interfaces";
 import teamList from "@/data/teamslist.json";
 // import playersList from "@/data/playerslist.json";
 import { getTeams } from "@/services/teams";
-import { getPlayers } from "@/services/player";
+import { getPlayers, updatePlayer } from "@/services/player";
 
 enum FilterType {
   ALL = "ALL",
@@ -96,14 +96,14 @@ function useAppState() {
   //   setSoldPlayers(soldPlayers.set(player.id, player));
   // }
 
-  function updatePlayerStatus(updatePlayer: Player, status: PlayerStatus) {
+  function updatePlayerStatus(playerToUpdate: Player, status: PlayerStatus) {
     let teams_: Team[] = [];
     let teamPointsToDeduct: number | null = null;
     let _totalSoldPlayers = 0;
     let _totalUnSoldPlayers = 0;
     let _noStatusPlayers= 0
     const players_ = players.map((player) => {
-      if (player.id === updatePlayer.id) {
+      if (player.id === playerToUpdate.id) {
         player.status = status;
         if (status === "UNSOLD" && player.currentTeamId) {
           teams_ = teams.map((t) => {
@@ -118,6 +118,13 @@ function useAppState() {
           player.bidValue = player.baseValue;
           player.currentTeamId = null;
         }
+        
+        // Update player in database
+        updatePlayer(player.id, {
+          status: player.status,
+          bidValue: player.bidValue,
+          currentTeamId: player.currentTeamId,
+        });
       }
       // check Total Players status SOLD and UNSOLD
       if (player.status === "SOLD") {
@@ -172,6 +179,13 @@ function useAppState() {
         p.currentTeamId = null;
         p.status = "AVAILABLE";
         p.bidValue = p.baseValue;
+        
+        // Update player in database
+        updatePlayer(p.id, {
+          currentTeamId: null,
+          status: "AVAILABLE",
+          bidValue: p.baseValue,
+        });
       }
       return p;
     });

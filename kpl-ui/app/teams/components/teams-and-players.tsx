@@ -1,35 +1,122 @@
+import { useMemo } from "react";
 import { Player, Team } from "@/interface/interfaces";
 import { useAppContext } from "@/context/useAppState";
+
+const accentGradient = "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950";
 
 export default function TeamsAndPlayers() {
   const { teams, getPlayersOfTeam } = useAppContext();
 
-  function filterPlayers(teamId: number) {
-    const playrs = getPlayersOfTeam(teamId);
-    return playrs.map((p: Player) => {
-      return (
-        <div key={p.id} className="text-center">
-          {p.name}
+  const computedTeams = useMemo(() => teams ?? [], [teams]);
+
+  if (!computedTeams.length) {
+    return (
+      <section className="px-4 py-12">
+        <div className="mx-auto max-w-4xl rounded-3xl border border-slate-800/60 bg-slate-900/70 px-8 py-12 text-center text-slate-200 shadow-xl">
+          <h2 className="text-3xl font-semibold uppercase tracking-[0.3em]">Teams & Players</h2>
+          <p className="mt-4 text-sm text-slate-400">
+            No teams available yet. Once teams are registered, you will see their squads here.
+          </p>
         </div>
-      );
-    });
+      </section>
+    );
   }
+
   return (
-    <>
-      <div>
-        <h2 className="text-center text-4xl p-10 text-slate-200 font-bold">TEAMS AND PLAYERS</h2>
-        <div className="grid gap-2 grid-cols-5 justify-between">
-          {teams&& teams.map((team: Team) => (
-            <div key={team.id}>
-              <div className="border-b-2 text-center text-lg bg-blue-600 rounded">{team.name} </div>
-              <div className="text-center text-yellow-400">
-                {team.iconPlayer}
-               </div>
-              {filterPlayers(team.id)}
-            </div>
-          ))}
+    <section className="px-4 py-12">
+      <div className="h-20"></div>
+      <div className="mx-auto flex max-w-6xl flex-col gap-8">
+        <header className="text-center">
+          <h2 className="text-4xl font-bold uppercase tracking-[0.35em] text-slate-100">
+            Teams & Players
+          </h2>
+          <p className="mt-4 text-sm text-slate-400">
+            Explore each roster, track the icon player, and monitor how every squad is shaping up as the auction progresses.
+          </p>
+        </header>
+
+        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {computedTeams.map((team: Team) => {
+            const players: Player[] = getPlayersOfTeam(team.id) ?? [];
+            const iconPlayer = team.iconPlayer?.trim();
+
+            return (
+              <article
+                key={team.id}
+                className={[
+                  "group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-800/60 p-6 text-slate-100 shadow-lg transition-all duration-300",
+                  accentGradient,
+                  "hover:-translate-y-1 hover:border-blue-500/60 hover:shadow-2xl",
+                ].join(" ")}
+              >
+                <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <div className="pointer-events-none absolute -top-16 right-[-20%] h-48 w-48 rounded-full bg-blue-500/20 blur-3xl" />
+                </div>
+
+                <div className="relative z-10 flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Team</p>
+                      <h3 className="text-xl font-semibold uppercase tracking-wide text-slate-100">
+                        {team.name}
+                      </h3>
+                    </div>
+                    <span className="rounded-full bg-blue-500/15 px-4 py-1 text-[10px] font-semibold uppercase tracking-[0.35em] te
+                    xt-blue-300">
+                      {players.length} Players
+                    </span>
+                  </div>
+
+                  {iconPlayer ? (
+                    <div className="flex items-center gap-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-200">
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.4em] text-amber-300">
+                        Icon
+                      </span>
+                      <span className="text-sm font-medium text-amber-100">{iconPlayer}</span>
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/60 px-3 py-2 text-xs text-slate-400">
+                      Icon player not assigned yet.
+                    </div>
+                  )}
+
+                  <div className="flex-1 overflow-hidden">
+                    <div className="custom-scrollbar max-h-48 space-y-2 overflow-y-auto pr-1">
+                      {players.length ? (
+                        players.map((player) => (
+                          <div
+                            key={player.id}
+                            className="flex items-center justify-between rounded-2xl border border-slate-800/60 bg-slate-900/60 px-3 py-2 text-sm transition hover:border-blue-500/50 hover:bg-slate-900/80"
+                          >
+                            <span className="font-medium text-slate-100">{player.name}</span>
+                            <span className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                              {player.type}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="rounded-2xl border border-dashed border-slate-700/60 bg-slate-900/40 px-3 py-6 text-center text-xs text-slate-400">
+                          No players have been assigned to this team yet.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <footer className="flex flex-col pt-2 text-[11px] uppercase tracking-[0.35em] text-slate-500">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[10px] tracking-[0.35em] text-slate-400">Mentor</span>
+                      <span className="ml-2 truncate text-sm font-semibold text-slate-100">{team.mentor || "TBD"}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 mt-1">
+                      <span className="text-[10px] tracking-[0.35em] text-slate-400">Owner</span>
+                      <span className="ml-2 truncate text-sm font-semibold text-slate-100">{team.owner || "TBD"}</span>
+                    </div>
+                  </footer>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
-    </>
+    </section>
   );
 }

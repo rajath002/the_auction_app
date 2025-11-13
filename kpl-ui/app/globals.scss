@@ -110,3 +110,33 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #4ade80, #15803d);
 }
+
+@keyframes stampPrint {
+  0% {
+    transform: scale(1.35) rotate(-14deg);
+    opacity: 0;
+  }
+  45% {
+    transform: scale(0.98) rotate(-8deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.02) rotate(-7deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(-6deg);
+    opacity: 0.95;
+  }
+}
+
+.stamp-print {
+  animation: stampPrint 0.48s ease-out;
+  transform-origin: 18% 22%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-print {
+    animation: none;
+  }
+}
