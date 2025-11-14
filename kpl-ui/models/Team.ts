@@ -11,6 +11,7 @@ export interface TeamAttributes {
   icon_player?: string;
   created_at?: Date;
   updated_at?: Date;
+  players?: any[]; // Associated players
 }
 
 // Optional fields for creation
@@ -24,6 +25,7 @@ class Team extends Model<TeamAttributes, TeamCreationAttributes> implements Team
   public owner!: string;
   public mentor!: string;
   public icon_player?: string;
+  public players?: any[]; // Associated players
 
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
@@ -31,7 +33,7 @@ class Team extends Model<TeamAttributes, TeamCreationAttributes> implements Team
   // Override toJSON to transform snake_case to camelCase
   toJSON(): any {
     const values = { ...this.get() };
-    return {
+    const result: any = {
       id: values.id,
       name: values.name,
       purse: values.purse,
@@ -39,6 +41,13 @@ class Team extends Model<TeamAttributes, TeamCreationAttributes> implements Team
       mentor: values.mentor,
       iconPlayer: values.icon_player || '',
     };
+
+    // Include associated players if they exist
+    if (this.players) {
+      result.players = this.players;
+    }
+
+    return result;
   }
 }
 
