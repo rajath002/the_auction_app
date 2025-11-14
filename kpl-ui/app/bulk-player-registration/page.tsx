@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ConfigProvider, theme } from "antd";
 import BulkRegistrationForm from "./components/BulkRegistrationForm";
 import ConfirmationDialog from "./components/ConfirmationDialog";
+import RoleGuard from "@/components/RoleGuard";
 
 export default function BulkPlayersRegistrationPage() {
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean | null>(null);
@@ -29,16 +30,18 @@ export default function BulkPlayersRegistrationPage() {
   };
 
   return (
-    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-      <BulkRegistrationForm 
-        onFinish={onFinish} 
-        disableForm={disableForm}
-        uploadedData={uploadedData}
-      />
-      <ConfirmationDialog 
-        isSuccess={submissionSuccess} 
-        recordCount={uploadedData.length}
-      />
-    </ConfigProvider>
+    <RoleGuard allowedRoles={["admin"]}>
+      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+        <BulkRegistrationForm 
+          onFinish={onFinish} 
+          disableForm={disableForm}
+          uploadedData={uploadedData}
+        />
+        <ConfirmationDialog 
+          isSuccess={submissionSuccess} 
+          recordCount={uploadedData.length}
+        />
+      </ConfigProvider>
+    </RoleGuard>
   );
 }

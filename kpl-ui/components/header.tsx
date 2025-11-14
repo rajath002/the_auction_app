@@ -47,6 +47,12 @@ export default function Header() {
     await signOut({ callbackUrl: "/" });
   };
 
+  // Check if user has access to registration (admin only)
+  const canAccessRegistration = session?.user?.role === "admin";
+
+  // Check if user has access to auction (admin or manager)
+  const canAccessAuction = session?.user?.role === "admin" || session?.user?.role === "manager";
+
   return (
     <>
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-gray-950/80 text-white backdrop-blur">
@@ -68,68 +74,77 @@ export default function Header() {
         </Link>
         <nav>
           <ul className="flex flex-wrap items-center gap-1 md:gap-2">
-            {navItems.map(({ label, href }) => (
-              <li key={href}>
-                <Link className={getNavItemClass(href)} href={href}>
-                  {label}
-                </Link>
-              </li>
-            ))}
-            <li>
-              <div className="group relative">
-                <button
-                  type="button"
-                  className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring focus-visible:ring-amber-300/60 ${
-                    isRegistrationActive
-                      ? "bg-white/10 text-yellow-300"
-                      : "text-gray-200 hover:text-white hover:bg-white/5"
-                  }`}
-                  aria-haspopup="menu"
-                  aria-expanded={isRegistrationActive}
-                >
-                  Registration
-                  <svg
-                    className={`h-4 w-4 transition-transform duration-200 ${
-                      isRegistrationActive ? "rotate-180" : ""
-                    } group-hover:rotate-180 group-focus-within:rotate-180`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            {navItems.map(({ label, href }) => {
+              // Hide Auction link if user doesn't have access
+              if (href === NavLinks.AUCTION && !canAccessAuction) {
+                return null;
+              }
+              
+              return (
+                <li key={href}>
+                  <Link className={getNavItemClass(href)} href={href}>
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+            {canAccessRegistration && (
+              <li>
+                <div className="group relative">
+                  <button
+                    type="button"
+                    className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring focus-visible:ring-amber-300/60 ${
+                      isRegistrationActive
+                        ? "bg-white/10 text-yellow-300"
+                        : "text-gray-200 hover:text-white hover:bg-white/5"
+                    }`}
+                    aria-haspopup="menu"
+                    aria-expanded={isRegistrationActive}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
+                    Registration
+                    <svg
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        isRegistrationActive ? "rotate-180" : ""
+                      } group-hover:rotate-180 group-focus-within:rotate-180`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
 
-                <div className="pointer-events-none invisible absolute left-0 top-full z-20 w-64 translate-y-2 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:duration-150 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible">
-                  <ul className="overflow-hidden rounded-2xl border border-white/10 bg-gray-900/95 shadow-xl backdrop-blur">
-                    <li>
-                      <Link
-                        href={NavLinks.PLAYER_REGISTRATION}
-                        className={`block px-4 py-3 text-sm transition-colors duration-150 ${
-                          pathName === NavLinks.PLAYER_REGISTRATION
-                            ? "bg-white/10 text-yellow-300"
-                            : "text-gray-200 hover:bg-white/5 hover:text-white"
-                        }`}
-                      >
-                        Player Registration
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        href={NavLinks.BULK_PLAYER_REGISTRATION}
-                        className={`block px-4 py-3 text-sm transition-colors duration-150 ${
-                          pathName === NavLinks.BULK_PLAYER_REGISTRATION
-                            ? "bg-white/10 text-yellow-300"
-                            : "text-gray-200 hover:bg-white/5 hover:text-white"
-                        }`}
-                      >
-                        Bulk Player Registration
-                      </Link>
-                    </li>
-                  </ul>
+                  <div className="pointer-events-none invisible absolute left-0 top-full z-20 w-64 translate-y-2 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:duration-150 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible">
+                    <ul className="overflow-hidden rounded-2xl border border-white/10 bg-gray-900/95 shadow-xl backdrop-blur">
+                      <li>
+                        <Link
+                          href={NavLinks.PLAYER_REGISTRATION}
+                          className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                            pathName === NavLinks.PLAYER_REGISTRATION
+                              ? "bg-white/10 text-yellow-300"
+                              : "text-gray-200 hover:bg-white/5 hover:text-white"
+                          }`}
+                        >
+                          Player Registration
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href={NavLinks.BULK_PLAYER_REGISTRATION}
+                          className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                            pathName === NavLinks.BULK_PLAYER_REGISTRATION
+                              ? "bg-white/10 text-yellow-300"
+                              : "text-gray-200 hover:bg-white/5 hover:text-white"
+                          }`}
+                        >
+                          Bulk Player Registration
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-            </li>
+              </li>
+            )}
 
             <li className="ml-2 flex items-center">
               {status === "loading" ? (

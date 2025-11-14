@@ -4,6 +4,7 @@ import { ConfigProvider, theme } from "antd";
 import ConfirmationDialog from "./components/ConfirmationDialog";
 import RegistrationForm from "./components/RegistrationForm";
 import { createPlayer } from "@/services/player";
+import RoleGuard from "@/components/RoleGuard";
 
 // const { Title } = Typography;
 
@@ -57,18 +58,20 @@ export default function PlayersRegistrationPage() {
   };
 
   return (
-    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
-      {/* <Title className="text-center p-10" level={2}>
-        Player Registration
-      </Title> */}
-      <RegistrationForm 
-        key={formKey}
-        onFinish={onFinish} 
-        disableForm={disableForm}
-        imageUrl={imageUrl}
-        setImageUrl={setImageUrl}
-      />
-      <ConfirmationDialog isSuccess={submissionSuccess} onReset={handleReset} />
-    </ConfigProvider>
+    <RoleGuard allowedRoles={["admin"]}>
+      <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+        {/* <Title className="text-center p-10" level={2}>
+          Player Registration
+        </Title> */}
+        <RegistrationForm 
+          key={formKey}
+          onFinish={onFinish} 
+          disableForm={disableForm}
+          imageUrl={imageUrl}
+          setImageUrl={setImageUrl}
+        />
+        <ConfirmationDialog isSuccess={submissionSuccess} onReset={handleReset} />
+      </ConfigProvider>
+    </RoleGuard>
   );
 }
