@@ -14,7 +14,7 @@ export default function LoadingBar() {
 
   useEffect(() => {
     const handleStart = () => setLoading(true);
-    const handleComplete = () => setLoading(false);
+    // const handleComplete = () => setLoading(false);
 
     // Listen for link clicks
     const handleClick = (e: MouseEvent) => {

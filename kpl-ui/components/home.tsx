@@ -21,7 +21,7 @@ export default function HomeBase() {
       </section>
       <section className="mt-5">
         {/* <h1 className="text-center font-semibold">Teams</h1> */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center">
+        <div className="flex flex-wrap justify-around">
           {teams.map((t: Team) => (
             <ShowTeam key={t.id} team={t} />
           ))}
