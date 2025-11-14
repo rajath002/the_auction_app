@@ -4,6 +4,7 @@ import Team from './Team';
 import Player from './Player';
 import Session from './Session';
 import AuctionEvent from './AuctionEvent';
+import PageAccessSetting from './PageAccessSetting';
 
 // Define associations between models
 const initializeModels = () => {
@@ -61,6 +62,7 @@ export {
   Player,
   Session,
   AuctionEvent,
+  PageAccessSetting,
 };
 
 const db = {
@@ -70,6 +72,7 @@ const db = {
   Player,
   Session,
   AuctionEvent,
+  PageAccessSetting,
 };
 
 export default db;

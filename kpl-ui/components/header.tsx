@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "antd";
 import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
 
 enum NavLinks {
   HOME = "/",
@@ -15,6 +16,7 @@ enum NavLinks {
   PLAYER_REGISTRATION = "/player-registration",
   BULK_PLAYER_REGISTRATION = "/bulk-player-registration",
   ABOUT_US = "/about-us",
+  PAGE_ACCESS_MANAGEMENT = "/page-access-management",
 }
 
 const navItems = [
@@ -25,10 +27,55 @@ const navItems = [
   { label: "About Us", href: NavLinks.ABOUT_US },
 ];
 
+interface PageAccessSetting {
+  id: number;
+  page_route: string;
+  page_name: string;
+  public_access: boolean;
+  description?: string;
+}
+
 export default function Header() {
   // get current nav link active
   const pathName = usePathname();
   const { data: session, status } = useSession();
+  const [pageAccessSettings, setPageAccessSettings] = useState<PageAccessSetting[]>([]);
+
+  // Fetch page access settings
+  useEffect(() => {
+    const fetchPageAccessSettings = async () => {
+      try {
+        const response = await fetch('/api/page-access');
+        if (response.ok) {
+          const data = await response.json();
+          setPageAccessSettings(data);
+        }
+      } catch (error) {
+        console.error('Error fetching page access settings:', error);
+      }
+    };
+
+    fetchPageAccessSettings();
+  }, []);
+
+  // Check if user has access to a specific page
+  const hasPageAccess = (route: string): boolean => {
+    // Find the page access setting for this route
+    const setting = pageAccessSettings.find(s => s.page_route === route);
+    
+    // If no setting exists, default to requiring authentication (admin only for safety)
+    if (!setting) {
+      return session?.user?.role === "admin";
+    }
+    
+    // If page is public, anyone can access
+    if (setting.public_access) {
+      return true;
+    }
+    
+    // If page is private, user must be authenticated
+    return !!session;
+  };
 
   const getNavItemClass = (href: string) =>
     `inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 ${
@@ -43,15 +90,19 @@ export default function Header() {
     pathName === NavLinks.PLAYER_REGISTRATION ||
     pathName === NavLinks.BULK_PLAYER_REGISTRATION;
 
+  const isAdminMenuActive =
+    pathName === NavLinks.PAGE_ACCESS_MANAGEMENT;
+
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
   };
 
   // Check if user has access to registration (admin only)
-  const canAccessRegistration = session?.user?.role === "admin";
+  const canAccessRegistration = session?.user?.role === "admin" && 
+    (hasPageAccess(NavLinks.PLAYER_REGISTRATION) || hasPageAccess(NavLinks.BULK_PLAYER_REGISTRATION));
 
-  // Check if user has access to auction (admin or manager)
-  const canAccessAuction = session?.user?.role === "admin" || session?.user?.role === "manager";
+  // Check if user is admin (for admin menu)
+  const isAdmin = session?.user?.role === "admin" && hasPageAccess(NavLinks.PAGE_ACCESS_MANAGEMENT);
 
   return (
     <>
@@ -75,8 +126,8 @@ export default function Header() {
         <nav>
           <ul className="flex flex-wrap items-center gap-1 md:gap-2">
             {navItems.map(({ label, href }) => {
-              // Hide Auction link if user doesn't have access
-              if (href === NavLinks.AUCTION && !canAccessAuction) {
+              // Hide menu item if user doesn't have access to the page
+              if (!hasPageAccess(href)) {
                 return null;
               }
               
@@ -138,6 +189,52 @@ export default function Header() {
                           }`}
                         >
                           Bulk Player Registration
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+            )}
+
+            {isAdmin && (
+              <li>
+                <div className="group relative">
+                  <button
+                    type="button"
+                    className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus:outline-none focus-visible:ring focus-visible:ring-amber-300/60 ${
+                      isAdminMenuActive
+                        ? "bg-white/10 text-yellow-300"
+                        : "text-gray-200 hover:text-white hover:bg-white/5"
+                    }`}
+                    aria-haspopup="menu"
+                    aria-expanded={isAdminMenuActive}
+                  >
+                    Admin
+                    <svg
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        isAdminMenuActive ? "rotate-180" : ""
+                      } group-hover:rotate-180 group-focus-within:rotate-180`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <div className="pointer-events-none invisible absolute left-0 top-full z-20 w-64 translate-y-2 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:duration-150 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible">
+                    <ul className="overflow-hidden rounded-2xl border border-white/10 bg-gray-900/95 shadow-xl backdrop-blur">
+                      <li>
+                        <Link
+                          href={NavLinks.PAGE_ACCESS_MANAGEMENT}
+                          className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                            pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
+                              ? "bg-white/10 text-yellow-300"
+                              : "text-gray-200 hover:bg-white/5 hover:text-white"
+                          }`}
+                        >
+                          Page Access Management
                         </Link>
                       </li>
                     </ul>
