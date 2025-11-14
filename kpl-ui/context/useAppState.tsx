@@ -227,6 +227,7 @@ function useAppState() {
     totalUnsoldPlayers,
     totalNoStatusPlayers,
     selectedCategory,
+    initDataValues,
     setPlayers,
     updatePurse,
     updatePlayerPoints,

@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Team, Player } from '@/models';
+import { requireAuth, requireAdminOrManager, requireAdmin } from '@/lib/api-auth';
 
 // GET all teams with their players
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Require authentication for accessing teams list
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
+    const { session } = authResult;
+    const userRole = session.user.role;
+
     const teams = await Team.findAll({
       include: [
         {
@@ -15,7 +25,26 @@ export async function GET() {
       order: [['id', 'ASC']],
     });
 
-    return NextResponse.json(teams, { status: 200 });
+    // Determine if user can see sensitive bid information
+    const canSeeBidInfo = userRole === 'admin' || userRole === 'manager';
+
+    // Filter sensitive player data for non-admin/non-manager users
+    const filteredTeams = canSeeBidInfo
+      ? teams
+      : teams.map(team => {
+          const teamData = team.toJSON();
+          return {
+            ...teamData,
+            players: teamData.players?.map((player: any) => ({
+              ...player,
+              current_bid: null,
+              bid_value: null,
+              base_value: null,
+            })) || [],
+          };
+        });
+
+    return NextResponse.json(filteredTeams, { status: 200 });
   } catch (error) {
     console.error('Error fetching teams:', error);
     return NextResponse.json(
@@ -28,6 +57,12 @@ export async function GET() {
 // POST - Create a new team
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can create teams
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     const body = await request.json();
     
     const team = await Team.create({
@@ -51,6 +86,12 @@ export async function POST(request: NextRequest) {
 // PATCH - Update a team
 export async function PATCH(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can update teams
+    const authResult = await requireAdminOrManager(request);
+    // if (authResult instanceof NextResponse) {
+    //   return authResult;
+    // }
+
     const body = await request.json();
     const { id, ...updateData } = body;
 

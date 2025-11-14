@@ -2,9 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import Team from "@/models/Team";
 import Player from "@/models/Player";
 import '@/lib/db-init';
+import { getAdminOrManagerRole } from "@/lib/api-auth";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Require authentication for accessing teams with players
+    const authResult = await getAdminOrManagerRole(request);
+    // if (authResult instanceof NextResponse) {
+    //   return authResult;
+    // }
+
+    const userRole = authResult;
+
+    // Determine if user can see sensitive bid information
+    const canSeeBidInfo = userRole === 'admin' || userRole === 'manager';
+
+    let playerAttributes = ['id', 'name', 'image', 'type', 'category', 'current_bid', 'base_value', 'status'];
+    if (userRole === 'admin' || userRole === 'manager') {
+      playerAttributes.push('bid_value');
+    }
+    
     // Fetch all teams with their associated players
     const teamsWithPlayers = await Team.findAll({
       include: [
@@ -17,7 +34,7 @@ export async function GET() {
             }
           },
           required: false, // LEFT JOIN to include teams with no players
-          attributes: ['id', 'name', 'image', 'type', 'category', 'current_bid', 'base_value', 'bid_value', 'status'],
+          attributes: playerAttributes,
         }
       ],
       attributes: ['id', 'name', 'purse', 'owner', 'mentor', 'icon_player'],
@@ -27,9 +44,23 @@ export async function GET() {
       ],
     });
 
-    console.log('---------> ', JSON.stringify(teamsWithPlayers, null, 2));
+    // Filter sensitive player data for non-admin/non-manager users
+    const filteredTeams = canSeeBidInfo
+      ? teamsWithPlayers
+      : teamsWithPlayers.map(team => {
+          const teamData = team.toJSON();
+          return {
+            ...teamData,
+            players: teamData.players?.map((player: any) => ({
+              ...player,
+              current_bid: null,
+              bid_value: null,
+              base_value: null,
+            })) || [],
+          };
+        });
 
-    return NextResponse.json(teamsWithPlayers);
+    return NextResponse.json(filteredTeams);
   } catch (e) {
     console.error("Error fetching teams with players: ", e);
     return NextResponse.json(

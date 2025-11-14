@@ -7,9 +7,11 @@ import Link from "next/link";
 import { Form, Input, Button, Alert, Card } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import SplashBackground from "@/components/SplashBackground";
+import { useAppContext } from "@/context/useAppState";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { initDataValues } = useAppContext();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +29,7 @@ export default function LoginPage() {
       if (result?.error) {
         setError(result.error);
       } else {
+        await initDataValues();
         router.push("/");
         router.refresh();
       }
