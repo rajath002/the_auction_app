@@ -147,9 +147,9 @@ function PlayerCard({ player }: { player: Player }) {
               &nbsp;{player.status}
             </span>
           </p>
-          {player.currentBid && (
+          {player.bidValue && (
             <p className="text-gray-700 dark:text-gray-300 text-base">
-              Current Bid: ${player.currentBid}
+              Current Bid: {player.bidValue} pts
             </p>
           )}
         </div>
@@ -161,7 +161,7 @@ function PlayerCard({ player }: { player: Player }) {
       player.type,
       player.category,
       player.status,
-      player.currentBid,
+      player.bidValue,
       statusColor,
     ]
   );
