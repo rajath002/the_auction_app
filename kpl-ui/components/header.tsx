@@ -73,6 +73,12 @@ export default function Header() {
     if (setting.public_access) {
       return true;
     }
+
+    if (!(session?.user?.role === "admin" || session?.user?.role === "manager")) { 
+      if (route === NavLinks.AUCTION) {
+        return false; // only Admins and Managers can access Auction
+      }
+    }
     
     // If page is private, user must be authenticated
     return !!session;
