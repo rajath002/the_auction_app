@@ -35,6 +35,14 @@ module.exports = {
         role: 'user',
         created_at: new Date(),
         updated_at: new Date()
+      },
+      {
+        name: 'Auction Manager',
+        email: 'auction@kpl.com',
+        password: await bcrypt.hash('auction123m', 10),
+        role: 'manager',
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {});
 

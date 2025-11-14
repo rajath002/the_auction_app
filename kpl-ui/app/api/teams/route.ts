@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 // import { closeConnection, connectToMongoDB, database } from "../config";
 // import teamList from "../../../data/teamslist.json";
 import Team from "@/models/Team";
+import Player from "@/models/Player";
 import '@/lib/db-init';
 
 export async function POST(request: NextRequest) {
@@ -80,8 +81,16 @@ export async function PATCH(request: NextRequest) {
 
 export async function GET() {
   try {
-    // Fetch all teams from the database
+    // Fetch all teams from the database with associated players
     const teams = await Team.findAll({
+      include: [
+        {
+          model: Player,
+          as: 'players',
+          required: false,
+          attributes: ['id', 'name', 'image', 'type', 'category', 'current_bid', 'base_value', 'bid_value', 'status'],
+        }
+      ],
       attributes: ['id', 'name', 'purse', 'owner', 'mentor', 'icon_player'],
       order: [['id', 'ASC']],
     });
