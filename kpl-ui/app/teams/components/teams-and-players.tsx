@@ -11,11 +11,10 @@ export default function TeamsAndPlayers() {
 
   if (!computedTeams.length) {
     return (
-      <section className="px-4 py-12">
-        <div className="mx-auto max-w-4xl rounded-3xl border border-slate-800/60 bg-slate-900/70 px-8 py-12 text-center text-slate-200 shadow-xl">
-          <h2 className="text-3xl font-semibold uppercase tracking-[0.3em]">Teams & Players</h2>
-          <p className="mt-4 text-sm text-slate-400">
-            No teams available yet. Once teams are registered, you will see their squads here.
+      <section className="min-h-screen px-4 py-12 border-slate-800/60 bg-slate-950/90 flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center text-center">
+          <p className="mt-4 text-sm text-slate-400 animate-pulse">
+            Loading teams and players...
           </p>
         </div>
       </section>
@@ -23,7 +22,9 @@ export default function TeamsAndPlayers() {
   }
 
   return (
-    <section className="px-4 py-12">
+    <section className="px-4 py-12 border-slate-800/60 bg-slate-950/90 ">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
+        {/* <div className="pointer-events-none absolute -bottom-28 -right-24 rounded-full bg-blue-500/10 blur-3xl" /> */}
       <div className="h-20"></div>
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
         <header className="text-center">
