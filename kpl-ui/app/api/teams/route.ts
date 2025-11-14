@@ -4,9 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 import Team from "@/models/Team";
 import Player from "@/models/Player";
 import '@/lib/db-init';
+import { requireAuth, requireAdminOrManager, requireAdmin } from "@/lib/api-auth";
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can create teams
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     const body = await request.json();
     const { name, purse, owner, mentor, iconPlayer } = body;
 
@@ -39,6 +46,12 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can update teams
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     const body = await request.json();
     const { id, name, purse, owner, mentor, iconPlayer } = body;
 
@@ -79,8 +92,14 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Require authentication for accessing teams list
+    // const authResult = await requireAuth(request);
+    // if (authResult instanceof NextResponse) {
+    //   return authResult;
+    // }
+
     // Fetch all teams from the database
     const teams = await Team.findAll({
       attributes: ['id', 'name', 'purse', 'owner', 'mentor', 'icon_player'],
@@ -99,6 +118,12 @@ export async function GET() {
 
 export async function DELETE(request: NextRequest) {
   try {
+    // Require admin authentication for delete operations
+    const authResult = await requireAdmin(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 

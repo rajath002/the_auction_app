@@ -4,6 +4,7 @@ import { connectToMongoDB, database, client, closeConnection } from "../config";
 import players from "@/data/players.json";
 import Player from "@/models/Player";
 import { connectDB } from "@/lib/sequelize";
+import { requireAuth, requireAdminOrManager, getAdminOrManagerRole } from "@/lib/api-auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +24,12 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
+    // Require authentication - only admin or manager can update players
+    const authResult = await requireAdminOrManager(req);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     // Connect to database
     await connectDB();
     
@@ -89,6 +96,23 @@ export async function PATCH(req: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    // Require authentication for accessing players list
+    // const authResult = await requireAuth(request);
+    // const adminOrManager = await requireAdminOrManager(request);
+    const userRole = await getAdminOrManagerRole(request);
+
+    const playerAttributes = ['id', 'name', 'image', 'type', 'category', 'current_team_id', 'current_bid', 'base_value', 'status', 'created_at', 'updated_at'];
+    if (userRole === 'admin' || userRole === 'manager') {
+      playerAttributes.push('bid_value');
+    }
+  
+    // if (authResult instanceof NextResponse) {
+    //   return authResult;
+    // }
+
+    // const { session } = authResult;
+    // const userRole = session.user.role;
+
     // Connect to database
     await connectDB();
     
@@ -118,30 +142,33 @@ export async function GET(request: NextRequest) {
       whereClause.current_team_id = parseInt(teamId);
     }
     
+    // Determine if user can see sensitive bid information
+    const canSeeBidInfo = userRole === 'admin' || userRole === 'manager';
+    
     // Fetch players from database with optional filters
     const result = await Player.findAll({
       where: whereClause,
       order: [['id', 'ASC']],
-      attributes: [
-        'id',
-        'name',
-        'image',
-        'type',
-        'category',
-        'current_bid',
-        'base_value',
-        'bid_value',
-        'current_team_id',
-        'status',
-        'created_at',
-        'updated_at',
-      ],
+      attributes: playerAttributes,
     });
+
+    // Filter sensitive data for non-admin/non-manager users
+    const filteredResult = canSeeBidInfo
+      ? result
+      : result.map(player => {
+          const playerData = player.toJSON();
+          return {
+            ...playerData,
+            // current_bid: null,
+            // bid_value: null,
+            // base_value: null,
+          };
+        });
     
     return NextResponse.json({
       success: true,
-      count: result.length,
-      data: result,
+      count: filteredResult.length,
+      data: filteredResult,
     }, { status: 200 });
   } catch (error: any) {
     console.error("Error fetching players:", error);
@@ -153,6 +180,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(req: NextRequest) {
+  // Require admin authentication for delete operations
+  const authResult = await requireAdminOrManager(req);
+  if (authResult instanceof NextResponse) {
+    return authResult;
+  }
+
   return NextResponse.json({ message: "Not Implemented" }, { status: 501 });
 }

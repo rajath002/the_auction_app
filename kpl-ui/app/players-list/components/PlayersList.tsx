@@ -13,6 +13,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import PlayerStats from "./PlayerStats";
 import { getPlayers } from "@/services/player";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 interface DataType {
   key: string;
@@ -30,6 +31,7 @@ type Filters = {
 export default function PlayersList() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
+  const { data: session } = useSession();
 
   const [filteredInfo, setFilteredInfo] = useState<Filters>({
     category: null,
@@ -92,7 +94,7 @@ export default function PlayersList() {
           {/* <div className="flex flex-wrap justify-center gap-6 min-h-screen"> */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5 gap-3 md:gap-6 p-6 min-h-screen">
             {filteredPlayers.map((player) => (
-              <PlayerCard key={player.id} player={player} />
+              <PlayerCard key={player.id} player={player} userRole={session?.user?.role} />
             ))}
           </div>
         </div>
@@ -106,16 +108,19 @@ export default function PlayersList() {
 }
 
 // bg-black bg-opacity-50
-function PlayerCard({ player }: { player: Player }) {
+function PlayerCard({ player, userRole }: { player: Player; userRole?: string }) {
   const statusColor = player.status
     ? player.status === "UNSOLD"
       ? "text-red-500"
       : "text-green-500"
     : "";
 
+  // Check if user can see bid values (admin or manager)
+  const canSeeBidValue = userRole === "admin" || userRole === "manager";
+
   const showBadge = useMemo(
-    () => player.bidValue || player.baseValue,
-    [player.bidValue, player.baseValue]
+    () => canSeeBidValue && (player.bidValue || player.baseValue),
+    [canSeeBidValue, player.bidValue, player.baseValue]
   );
 
   // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
@@ -147,7 +152,7 @@ function PlayerCard({ player }: { player: Player }) {
               &nbsp;{player.status}
             </span>
           </p>
-          {player.bidValue && (
+          {canSeeBidValue && player.bidValue && (
             <p className="text-gray-700 dark:text-gray-300 text-base">
               Current Bid: {player.bidValue} pts
             </p>
@@ -163,6 +168,7 @@ function PlayerCard({ player }: { player: Player }) {
       player.status,
       player.bidValue,
       statusColor,
+      canSeeBidValue,
     ]
   );
 

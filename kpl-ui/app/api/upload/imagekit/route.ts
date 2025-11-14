@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import ImageKit from 'imagekit';
 import sharp from 'sharp';
+import { requireAdminOrManager } from '@/lib/api-auth';
 
 // Initialize ImageKit instance
 const imagekit = new ImageKit({
@@ -15,6 +16,12 @@ const imagekit = new ImageKit({
  */
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can upload images
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     // Check if ImageKit is configured
     if (!process.env.IMAGEKIT_PUBLIC_KEY || !process.env.IMAGEKIT_PRIVATE_KEY || !process.env.IMAGEKIT_URL_ENDPOINT) {
       console.error('ImageKit credentials missing:', {

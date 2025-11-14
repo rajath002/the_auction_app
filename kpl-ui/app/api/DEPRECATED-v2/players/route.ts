@@ -2,10 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Player, Team } from '@/models';
 import { PlayerType, PlayerCategory, PlayerStatus } from '@/models/Player';
 import { Op } from 'sequelize';
+import { requireAuth, requireAdminOrManager } from '@/lib/api-auth';
 
 // GET all players with optional filters
 export async function GET(request: NextRequest) {
   try {
+    // Require authentication for accessing players list
+    const authResult = await requireAuth(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
+    const { session } = authResult;
+    const userRole = session.user.role;
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const type = searchParams.get('type');
@@ -31,7 +41,23 @@ export async function GET(request: NextRequest) {
       order: [['id', 'ASC']],
     });
 
-    return NextResponse.json(players, { status: 200 });
+    // Determine if user can see sensitive bid information
+    const canSeeBidInfo = userRole === 'admin' || userRole === 'manager';
+
+    // Filter sensitive data for non-admin/non-manager users
+    const filteredPlayers = canSeeBidInfo
+      ? players
+      : players.map(player => {
+          const playerData = player.toJSON();
+          return {
+            ...playerData,
+            current_bid: null,
+            bid_value: null,
+            base_value: null,
+          };
+        });
+
+    return NextResponse.json(filteredPlayers, { status: 200 });
   } catch (error) {
     console.error('Error fetching players:', error);
     return NextResponse.json(
@@ -44,6 +70,12 @@ export async function GET(request: NextRequest) {
 // POST - Create new player(s)
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can create players
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     const body = await request.json();
     
     // Handle bulk creation
@@ -85,6 +117,12 @@ export async function POST(request: NextRequest) {
 // PATCH - Update a player
 export async function PATCH(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can update players
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     const body = await request.json();
     const { id, _id, ...updateData } = body;
     const playerId = id || _id;
@@ -136,6 +174,12 @@ export async function PATCH(request: NextRequest) {
 // DELETE - Delete a player
 export async function DELETE(request: NextRequest) {
   try {
+    // Require authentication - only admin or manager can delete players
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
