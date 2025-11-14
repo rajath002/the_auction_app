@@ -81,16 +81,8 @@ export async function PATCH(request: NextRequest) {
 
 export async function GET() {
   try {
-    // Fetch all teams from the database with associated players
+    // Fetch all teams from the database
     const teams = await Team.findAll({
-      include: [
-        {
-          model: Player,
-          as: 'players',
-          required: false,
-          attributes: ['id', 'name', 'image', 'type', 'category', 'current_bid', 'base_value', 'bid_value', 'status'],
-        }
-      ],
       attributes: ['id', 'name', 'purse', 'owner', 'mentor', 'icon_player'],
       order: [['id', 'ASC']],
     });
