@@ -77,7 +77,7 @@ function ShowTeam({ team }: { team: Team }) {
         </div>
 
         {/* CTA / actions placeholder */}
-        <div className="pt-1">
+        {/* <div className="pt-1">
           <button
             type="button"
             className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-gradient-to-r from-indigo-500 to-blue-500 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:from-indigo-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-indigo-300"
@@ -85,7 +85,7 @@ function ShowTeam({ team }: { team: Team }) {
           >
             View
           </button>
-        </div>
+        </div> */}
       </div>
     </article>
   );
