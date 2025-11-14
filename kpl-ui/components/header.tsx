@@ -5,7 +5,7 @@ import kplLogoTransp from "@/assets/kpl-logo-transparent.png";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "antd";
-import { LoginOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined, UserOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 
 enum NavLinks {
@@ -40,6 +40,7 @@ export default function Header() {
   const pathName = usePathname();
   const { data: session, status } = useSession();
   const [pageAccessSettings, setPageAccessSettings] = useState<PageAccessSetting[]>([]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Fetch page access settings
   useEffect(() => {
@@ -97,6 +98,10 @@ export default function Header() {
     await signOut({ callbackUrl: "/" });
   };
 
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   // Check if user has access to registration (admin only)
   const canAccessRegistration = session?.user?.role === "admin" && 
     (hasPageAccess(NavLinks.PLAYER_REGISTRATION) || hasPageAccess(NavLinks.BULK_PLAYER_REGISTRATION));
@@ -123,7 +128,18 @@ export default function Header() {
             </span>
           </div>
         </Link>
-        <nav>
+
+        {/* Mobile menu button */}
+        <button
+          className="lg:hidden rounded-lg p-2 text-gray-200 hover:bg-white/5 hover:text-white transition-colors"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <CloseOutlined className="text-xl" /> : <MenuOutlined className="text-xl" />}
+        </button>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:block">
           <ul className="flex flex-wrap items-center gap-1 md:gap-2">
             {navItems.map(({ label, href }) => {
               // Hide menu item if user doesn't have access to the page
@@ -278,6 +294,134 @@ export default function Header() {
           </ul>
         </nav>
       </div>
+
+      {/* Mobile Navigation */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden border-t border-white/10 bg-gray-950/95 backdrop-blur">
+          <nav className="mx-auto max-w-7xl px-6 py-4">
+            <ul className="space-y-2">
+              {navItems.map(({ label, href }) => {
+                if (!hasPageAccess(href)) {
+                  return null;
+                }
+                
+                return (
+                  <li key={href}>
+                    <Link 
+                      className={`block rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+                        pathName === href
+                          ? "bg-white/10 text-yellow-300"
+                          : "text-gray-200 hover:text-white hover:bg-white/5"
+                      }`}
+                      href={href}
+                      onClick={closeMobileMenu}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
+
+              {canAccessRegistration && (
+                <li>
+                  <div className="space-y-1">
+                    <div className={`px-4 py-2 text-sm font-medium ${
+                      isRegistrationActive ? "text-yellow-300" : "text-gray-400"
+                    }`}>
+                      Registration
+                    </div>
+                    <div className="ml-4 space-y-1">
+                      <Link
+                        href={NavLinks.PLAYER_REGISTRATION}
+                        className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
+                          pathName === NavLinks.PLAYER_REGISTRATION
+                            ? "bg-white/10 text-yellow-300"
+                            : "text-gray-200 hover:bg-white/5 hover:text-white"
+                        }`}
+                        onClick={closeMobileMenu}
+                      >
+                        Player Registration
+                      </Link>
+                      <Link
+                        href={NavLinks.BULK_PLAYER_REGISTRATION}
+                        className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
+                          pathName === NavLinks.BULK_PLAYER_REGISTRATION
+                            ? "bg-white/10 text-yellow-300"
+                            : "text-gray-200 hover:bg-white/5 hover:text-white"
+                        }`}
+                        onClick={closeMobileMenu}
+                      >
+                        Bulk Player Registration
+                      </Link>
+                    </div>
+                  </div>
+                </li>
+              )}
+
+              {isAdmin && (
+                <li>
+                  <div className="space-y-1">
+                    <div className={`px-4 py-2 text-sm font-medium ${
+                      isAdminMenuActive ? "text-yellow-300" : "text-gray-400"
+                    }`}>
+                      Admin
+                    </div>
+                    <div className="ml-4">
+                      <Link
+                        href={NavLinks.PAGE_ACCESS_MANAGEMENT}
+                        className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
+                          pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
+                            ? "bg-white/10 text-yellow-300"
+                            : "text-gray-200 hover:bg-white/5 hover:text-white"
+                        }`}
+                        onClick={closeMobileMenu}
+                      >
+                        Page Access Management
+                      </Link>
+                    </div>
+                  </div>
+                </li>
+              )}
+
+              <li className="pt-2 mt-2 border-t border-white/10">
+                {status === "loading" ? (
+                  <span className="block px-4 py-2 text-sm text-gray-400">Loading...</span>
+                ) : session ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-200">
+                      <UserOutlined />
+                      <span>{session.user?.name}</span>
+                    </div>
+                    <Button
+                      type="primary"
+                      icon={<LogoutOutlined />}
+                      onClick={() => {
+                        handleSignOut();
+                        closeMobileMenu();
+                      }}
+                      block
+                      className="!rounded-lg !border-white/10 !bg-white/20 !text-white hover:!bg-white/30"
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <Link href="/auth/login" onClick={closeMobileMenu}>
+                    <Button
+                      type="primary"
+                      icon={<LoginOutlined />}
+                      block
+                      className="!rounded-lg !bg-amber-400 !font-semibold !text-gray-900 hover:!bg-amber-300"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </li>
+            </ul>
+          </nav>
+        </div>
+      )}
     </header>
     {/* <div className="h-20"></div> */}
     </>

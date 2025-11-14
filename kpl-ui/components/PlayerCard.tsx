@@ -169,11 +169,13 @@ export const PlayerCard = ({
               <p className="mt-2 text-5xl font-black text-emerald-100">₹{formattedBidValue}</p>
             </div>
 
-            {statusMeta.panelText && player?.status && (
-              <div className={`rounded-2xl px-4 py-3 text-center text-lg font-semibold ${statusMeta.panelClass}`}>
-                {statusMeta.panelText}
-              </div>
-            )}
+            <div className={`rounded-2xl px-4 py-3 text-center text-lg font-semibold transition-all duration-300 ${
+              statusMeta.panelText && player?.status 
+                ? `${statusMeta.panelClass} opacity-100` 
+                : 'border border-transparent bg-transparent text-transparent opacity-0'
+            }`}>
+              {statusMeta.panelText || 'Placeholder text for layout'}
+            </div>
           </div>
         </div>
       </div>
@@ -250,7 +252,7 @@ function Buttons(props: {
           <Button
             type="default"
             onClick={handleUnsoldChange}
-            className="!rounded-full !border-none !bg-transparent !px-3 !py-1.5 !text-slate-500 hover:!text-blue-500"
+            className="!rounded-full !border !border-slate-600 !bg-slate-800 !px-3 !py-1.5 !text-slate-200 hover:!border-blue-500 hover:!bg-slate-700 hover:!text-blue-400"
           >
             No
           </Button>
@@ -274,17 +276,8 @@ function Buttons(props: {
     </Popover>
   );
 
-  if (!props.player?.currentTeamId) {
-    return (
-      <>
-        {isExploading && <Confetti recycle={false} />}
-        <div className="mt-6 flex flex-wrap items-center gap-3">{unsoldBtn}</div>
-      </>
-    );
-  }
-
   const sellOrRevokeButton =
-    props.player?.status === "AVAILABLE" || props.player?.status === "UNSOLD" ? (
+    props.player?.currentTeamId && (props.player?.status === "AVAILABLE" || props.player?.status === "UNSOLD") ? (
       <Popover
         content={
           <div className="flex items-center gap-2">
@@ -298,7 +291,7 @@ function Buttons(props: {
             <Button
               type="default"
               onClick={handleSoldChange}
-              className="!rounded-full !border-none !bg-transparent !px-3 !py-1.5 !text-slate-500 hover:!text-blue-500"
+              className="!rounded-full !border !border-slate-600 !bg-slate-800 !px-3 !py-1.5 !text-slate-200 hover:!border-blue-500 hover:!bg-slate-700 hover:!text-blue-400"
             >
               No
             </Button>
@@ -318,57 +311,61 @@ function Buttons(props: {
           Sell
         </Button>
       </Popover>
-    ) : (
+    ) : props.player?.currentTeamId ? (
       <Button
         onClick={() => props.onRevoke(props.player)}
         className="!rounded-full !border-none !bg-amber-500 !px-6 !py-2 !text-sm !font-semibold !text-slate-900 !shadow-lg hover:!bg-amber-400"
       >
         Revoke
       </Button>
-    );
+    ) : null;
+
+  const resetButton = props.player?.currentTeamId ? (
+    <Popover
+      content={
+        <div className="flex items-center gap-2">
+          <Button
+            type="primary"
+            onClick={reset}
+            className="!rounded-full !border-none !bg-sky-500 !px-4 !py-1.5 !font-semibold !text-white"
+          >
+            Yes
+          </Button>
+          <Button
+            type="default"
+            onClick={handleOpenChange}
+            className="!rounded-full !border !border-slate-600 !bg-slate-800 !px-3 !py-1.5 !text-slate-200 hover:!border-blue-500 hover:!bg-slate-700 hover:!text-blue-400"
+          >
+            No
+          </Button>
+        </div>
+      }
+      title="Reset player points and team?"
+      trigger="click"
+      open={openPopover}
+      placement="bottom"
+      onOpenChange={handleOpenChange}
+    >
+      <Button
+        type="primary"
+        danger
+        className="!flex !items-center !gap-2 !rounded-full !border-none !bg-gradient-to-r !from-sky-500 !to-indigo-600 !px-6 !py-2 !text-sm !font-semibold !text-white !shadow-lg hover:!from-sky-400 hover:!to-indigo-500"
+        icon={<UndoOutlined />}
+        onClick={handleOpenChange}
+      >
+        Reset
+      </Button>
+    </Popover>
+  ) : null;
 
   return (
     <>
       {isExploading && <Confetti recycle={false} />}
-      <div className="mt-6 flex flex-wrap items-center gap-3">
+      <div className="mt-6 min-h-[44px] flex flex-wrap items-center gap-3">
         {sellOrRevokeButton}
-        <Popover
-          content={
-            <div className="flex items-center gap-2">
-              <Button
-                type="primary"
-                onClick={reset}
-                className="!rounded-full !border-none !bg-sky-500 !px-4 !py-1.5 !font-semibold !text-white"
-              >
-                Yes
-              </Button>
-              <Button
-                type="default"
-                onClick={handleOpenChange}
-                className="!rounded-full !border-none !bg-transparent !px-3 !py-1.5 !text-slate-500 hover:!text-blue-500"
-              >
-                No
-              </Button>
-            </div>
-          }
-          title="Reset player points and team?"
-          trigger="click"
-          open={openPopover}
-          placement="bottom"
-          onOpenChange={handleOpenChange}
-        >
-          <Button
-            type="primary"
-            danger
-            className="!flex !items-center !gap-2 !rounded-full !border-none !bg-gradient-to-r !from-sky-500 !to-indigo-600 !px-6 !py-2 !text-sm !font-semibold !text-white !shadow-lg hover:!from-sky-400 hover:!to-indigo-500"
-            icon={<UndoOutlined />}
-            onClick={handleOpenChange}
-          >
-            Reset
-          </Button>
-        </Popover>
+        {resetButton}
+        {unsoldBtn}
       </div>
-      {unsoldBtn}
     </>
   );
 }
