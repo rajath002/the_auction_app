@@ -91,8 +91,6 @@ export default function Header() {
         : "text-gray-200 hover:text-white hover:bg-white/5"
     }`;
 
-  const currentYear = new Date().getFullYear();
-
   const isRegistrationActive =
     pathName === NavLinks.PLAYER_REGISTRATION ||
     pathName === NavLinks.BULK_PLAYER_REGISTRATION;
@@ -130,7 +128,7 @@ export default function Header() {
           <div className="flex items-baseline gap-1">
             <span className="uppercase tracking-[0.2em] text-xs text-gray-300">KPL</span>
             <span className="bg-gradient-to-r from-amber-300 via-pink-300 to-violet-300 bg-clip-text text-base font-bold text-transparent">
-              {currentYear}
+              2026
             </span>
           </div>
         </Link>
