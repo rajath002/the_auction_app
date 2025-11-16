@@ -76,7 +76,7 @@ export const AuctionContainer = () => {
     }
 
     updatePurse(team, team.purse - value);
-    updatePlayerPoints(playerInfo.id, team, value);
+    updatePlayerPoints(playerInfo.id, team, value, oldTeamId ? playerInfo.status : "In-Progress");
 
     if (playerInfo.currentTeamId) {
       const oldTeam = teams.find((existingTeam) => existingTeam.id === oldTeamId);
@@ -113,6 +113,7 @@ export const AuctionContainer = () => {
   };
 
   const hasPlayers = filteredPlayers.length > 0;
+  const isBiddingActive = filteredPlayers[currentPlayerIndex]?.status === "In-Progress";
 
   return (
     <ConfigProvider>
@@ -140,6 +141,7 @@ export const AuctionContainer = () => {
                 title="Search by Category"
                 onChange={handleCategoryChange}
                 value={selectedCategory ?? "All"}
+                disabled={isBiddingActive}
               >
                 {categories.map((category) => (
                   <Select.Option key={category} value={category === "All" ? "All" : category}>
@@ -173,7 +175,8 @@ export const AuctionContainer = () => {
                 onClick={() => {
                   setCurrentPlayerIndex(Math.max(currentPlayerIndex - 1, 0));
                 }}
-                className="!flex !h-12 !w-12 !items-center !justify-center !rounded-full !border-none !bg-gradient-to-br !from-slate-800 !to-slate-900 !text-slate-200 hover:!from-slate-700 hover:!to-slate-800"
+                disabled={isBiddingActive}
+                className="!flex !h-12 !w-12 !items-center !justify-center !rounded-full !border-none !bg-gradient-to-br !from-slate-800 !to-slate-900 !text-slate-200 hover:!from-slate-700 hover:!to-slate-800 disabled:!opacity-50 disabled:!cursor-not-allowed"
               >
                 <ArrowLeftOutlined />
               </Button>
@@ -204,7 +207,8 @@ export const AuctionContainer = () => {
                   const list = filteredPlayers;
                   setCurrentPlayerIndex(Math.min(currentPlayerIndex + 1, list.length - 1));
                 }}
-                className="!flex !h-12 !w-12 !items-center !justify-center !rounded-full !border-none !bg-gradient-to-br !from-slate-800 !to-slate-900 !text-slate-200 hover:!from-slate-700 hover:!to-slate-800"
+                disabled={isBiddingActive}
+                className="!flex !h-12 !w-12 !items-center !justify-center !rounded-full !border-none !bg-gradient-to-br !from-slate-800 !to-slate-900 !text-slate-200 hover:!from-slate-700 hover:!to-slate-800 disabled:!opacity-50 disabled:!cursor-not-allowed"
               >
                 <ArrowRightOutlined />
               </Button>

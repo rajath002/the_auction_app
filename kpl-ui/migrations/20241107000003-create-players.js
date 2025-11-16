@@ -50,7 +50,7 @@ module.exports = {
         onDelete: 'SET NULL'
       },
       status: {
-        type: Sequelize.ENUM('SOLD', 'UNSOLD', 'AVAILABLE'),
+        type: Sequelize.ENUM('SOLD', 'UNSOLD', 'AVAILABLE', 'In-Progress'),
         allowNull: true
       },
       created_at: {
