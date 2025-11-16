@@ -16,6 +16,7 @@ enum NavLinks {
   PLAYER_REGISTRATION = "/player-registration",
   BULK_PLAYER_REGISTRATION = "/bulk-player-registration",
   ABOUT_US = "/about-us",
+  GALLERY = "/gallery",
   PAGE_ACCESS_MANAGEMENT = "/page-access-management",
 }
 
@@ -24,6 +25,7 @@ const navItems = [
   { label: "Players", href: NavLinks.PLAYERS },
   { label: "Auction", href: NavLinks.AUCTION },
   { label: "Teams", href: NavLinks.TEAMS },
+  { label: "Gallery", href: NavLinks.GALLERY },
   { label: "About Us", href: NavLinks.ABOUT_US },
 ];
 

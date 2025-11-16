@@ -12,7 +12,7 @@ export default function About() {
           <p className="text-slate-300 text-lg mb-8 leading-relaxed">
             We are a passionate team of developers dedicated to building an
             innovative
-            <span className="font-semibold text-blue-400">&nbsp;Auction app</span>. Our
+            <span className="font-semibold text-blue-400">&nbsp;Applications</span>. Our
             mission is to create an engaging and immersive experience for users,
             where strategy, skill, and excitement come together.
           </p>

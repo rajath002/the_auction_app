@@ -37,13 +37,13 @@ module.exports = {
         updated_at: new Date()
       },
       {
-        name: 'Auction Manager',
-        email: 'auction@kpl.com',
-        password: await bcrypt.hash('auction123m', 10),
+        name: 'Manager',
+        email: 'manager@kpl.com',
+        password: await bcrypt.hash('auctionmanager123', 10),
         role: 'manager',
         created_at: new Date(),
         updated_at: new Date()
-      }
+      },
     ], {});
 
     // Reset the auto-increment sequence to continue from the highest ID
@@ -54,7 +54,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('users', {
-      email: ['admin@kpl.com', 'user@kpl.com', 'demo@kpl.com']
+      email: ['admin@kpl.com', 'user@kpl.com', 'demo@kpl.com', 'manager@kpl.com']
     }, {});
   }
 };

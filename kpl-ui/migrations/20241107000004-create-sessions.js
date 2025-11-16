@@ -46,6 +46,10 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    // Remove indexes
+    await queryInterface.removeIndex('sessions', ['user_id']);
+    await queryInterface.removeIndex('sessions', 'idx_sessions_token');
+    await queryInterface.removeIndex('sessions', ['expires']);
     await queryInterface.dropTable('sessions');
   }
 };

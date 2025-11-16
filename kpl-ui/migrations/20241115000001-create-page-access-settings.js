@@ -52,6 +52,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.removeIndex('page_access_settings', 'idx_page_route');
     await queryInterface.dropTable('page_access_settings');
   }
 };
