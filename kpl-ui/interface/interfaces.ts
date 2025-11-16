@@ -7,7 +7,7 @@ export interface Team {
   iconPlayer: string;
 }
 
-export type PlayerStatus = "SOLD" | "UNSOLD" | "AVAILABLE";
+export type PlayerStatus = "SOLD" | "UNSOLD" | "AVAILABLE" | "In-Progress";
 
 // Player data model
 export interface Player {

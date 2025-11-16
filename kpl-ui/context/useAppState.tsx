@@ -79,15 +79,23 @@ function useAppState() {
     points: number,
     status?: any
   ) {
+    const newStatus = status || "AVAILABLE";
     setPlayers((players) => {
       return players.map((playr) => {
         if (playr.id === playerId) {
           playr.bidValue = points;
           playr.currentTeamId = team.id;
-          playr.status = status || "AVAILABLE";
+          playr.status = newStatus;
         }
         return playr;
       });
+    });
+    
+    // Update player in database
+    newStatus !== 'In-Progress' && updatePlayer(playerId, {
+      status: newStatus,
+      bidValue: points,
+      currentTeamId: team.id,
     });
   }
 

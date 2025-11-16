@@ -17,7 +17,7 @@ const numberFormatter = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0,
 });
 
-type StatusKey = "SOLD" | "UNSOLD" | "AVAILABLE";
+type StatusKey = "SOLD" | "UNSOLD" | "AVAILABLE" | "In-Progress";
 
 interface StatusMeta {
   label: string;
@@ -43,6 +43,12 @@ const STATUS_STYLES: Record<StatusKey, StatusMeta> = {
     label: "Available",
     badgeClass: "bg-sky-500/15 text-sky-200 ring-1 ring-sky-400/40",
   },
+  "In-Progress": {
+    label: "In-Progress",
+    badgeClass: "bg-yellow-500/20 text-yellow-200 ring-1 ring-yellow-400/50",
+    panelClass: "border border-yellow-500/40 bg-yellow-500/10 text-yellow-200",
+    panelText: "Player bidding in progress",
+  }
 };
 
 const resolvePlayerImage = (image?: string | null) => {
@@ -276,49 +282,50 @@ function Buttons(props: {
     </Popover>
   );
 
-  const sellOrRevokeButton =
-    props.player?.currentTeamId && (props.player?.status === "AVAILABLE" || props.player?.status === "UNSOLD") ? (
-      <Popover
-        content={
-          <div className="flex items-center gap-2">
-            <Button
-              type="primary"
-              onClick={onSoldHandler}
-              className="!rounded-full !border-none !bg-emerald-500 !px-4 !py-1.5 !font-semibold !text-white"
-            >
-              Yes
-            </Button>
-            <Button
-              type="default"
-              onClick={handleSoldChange}
-              className="!rounded-full !border !border-slate-600 !bg-slate-800 !px-3 !py-1.5 !text-slate-200 hover:!border-blue-500 hover:!bg-slate-700 hover:!text-blue-400"
-            >
-              No
-            </Button>
-          </div>
-        }
-        title="Confirm selling this player"
-        trigger="click"
-        open={openSoldPopover}
-        placement="bottom"
-        onOpenChange={handleSoldChange}
-      >
-        <Button
-          className="!flex !items-center !gap-2 !rounded-full !border-none !bg-emerald-500 !px-6 !py-2 !text-sm !font-semibold !text-white !shadow-lg hover:!bg-emerald-400"
-          onClick={handleSoldChange}
-          icon={<LikeFilled />}
-        >
-          Sell
-        </Button>
-      </Popover>
-    ) : props.player?.currentTeamId ? (
+  const sellButton = (props.player?.status === "AVAILABLE" || props.player?.status === "In-Progress") && props.player?.currentTeamId ? (
+    <Popover
+      content={
+        <div className="flex items-center gap-2">
+          <Button
+            type="primary"
+            onClick={onSoldHandler}
+            className="!rounded-full !border-none !bg-emerald-500 !px-4 !py-1.5 !font-semibold !text-white"
+          >
+            Yes
+          </Button>
+          <Button
+            type="default"
+            onClick={handleSoldChange}
+            className="!rounded-full !border !border-slate-600 !bg-slate-800 !px-3 !py-1.5 !text-slate-200 hover:!border-blue-500 hover:!bg-slate-700 hover:!text-blue-400"
+          >
+            No
+          </Button>
+        </div>
+      }
+      title="Confirm selling this player"
+      trigger="click"
+      open={openSoldPopover}
+      placement="bottom"
+      onOpenChange={handleSoldChange}
+    >
       <Button
-        onClick={() => props.onRevoke(props.player)}
-        className="!rounded-full !border-none !bg-amber-500 !px-6 !py-2 !text-sm !font-semibold !text-slate-900 !shadow-lg hover:!bg-amber-400"
+        className="!flex !items-center !gap-2 !rounded-full !border-none !bg-emerald-500 !px-6 !py-2 !text-sm !font-semibold !text-white !shadow-lg hover:!bg-emerald-400"
+        onClick={handleSoldChange}
+        icon={<LikeFilled />}
       >
-        Revoke
+        Sell
       </Button>
-    ) : null;
+    </Popover>
+  ) : null;
+
+  const revokeButton = props.player?.status === "SOLD" || props.player?.status === "UNSOLD" ? (
+    <Button
+      onClick={() => props.onRevoke(props.player)}
+      className="!rounded-full !border-none !bg-amber-500 !px-6 !py-2 !text-sm !font-semibold !text-slate-900 !shadow-lg hover:!bg-amber-400"
+    >
+      Revoke
+    </Button>
+  ) : null;
 
   const resetButton = props.player?.currentTeamId ? (
     <Popover
@@ -362,7 +369,8 @@ function Buttons(props: {
     <>
       {isExploading && <Confetti recycle={false} />}
       <div className="mt-6 min-h-[44px] flex flex-wrap items-center gap-3">
-        {sellOrRevokeButton}
+        {sellButton}
+        {revokeButton}
         {resetButton}
         {unsoldBtn}
       </div>
