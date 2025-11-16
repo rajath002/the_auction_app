@@ -115,14 +115,14 @@ export default function LoginPage() {
           </Form.Item>
         </Form>
 
-        {process.env.NODE_ENV === 'development' && (
+        {/* {process.env.NODE_ENV === 'development' && (
           <div className="text-center mt-4">
             <span className="text-gray-400">Don&apos;t have an account? </span>
             <Link href="/auth/register" className="text-blue-400 hover:text-blue-300">
               View demo accounts
             </Link>
           </div>
-        )}
+        )} */}
       </Card>
     </div>
   );

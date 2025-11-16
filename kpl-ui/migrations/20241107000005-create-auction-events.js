@@ -60,6 +60,10 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.removeIndex('auction_events', ['player_id']);
+    await queryInterface.removeIndex('auction_events', ['team_id']);
+    await queryInterface.removeIndex('auction_events', ['created_at']);
+    await queryInterface.removeIndex('auction_events', 'idx_auction_player_time');
     await queryInterface.dropTable('auction_events');
   }
 };

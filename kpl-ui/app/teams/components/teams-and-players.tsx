@@ -22,7 +22,7 @@ export default function TeamsAndPlayers() {
   }
 
   return (
-    <section className="px-4 py-12 border-slate-800/60 bg-slate-950/90 ">
+    <section className="px-4 py-12 border-slate-800/60 bg-slate-950/90 min-h-screen">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
         {/* <div className="pointer-events-none absolute -bottom-28 -right-24 rounded-full bg-blue-500/10 blur-3xl" /> */}
       <div className="h-20"></div>
@@ -54,7 +54,7 @@ export default function TeamsAndPlayers() {
                   <div className="pointer-events-none absolute -top-16 right-[-20%] h-48 w-48 rounded-full bg-blue-500/20 blur-3xl" />
                 </div>
 
-                <div className="relative z-10 flex flex-col gap-4">
+                <div className="relative z-10 flex flex-col gap-2">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Team</p>
@@ -67,6 +67,17 @@ export default function TeamsAndPlayers() {
                       {players.length} Players
                     </span>
                   </div>
+
+                    <header className="flex flex-col text-[11px] uppercase tracking-[0.35em] text-slate-500 cursor-default">
+                    <div className="flex items-center justify-between gap-3 mt-1" title={team.owner || "TBD"}>
+                      <span className="text-[10px] tracking-[0.35em] text-slate-400">Owner</span>
+                      <span className="ml-2 truncate text-sm font-semibold text-slate-100">{team.owner || "TBD"}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-3" title={team.mentor || "TBD"}>
+                      <span className="text-[10px] tracking-[0.35em] text-slate-400">Mentor</span>
+                      <span className="ml-2 truncate text-sm font-semibold text-slate-100">{team.mentor || "TBD"}</span>
+                    </div>
+                  </header>
 
                   {iconPlayer ? (
                     <div className="flex items-center gap-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-amber-200">
@@ -102,7 +113,7 @@ export default function TeamsAndPlayers() {
                       )}
                     </div>
                   </div>
-                  <footer className="flex flex-col pt-2 text-[11px] uppercase tracking-[0.35em] text-slate-500">
+                  {/* <footer className="flex flex-col pt-2 text-[11px] uppercase tracking-[0.35em] text-slate-500">
                     <div className="flex items-center justify-between gap-3">
                       <span className="text-[10px] tracking-[0.35em] text-slate-400">Mentor</span>
                       <span className="ml-2 truncate text-sm font-semibold text-slate-100">{team.mentor || "TBD"}</span>
@@ -111,7 +122,7 @@ export default function TeamsAndPlayers() {
                       <span className="text-[10px] tracking-[0.35em] text-slate-400">Owner</span>
                       <span className="ml-2 truncate text-sm font-semibold text-slate-100">{team.owner || "TBD"}</span>
                     </div>
-                  </footer>
+                  </footer> */}
                 </div>
               </article>
             );

@@ -54,6 +54,11 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.removeIndex('users', 'idx_users_email');
+    await queryInterface.removeIndex('users', 'users_role');
     await queryInterface.dropTable('users');
+    
+    // Drop the ENUM type
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_users_role";');
   }
 };

@@ -76,6 +76,19 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
+    // Remove indexes
+    await queryInterface.removeIndex('players', ['type']);
+    await queryInterface.removeIndex('players', ['category']);
+    await queryInterface.removeIndex('players', ['status']);
+    await queryInterface.removeIndex('players', ['current_team_id']);
+    await queryInterface.removeIndex('players', 'idx_players_name');
+    
+    // Drop the table
     await queryInterface.dropTable('players');
+    
+    // Drop the ENUM types
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_players_type";');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_players_category";');
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_players_status";');
   }
 };
