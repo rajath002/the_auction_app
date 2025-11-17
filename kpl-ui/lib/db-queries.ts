@@ -67,9 +67,7 @@ export async function updateTeamPurse(teamId: number, amount: number) {
 export async function getAvailablePlayers() {
   return await Player.findAll({
     where: {
-      status: {
-        [Op.or]: [PlayerStatus.AVAILABLE, null],
-      },
+      status: PlayerStatus.AVAILABLE,
     },
     order: [['category', 'ASC'], ['base_value', 'DESC']],
   });
@@ -141,8 +139,8 @@ export async function markPlayerAsUnsold(playerId: number) {
 
   await player.update({
     status: PlayerStatus.UNSOLD,
-    current_team_id: null,
-    bid_value: null,
+    current_team_id: undefined,
+    bid_value: undefined,
   });
 
   return player;
