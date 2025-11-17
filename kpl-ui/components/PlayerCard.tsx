@@ -105,13 +105,14 @@ export const PlayerCard = ({
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent" />
             </div>
               {statusKey === "SOLD" && (
-                <div className="pointer-events-none absolute left-4 top-4 stamp-print">
+                <div className="pointer-events-none absolute left-4 top-4 "> 
+                {/* stamp-print */}
                   <Image
                     src="/sold-stamp.png"
                     alt="Sold stamp"
-                    width={400}
-                    height={400}
-                    className="h-40 w-44 -rotate-6 opacity-95 drop-shadow-[0_18px_45px_rgba(22,163,74,0.45)]"
+                    width={600}
+                    height={600}
+                    className="h-40 w-40 -rotate-6 opacity-95 drop-shadow-[0_18px_45px_rgba(22,163,74,0.45)]"
                     priority
                   />
                 </div>
@@ -147,18 +148,19 @@ export const PlayerCard = ({
               <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
                 {player?.name}
               </h2>
-              <p className="mt-2 text-sm text-slate-300 md:text-base">
+              {/* <p className="mt-2 text-sm text-slate-300 md:text-base">
                 Base Points · {formattedBaseValue}
                 {player?.type ? `  •  ${player.type}` : ""}
                 {player?.category ? `  •  Category ${player.category}` : ""}
-              </p>
+              </p> */}
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <StatTile label="Base Points" value={formattedBaseValue} />
-              <StatTile label="Current Bid" value={`₹${formattedBidValue}`} highlight />
+              {/* <StatTile label="Current Bid" value={`₹${formattedBidValue}`} highlight /> */}
               <StatTile label="Player Status" value={statusMeta.label} />
             </div>
+
 
             <Buttons
               player={player}
