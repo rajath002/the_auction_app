@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { Team, Player, User, AuctionEvent } from '@/models';
-import { PlayerStatus, PlayerType } from '@/models/Player';
+import { PlayerStatus, PlayerType, PlayerCategory } from '@/models/Player';
 import {
   getAllTeamsWithPlayers,
   getAvailablePlayers,
@@ -92,7 +92,7 @@ export async function exampleGetSpecificPlayers() {
   const players = await Player.findAll({
     where: {
       type: PlayerType.BATSMAN,
-      category: 'L1',
+      category: PlayerCategory.L1,
       status: PlayerStatus.AVAILABLE,
     },
     order: [['base_value', 'DESC']],
@@ -435,13 +435,13 @@ export async function exampleBulkOperations() {
     {
       name: 'Player 1',
       type: PlayerType.BATSMAN,
-      category: 'L1',
+      category: PlayerCategory.L1,
       base_value: 500,
     },
     {
       name: 'Player 2',
       type: PlayerType.BOWLER,
-      category: 'L2',
+      category: PlayerCategory.L2,
       base_value: 400,
     },
   ]);
@@ -451,7 +451,7 @@ export async function exampleBulkOperations() {
     { status: PlayerStatus.AVAILABLE },
     {
       where: {
-        status: null,
+        status: PlayerStatus.UNSOLD,
       },
     }
   );

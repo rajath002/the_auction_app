@@ -63,6 +63,7 @@ export default function PlayersRegistrationPage() {
         {/* <Title className="text-center p-10" level={2}>
           Player Registration
         </Title> */}
+        <div className="h-20" />
         <RegistrationForm 
           key={formKey}
           onFinish={onFinish} 
