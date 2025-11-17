@@ -31,13 +31,13 @@ const STATUS_STYLES: Record<StatusKey, StatusMeta> = {
     label: "Sold",
     badgeClass: "bg-emerald-500/20 text-emerald-200 ring-1 ring-emerald-400/50",
     panelClass: "border border-emerald-500/40 bg-emerald-500/10 text-emerald-200",
-    panelText: "Player marked as Sold",
+    panelText: "Player is Sold",
   },
   UNSOLD: {
     label: "Unsold",
     badgeClass: "bg-rose-500/20 text-rose-200 ring-1 ring-rose-400/50",
     panelClass: "border border-rose-500/40 bg-rose-500/10 text-rose-200",
-    panelText: "Player marked as Unsold",
+    panelText: "Player is Unsold",
   },
   AVAILABLE: {
     label: "Available",

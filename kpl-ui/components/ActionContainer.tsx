@@ -96,7 +96,7 @@ export const AuctionContainer = () => {
   const handleRevokeClick = () => {
     const activePlayer = filteredPlayers[currentPlayerIndex];
     if (activePlayer) {
-      updatePlayerStatus(activePlayer, "AVAILABLE");
+      updatePlayerStatus(activePlayer, "In-Progress");
     }
   };
 
@@ -188,7 +188,8 @@ export const AuctionContainer = () => {
                   onChange={(e) => {
                     setPlayerFilter(e.target.value);
                   }}
-                  className="rounded-full border border-slate-800 bg-slate-900/60 px-1 py-1"
+                  disabled={isBiddingActive}
+                  className="rounded-full border border-slate-800 bg-slate-900/60 px-1 py-1 [&_.ant-radio-button-wrapper]:!bg-slate-800 [&_.ant-radio-button-wrapper]:!text-slate-200 [&_.ant-radio-button-wrapper]:!border-none [&_.ant-radio-button-wrapper:not(:first-child)::before]:!hidden [&_.ant-radio-button-wrapper-checked]:!bg-slate-600 [&_.ant-radio-button-wrapper-checked]:!text-white"
                 >
                   <Radio.Button value="ALL" className="!rounded-full">
                     ALL
