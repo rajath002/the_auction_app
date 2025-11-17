@@ -37,8 +37,9 @@ function useAppState() {
   async function initDataValues() {
     const teamList = await getTeams();
     const responsePlayer = await getPlayers();
+    const shuffledPlayers = [...responsePlayer.data].sort(() => Math.random() - 0.5);
     setTeams(teamList);
-    setPlayers(responsePlayer.data);
+    setPlayers(shuffledPlayers);
   }
 
   function getFilteredPlayers(filter: FilterTypeValue, category?: string | null) {
