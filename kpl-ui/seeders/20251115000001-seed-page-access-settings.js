@@ -67,6 +67,22 @@ module.exports = {
         description: 'Manage page access settings (Admin only)',
         created_at: new Date(),
         updated_at: new Date()
+      },
+      {
+        page_route: '/manage-players',
+        page_name: 'Manage Players',
+        public_access: false,
+        description: 'Manage players (Admin only)',
+        created_at: new Date(),
+        updated_at: new Date()
+      },
+      {
+        page_route: '/gallery',
+        page_name: 'Gallery',
+        public_access: false,
+        description: 'Gallery page showcasing images and media',
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {});
 

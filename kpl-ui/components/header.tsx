@@ -18,6 +18,7 @@ enum NavLinks {
   ABOUT_US = "/about-us",
   GALLERY = "/gallery",
   PAGE_ACCESS_MANAGEMENT = "/page-access-management",
+  MANAGE_PLAYERS = "/manage-players",
 }
 
 const navItems = [
@@ -98,7 +99,8 @@ export default function Header() {
     pathName === NavLinks.BULK_PLAYER_REGISTRATION;
 
   const isAdminMenuActive =
-    pathName === NavLinks.PAGE_ACCESS_MANAGEMENT;
+    pathName === NavLinks.PAGE_ACCESS_MANAGEMENT ||
+    pathName === NavLinks.MANAGE_PLAYERS;
 
   const handleSignOut = async () => {
     await signOut({ callbackUrl: "/" });
@@ -259,6 +261,18 @@ export default function Header() {
                           Page Access Management
                         </Link>
                       </li>
+                      <li>
+                        <Link
+                          href={NavLinks.MANAGE_PLAYERS}
+                          className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                            pathName === NavLinks.MANAGE_PLAYERS
+                              ? "bg-white/10 text-yellow-300"
+                              : "text-gray-200 hover:bg-white/5 hover:text-white"
+                          }`}
+                        >
+                          Manage Players
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -372,7 +386,7 @@ export default function Header() {
                     }`}>
                       Admin
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-4 space-y-1">
                       <Link
                         href={NavLinks.PAGE_ACCESS_MANAGEMENT}
                         className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
@@ -383,6 +397,17 @@ export default function Header() {
                         onClick={closeMobileMenu}
                       >
                         Page Access Management
+                      </Link>
+                      <Link
+                        href={NavLinks.MANAGE_PLAYERS}
+                        className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
+                          pathName === NavLinks.MANAGE_PLAYERS
+                            ? "bg-white/10 text-yellow-300"
+                            : "text-gray-200 hover:bg-white/5 hover:text-white"
+                        }`}
+                        onClick={closeMobileMenu}
+                      >
+                        Manage Players
                       </Link>
                     </div>
                   </div>
