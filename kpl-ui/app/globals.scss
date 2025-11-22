@@ -140,3 +140,68 @@
     animation: none;
   }
 }
+
+//-------------------------------
+
+/* 2. The Main Container */
+.rgb-card {
+  /* 1. CRITICAL: Position needs to be relative so the child can sit behind it */
+  position: relative; 
+  
+  /* 2. CRITICAL: You MUST have a solid background color. 
+     If this is transparent, you will see the glow through the card. */
+  background-color: #1e1e1e; 
+  
+  /* 3. CRITICAL: Establish a stacking order */
+  z-index: 1;
+
+  /* Styling... */
+  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.rgb-card::before {
+  content: "";
+  position: absolute;
+  
+  /* Stretch the glow slightly outside the card */
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  
+  /* 4. CRITICAL: Put the glow BEHIND the card */
+  z-index: -1;
+  
+  /* The Gradient */
+  background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff0000);
+  background-size: 400%;
+  border-radius: 16px; /* Slightly larger radius than parent */
+  filter: blur(20px);
+  animation: glowing 20s linear infinite;
+  opacity: 1;
+}
+
+@keyframes glowing {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+.rgb-card .card-content {
+  text-align: center;
+  background-color: rgb(2 6 23 / var(--tw-bg-opacity)) /* #020617 */;
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white
+} 
