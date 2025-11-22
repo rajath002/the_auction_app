@@ -19,6 +19,7 @@ enum NavLinks {
   GALLERY = "/gallery",
   PAGE_ACCESS_MANAGEMENT = "/page-access-management",
   MANAGE_PLAYERS = "/manage-players",
+  ICON_ALLOCATION = "/icon-allocation",
 }
 
 const navItems = [
@@ -27,6 +28,7 @@ const navItems = [
   { label: "Auction", href: NavLinks.AUCTION },
   { label: "Teams", href: NavLinks.TEAMS },
   { label: "Gallery", href: NavLinks.GALLERY },
+  { label: "Icon Draw", href: NavLinks.ICON_ALLOCATION },
   { label: "About Us", href: NavLinks.ABOUT_US },
 ];
 

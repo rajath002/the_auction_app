@@ -67,7 +67,7 @@ export default function IconAllocationPage() {
       <div className="h-10"></div>
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent leading-loose">
-          Player Selection
+          Icon Player Allocation
         </h1>
 
         {/* Input Section */}
@@ -123,7 +123,7 @@ export default function IconAllocationPage() {
                 onClick={shuffleCards} 
                 className="w-full mt-6 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg font-bold text-lg transition-all transform hover:scale-105 shadow-lg"
               >
-                🎲 Shuffle Cards
+                🎲 Let&apos;s Roll the Dice!
               </button>
             )}
           </div>
@@ -132,7 +132,7 @@ export default function IconAllocationPage() {
         {/* Shuffled Cards */}
         {shuffledCards.length > 0 && (
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl shadow-lg p-6 animate-fadeIn">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Click Cards to Reveal</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-center">🎯 Click to Unlock Your Icon!</h2>
             {isShuffling ? (
               <div className="flex flex-col items-center justify-center py-20">
                 <div className="text-6xl mb-4 animate-spin">🎲</div>
