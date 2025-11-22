@@ -24,6 +24,17 @@ pnpm dev
 bun dev
 ```
 
+## Run Migration for Prod
+```bash
+npm run prod:migration
+```
+
+## Run Specific Seeder like below
+> (Windows command)
+```bash
+$env:NODE_ENV='miniprod'; npx sequelize-cli db:seed --seed 20251108000001-seed-users.js
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.

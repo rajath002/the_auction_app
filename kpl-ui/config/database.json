@@ -17,6 +17,20 @@
     "port": 5432,
     "dialect": "postgres"
   },
+  "miniprod": {
+    "username": "avnadmin",
+    "password": "",
+    "database": "defaultdb",
+    "host": "auction-dev-rockeyllogan-bd44.g.aivencloud.com",
+    "port": 28359,
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  },
   "production": {
     "use_env_variable": "DATABASE_URL",
     "dialect": "postgres",

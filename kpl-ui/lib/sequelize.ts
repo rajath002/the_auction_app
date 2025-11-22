@@ -2,11 +2,11 @@ import { Sequelize } from 'sequelize';
 
 // PostgreSQL connection configuration
 const sequelize = new Sequelize({
-  host: process.env.PG_DB_HOST || 'localhost',
-  port: parseInt(process.env.PG_DB_PORT || '5432'),
-  database: process.env.PG_DB_DATABASE || 'kpl_auction',
-  username: process.env.PG_DB_USERNAME || 'postgres',
-  password: process.env.PG_DB_PASSWORD || '',
+  host: process.env.PG_AVN_DB_HOST || 'localhost',
+  port: parseInt(process.env.PG_AVN_DB_PORT || '5432'),
+  database: process.env.PG_AVN_DB_DATABASE || 'kpl_auction',
+  username: process.env.PG_AVN_DB_USERNAME || 'postgres',
+  password: process.env.PG_AVN_DB_PASSWORD || '',
   dialect: 'postgres',
   schema: process.env.PG_DB_SCHEMA || 'public',
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
@@ -22,6 +22,8 @@ const sequelize = new Sequelize({
     freezeTableName: true, // Prevent Sequelize from pluralizing table names
   },
 });
+
+// console.log('PostgreSQL Sequelize configuration loaded.', sequelize);
 
 // Test the connection
 export const connectDB = async () => {

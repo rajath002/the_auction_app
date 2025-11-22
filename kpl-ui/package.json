@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "miniprod:dev": "cross-env NODE_ENV=miniprod next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -16,7 +17,14 @@
     "migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
     "seed": "npx sequelize-cli db:seed:all",
     "seed:undo": "npx sequelize-cli db:seed:undo",
-    "seed:undo:all": "npx sequelize-cli db:seed:undo:all"
+    "seed:undo:all": "npx sequelize-cli db:seed:undo:all",
+    "minprod:migrate": "cross-env NODE_ENV=miniprod npx sequelize-cli db:migrate",
+    "minprod:migrate:undo": "cross-env NODE_ENV=miniprod npx sequelize-cli db:migrate:undo",
+    "minprod:migrate:undo:all": "cross-env NODE_ENV=miniprod npx sequelize-cli db:migrate:undo:all",
+    "minprod:seed": "cross-env NODE_ENV=miniprod npx sequelize-cli db:seed:all",
+    "minprod:seed:undo": "cross-env NODE_ENV=miniprod npx sequelize-cli db:seed:undo",
+    "minprod:seed:undo:all": "cross-env NODE_ENV=miniprod npx sequelize-cli db:seed:undo:all",
+    "minprod:basic:seeds": "cross-env NODE_ENV=miniprod npx sequelize-cli db:seed --seed 20251108000001-seed-users.js --seed 20251108000002-seed-teams.js --seed 20251115000001-seed-page-access-settings.js"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
@@ -27,6 +35,7 @@
     "axios": "^1.6.2",
     "bcryptjs": "^3.0.3",
     "constate": "^3.3.2",
+    "cross-env": "^10.1.0",
     "imagekit": "^6.0.0",
     "mongodb": "^6.3.0",
     "multer": "^2.0.2",
