@@ -70,7 +70,33 @@ export async function middleware(request: NextRequest) {
     if (response.ok) {
       const data = await response.json();
       
-      // If page requires authentication and user is not logged in
+      // Check role-based access first (new system)
+      if (data.allowed_roles && Array.isArray(data.allowed_roles)) {
+        // Public access - anyone can access
+        if (data.allowed_roles.includes('public')) {
+          return NextResponse.next();
+        }
+        
+        // Requires authentication
+        if (!token) {
+          const url = new URL("/auth/login", request.url);
+          url.searchParams.set("callbackUrl", pathname);
+          return NextResponse.redirect(url);
+        }
+        
+        // Check if user's role is in allowed_roles
+        const userRole = token.role as string;
+        if (!data.allowed_roles.includes(userRole)) {
+          // User doesn't have required role - redirect to home with error
+          const url = new URL("/", request.url);
+          url.searchParams.set("error", "access_denied");
+          return NextResponse.redirect(url);
+        }
+        
+        return NextResponse.next();
+      }
+      
+      // Fall back to legacy public_access field if allowed_roles is not set
       if (!data.public_access && !token) {
         const url = new URL("/auth/login", request.url);
         url.searchParams.set("callbackUrl", pathname);

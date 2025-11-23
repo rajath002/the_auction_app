@@ -6,13 +6,14 @@ export interface PageAccessSettingAttributes {
   page_route: string;
   page_name: string;
   public_access: boolean;
+  allowed_roles?: string[] | null;
   description?: string;
   created_at?: Date;
   updated_at?: Date;
 }
 
 export interface PageAccessSettingCreationAttributes
-  extends Optional<PageAccessSettingAttributes, "id" | "description" | "created_at" | "updated_at"> {}
+  extends Optional<PageAccessSettingAttributes, "id" | "description" | "allowed_roles" | "created_at" | "updated_at"> {}
 
 class PageAccessSetting
   extends Model<PageAccessSettingAttributes, PageAccessSettingCreationAttributes>
@@ -22,6 +23,7 @@ class PageAccessSetting
   declare page_route: string;
   declare page_name: string;
   declare public_access: boolean;
+  declare allowed_roles?: string[] | null;
   declare description?: string;
   declare readonly created_at: Date;
   declare readonly updated_at: Date;
@@ -48,6 +50,12 @@ PageAccessSetting.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       allowNull: false,
+    },
+    allowed_roles: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: null,
+      comment: 'Array of roles that can access this page. Valid roles: admin, manager, user, public',
     },
     description: {
       type: DataTypes.TEXT,

@@ -27,6 +27,12 @@ module.exports = {
         allowNull: false,
         comment: 'Whether the page is accessible without authentication'
       },
+      allowed_roles: {
+        type: Sequelize.JSON,
+        allowNull: true,
+        defaultValue: null,
+        comment: 'Array of roles that can access this page. Valid roles: admin, manager, user, public'
+      },
       description: {
         type: Sequelize.TEXT,
         allowNull: true,
