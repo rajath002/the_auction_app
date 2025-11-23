@@ -1,14 +1,32 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ConfigProvider, theme, Table, Switch, Button, Modal, Form, Input, message, Space, Popconfirm } from "antd";
+import { ConfigProvider, theme, Table, Switch, Button, Modal, Form, Input, message, Space, Popconfirm, Checkbox, Tag } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from "@ant-design/icons";
 import RoleGuard from "@/components/RoleGuard";
+
+const ROLE_OPTIONS = [
+  { label: 'Public', value: 'public', description: 'Anyone can access (no login required)' },
+  { label: 'User', value: 'user', description: 'Any logged-in user' },
+  { label: 'Manager', value: 'manager', description: 'Manager role' },
+  { label: 'Admin', value: 'admin', description: 'Admin role only' },
+];
+
+const getRoleColor = (role: string) => {
+  switch (role) {
+    case 'public': return 'green';
+    case 'user': return 'blue';
+    case 'manager': return 'orange';
+    case 'admin': return 'red';
+    default: return 'default';
+  }
+};
 
 interface PageAccessSetting {
   id: number;
   page_route: string;
   page_name: string;
   public_access: boolean;
+  allowed_roles?: string[] | null;
   description?: string;
 }
 
@@ -64,7 +82,7 @@ export default function PageAccessManagementPage() {
   const handleAdd = () => {
     setEditingId(null);
     form.resetFields();
-    form.setFieldsValue({ public_access: false });
+    form.setFieldsValue({ public_access: false, allowed_roles: [] });
     setModalVisible(true);
   };
 
@@ -132,6 +150,25 @@ export default function PageAccessManagementPage() {
       width: 200,
     },
     {
+      title: 'Allowed Roles',
+      dataIndex: 'allowed_roles',
+      key: 'allowed_roles',
+      width: 250,
+      render: (roles: string[] | null) => (
+        <Space size="small" wrap>
+          {roles && roles.length > 0 ? (
+            roles.map((role) => (
+              <Tag key={role} color={getRoleColor(role)}>
+                {role.toUpperCase()}
+              </Tag>
+            ))
+          ) : (
+            <Tag color="default">No roles set</Tag>
+          )}
+        </Space>
+      ),
+    },
+    {
       title: 'Public Access',
       dataIndex: 'public_access',
       key: 'public_access',
@@ -196,7 +233,7 @@ export default function PageAccessManagementPage() {
               <div>
                 <h1 className="text-3xl font-bold text-white">Page Access Management</h1>
                 <p className="mt-2 text-gray-400">
-                  Control which pages are accessible to unauthenticated users
+                  Control which roles can access specific pages (Admin, Manager, User, or Public)
                 </p>
               </div>
               <Space>
@@ -241,7 +278,7 @@ export default function PageAccessManagementPage() {
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
-                initialValues={{ public_access: false }}
+                initialValues={{ public_access: false, allowed_roles: [] }}
               >
                 <Form.Item
                   name="page_route"
@@ -261,9 +298,27 @@ export default function PageAccessManagementPage() {
                 </Form.Item>
 
                 <Form.Item
+                  name="allowed_roles"
+                  label="Allowed Roles"
+                  tooltip="Select which roles can access this page. Leave empty to use legacy public_access setting."
+                >
+                  <Checkbox.Group style={{ width: '100%' }}>
+                    <Space direction="vertical" style={{ width: '100%' }}>
+                      {ROLE_OPTIONS.map((option) => (
+                        <Checkbox key={option.value} value={option.value}>
+                          <span className="font-semibold">{option.label}</span>
+                          <span className="ml-2 text-xs text-gray-400">- {option.description}</span>
+                        </Checkbox>
+                      ))}
+                    </Space>
+                  </Checkbox.Group>
+                </Form.Item>
+
+                <Form.Item
                   name="public_access"
-                  label="Public Access"
+                  label="Public Access (Legacy)"
                   valuePropName="checked"
+                  tooltip="Deprecated: Use 'Allowed Roles' instead. This field is kept for backward compatibility."
                 >
                   <Switch checkedChildren="Public" unCheckedChildren="Private" />
                 </Form.Item>

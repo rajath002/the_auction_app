@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { page_route, page_name, public_access, description } = body;
+    const { page_route, page_name, public_access, allowed_roles, description } = body;
 
     // Validate required fields
     if (!page_route || !page_name) {
@@ -42,6 +42,24 @@ export async function POST(request: NextRequest) {
         { message: "Missing required fields: page_route and page_name are required" },
         { status: 400 }
       );
+    }
+
+    // Validate allowed_roles if provided
+    if (allowed_roles !== undefined && allowed_roles !== null) {
+      if (!Array.isArray(allowed_roles)) {
+        return NextResponse.json(
+          { message: "allowed_roles must be an array" },
+          { status: 400 }
+        );
+      }
+      const validRoles = ['admin', 'manager', 'user', 'public'];
+      const invalidRoles = allowed_roles.filter((role: string) => !validRoles.includes(role));
+      if (invalidRoles.length > 0) {
+        return NextResponse.json(
+          { message: `Invalid roles: ${invalidRoles.join(', ')}. Valid roles are: ${validRoles.join(', ')}` },
+          { status: 400 }
+        );
+      }
     }
 
     // Check if route already exists
@@ -58,6 +76,7 @@ export async function POST(request: NextRequest) {
       page_route,
       page_name,
       public_access: public_access ?? false,
+      allowed_roles: allowed_roles || null,
       description: description || null,
     });
 
@@ -84,7 +103,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, page_route, page_name, public_access, description } = body;
+    const { id, page_route, page_name, public_access, allowed_roles, description } = body;
 
     // Validate ID
     if (!id) {
@@ -92,6 +111,24 @@ export async function PATCH(request: NextRequest) {
         { message: "Setting ID is required" },
         { status: 400 }
       );
+    }
+
+    // Validate allowed_roles if provided
+    if (allowed_roles !== undefined && allowed_roles !== null) {
+      if (!Array.isArray(allowed_roles)) {
+        return NextResponse.json(
+          { message: "allowed_roles must be an array" },
+          { status: 400 }
+        );
+      }
+      const validRoles = ['admin', 'manager', 'user', 'public'];
+      const invalidRoles = allowed_roles.filter((role: string) => !validRoles.includes(role));
+      if (invalidRoles.length > 0) {
+        return NextResponse.json(
+          { message: `Invalid roles: ${invalidRoles.join(', ')}. Valid roles are: ${validRoles.join(', ')}` },
+          { status: 400 }
+        );
+      }
     }
 
     // Find setting
@@ -108,6 +145,7 @@ export async function PATCH(request: NextRequest) {
     if (page_route !== undefined) updateData.page_route = page_route;
     if (page_name !== undefined) updateData.page_name = page_name;
     if (public_access !== undefined) updateData.public_access = public_access;
+    if (allowed_roles !== undefined) updateData.allowed_roles = allowed_roles;
     if (description !== undefined) updateData.description = description;
 
     await setting.update(updateData);

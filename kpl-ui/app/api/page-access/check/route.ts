@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         route,
         public_access: false,
+        allowed_roles: null,
         message: "No access setting found for this route. Defaulting to private."
       });
     }
@@ -32,6 +33,7 @@ export async function GET(request: NextRequest) {
       route: setting.page_route,
       page_name: setting.page_name,
       public_access: setting.public_access,
+      allowed_roles: setting.allowed_roles,
       description: setting.description
     });
   } catch (e) {

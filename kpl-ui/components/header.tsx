@@ -37,6 +37,7 @@ interface PageAccessSetting {
   page_route: string;
   page_name: string;
   public_access: boolean;
+  allowed_roles?: string[] | null;
   description?: string;
 }
 
@@ -74,15 +75,25 @@ export default function Header() {
       return session?.user?.role === "admin";
     }
     
-    // If page is public, anyone can access
+    // Check role-based access first (new system)
+    if (setting.allowed_roles && Array.isArray(setting.allowed_roles) && setting.allowed_roles.length > 0) {
+      // Public access - anyone can access
+      if (setting.allowed_roles.includes('public')) {
+        return true;
+      }
+      
+      // User must be authenticated for non-public roles
+      if (!session?.user?.role) {
+        return false;
+      }
+      
+      // Check if user's role is in allowed_roles
+      return setting.allowed_roles.includes(session.user.role);
+    }
+    
+    // Fall back to legacy public_access field if allowed_roles is not set
     if (setting.public_access) {
       return true;
-    }
-
-    if (!(session?.user?.role === "admin" || session?.user?.role === "manager")) { 
-      if (route === NavLinks.AUCTION) {
-        return false; // only Admins and Managers can access Auction
-      }
     }
     
     // If page is private, user must be authenticated
