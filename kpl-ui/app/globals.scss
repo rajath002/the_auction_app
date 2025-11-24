@@ -179,11 +179,11 @@
   z-index: -1;
   
   /* The Gradient */
-  background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff, #ff0000);
+  background: linear-gradient(45deg, #D500F9, #76FF03, #FBC02D, #0277BD);
   background-size: 400%;
   border-radius: 16px; /* Slightly larger radius than parent */
-  filter: blur(20px);
-  animation: glowing 20s linear infinite;
+  filter: blur(5px);
+  animation: glowing 30s ease-in-out infinite;
   opacity: 1;
 }
 
