@@ -6,11 +6,12 @@ import * as THREE from 'three';
 
 interface MagicCardsProps {
     hiddenWords?: string[];
+    onBack?: () => void;
 }
 
 const defaultHiddenWords = ["COURAGE", "WISDOM", "FORTUNE", "LOVE", "PEACE"];
 
-export default function MagicCards({ hiddenWords = defaultHiddenWords }: MagicCardsProps) {
+export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
@@ -115,14 +116,41 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords }: MagicCa
             ctx.shadowBlur = 5;
             ctx.fillText(`#${cardNumber}`, width / 2, 80);
 
-            // Draw main text in center
+            // Draw main text in center with word wrapping
             ctx.font = 'bold 80px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = ACCENT_COLOR;
             ctx.shadowColor = ACCENT_COLOR;
             ctx.shadowBlur = 8;
-            ctx.fillText(text, width / 2, height / 2);
+            
+            // Word wrap logic
+            const maxWidth = width - 80; // Leave padding
+            const words = text.split(' ');
+            const lines: string[] = [];
+            let currentLine = '';
+            
+            words.forEach(word => {
+                const testLine = currentLine ? `${currentLine} ${word}` : word;
+                const metrics = ctx.measureText(testLine);
+                
+                if (metrics.width > maxWidth && currentLine) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            });
+            if (currentLine) lines.push(currentLine);
+            
+            // Draw lines with proper spacing
+            const lineHeight = 90;
+            const totalHeight = lines.length * lineHeight;
+            const startY = (height / 2) - (totalHeight / 2) + (lineHeight / 2);
+            
+            lines.forEach((line, index) => {
+                ctx.fillText(line, width / 2, startY + (index * lineHeight));
+            });
 
             return new THREE.CanvasTexture(canvas);
         }
@@ -160,7 +188,7 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords }: MagicCa
             ctx.textBaseline = 'middle';
             ctx.fillStyle = ACCENT_COLOR;
             ctx.shadowColor = ACCENT_COLOR;
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = 2;
             ctx.fillText(cardNumber.toString(), size / 2, size / 2);
 
             return new THREE.CanvasTexture(canvas);
@@ -420,13 +448,19 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords }: MagicCa
     }, []);
 
     return (
-        <div className="relative w-full h-screen overflow-hidden bg-[#050505]">
-            {/* <div className="absolute top-5 left-0 w-full text-center z-10 pointer-events-none text-white/80 uppercase tracking-[4px] text-sm">
-                <div className="inline-block bg-black/50 px-5 py-2.5 rounded-[30px] border border-white/10 backdrop-blur-[5px]">
-                    Select a card to reveal your destiny
-                </div>
-            </div> */}
-            <div ref={containerRef} className="w-full h-full absolute top-0 left-0 z-[1]" />
+        <div className="fixed inset-0 w-full h-screen overflow-hidden bg-[#050505] z-40">
+            {onBack && (
+                <button
+                    onClick={onBack}
+                    className="absolute top-20 left-5 z-50 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-white flex items-center gap-2"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                    </svg>
+                    Go Back
+                </button>
+            )}
+            <div ref={containerRef} className="w-full h-full" />
         </div>
     );
 }
