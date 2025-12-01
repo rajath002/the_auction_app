@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import IconAllocationCards from '@/components/IconAllocationCards';
+import MagicCards from '@/components/MagicCards';
+import './icon-allocation.scss';
 
 export default function IconAllocationPage() {
   const [players, setPlayers] = useState<string[]>(['Dheeraj Shetty', 'Praveen Acharya', 'Adarsh Acharya', 'Shashi', 'Sandesh']);
   const [input, setInput] = useState('');
-  const [shuffledCards, setShuffledCards] = useState<{ name: string; revealed: boolean }[]>([]);
-  const [isShuffling, setIsShuffling] = useState(false);
+  const [showCards, setShowCards] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const addPlayer = () => {
     if (input.trim()) {
@@ -21,52 +23,54 @@ export default function IconAllocationPage() {
   };
 
   const shuffleCards = () => {
-    const shuffled = [...players].sort(() => Math.random() - 0.5);
-    setShuffledCards(shuffled.map(name => ({ name, revealed: false })));
-  };
-
-  const reshuffleCards = () => {
-    setIsShuffling(true);
+    // Start animation
+    setIsAnimating(true);
+    
+    // After animation completes, shuffle and show cards
     setTimeout(() => {
       const shuffled = [...players].sort(() => Math.random() - 0.5);
-      setShuffledCards(shuffled.map(name => ({ name, revealed: false })));
-      setIsShuffling(false);
-    }, 800);
-  };
-
-  const revealCard = (index: number) => {
-    setShuffledCards(prev =>
-      prev.map((card, i) => (i === index ? { ...card, revealed: true } : card))
-    );
+      setPlayers(shuffled);
+      setShowCards(true);
+      setIsAnimating(false);
+    }, 2000);
   };
 
   const resetAll = () => {
-    setShuffledCards([]);
+    setShowCards(false);
     setPlayers([]);
     setInput('');
   };
   
   return (
-    <div className="min-h-screen bg-slate-950/90 text-white px-4 py-8">
-      <style jsx>{`
-        @keyframes flipCard {
-          0% { transform: rotateY(0deg) scale(1); }
-          50% { transform: rotateY(90deg) scale(1.1); }
-          100% { transform: rotateY(0deg) scale(1); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-        .animate-pulse-slow {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-      `}</style>
-      <div className="h-10"></div>
-      <div className="max-w-6xl mx-auto">
+    <div className={`min-h-screen text-white ${showCards ? 'p-0' : 'px-4 py-8 bg-slate-950/90'}`}>
+      {/* Loading Animation Overlay */}
+      {isAnimating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-md">
+          <div className="text-center">
+            <div className="mb-8 text-8xl dice-animation">
+              🎲
+            </div>
+            <div className="shimmer-bg px-8 py-4 rounded-2xl mb-4">
+              <h2 className="text-4xl font-bold text-cyan-400 mb-2">
+                Shuffling Cards...
+              </h2>
+            </div>
+            <div className="flex justify-center gap-2 mb-4">
+              <div className="w-3 h-3 bg-cyan-400 rounded-full sparkle" style={{ animationDelay: '0s' }}></div>
+              <div className="w-3 h-3 bg-cyan-400 rounded-full sparkle" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-3 h-3 bg-cyan-400 rounded-full sparkle" style={{ animationDelay: '0.4s' }}></div>
+              <div className="w-3 h-3 bg-cyan-400 rounded-full sparkle" style={{ animationDelay: '0.6s' }}></div>
+              <div className="w-3 h-3 bg-cyan-400 rounded-full sparkle" style={{ animationDelay: '0.8s' }}></div>
+            </div>
+            <p className="text-lg text-cyan-300 animate-pulse">
+              Preparing your magical cards...
+            </p>
+          </div>
+        </div>
+      )}
+      
+      {!showCards && <div className="h-10"></div>}
+      <div className={showCards ? '' : 'max-w-6xl mx-auto'}>
         <h1 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent leading-loose">
           Icon Player Allocation
         </h1>
@@ -119,7 +123,7 @@ export default function IconAllocationPage() {
                 </div>
               ))}
             </div>
-            {!shuffledCards.length && (
+            {!showCards && (
               <button 
                 onClick={shuffleCards} 
                 className="w-full mt-6 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg font-bold text-lg transition-all transform hover:scale-105 shadow-lg"
@@ -131,12 +135,10 @@ export default function IconAllocationPage() {
         )}
 
         {/* Shuffled Cards */}
-        {shuffledCards.length > 0 && (
-          <IconAllocationCards
-            shuffledCards={shuffledCards}
-            revealCard={revealCard}
-            isShuffling={isShuffling}
-            onReshuffle={reshuffleCards}
+        {showCards && (
+          <MagicCards 
+            hiddenWords={players}
+            onBack={() => setShowCards(false)}
           />
         )}
 
