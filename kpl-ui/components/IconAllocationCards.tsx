@@ -12,7 +12,6 @@ interface IconAllocationCardsProps {
   revealCard: (index: number) => void;
   isShuffling: boolean;
   onReshuffle: () => void;
-
 }
 
 const AllocationCard: FC<{
