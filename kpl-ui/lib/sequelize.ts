@@ -1,27 +1,49 @@
 import { Sequelize } from 'sequelize';
 
 // PostgreSQL connection configuration
-const sequelize = new Sequelize({
-  host: process.env.PG_DB_HOST || 'localhost',
-  port: parseInt(process.env.PG_DB_PORT || '5432'),
-  database: process.env.PG_DB_DATABASE || 'kpl_auction',
-  username: process.env.PG_DB_USERNAME || 'postgres',
-  password: process.env.PG_DB_PASSWORD || '',
-  dialect: 'postgres',
-  schema: process.env.PG_DB_SCHEMA || 'public',
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000,
-  },
-  define: {
-    timestamps: true,
-    underscored: true, // Use snake_case for column names
-    freezeTableName: true, // Prevent Sequelize from pluralizing table names
-  },
-});
+const sequelize = process.env.DATABASE_URL
+  ? new Sequelize(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      logging: process.env.NODE_ENV === 'development' ? console.log : false,
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+      },
+      define: {
+        timestamps: true,
+        underscored: true, // Use snake_case for column names
+        freezeTableName: true, // Prevent Sequelize from pluralizing table names
+      },
+    })
+  : new Sequelize({
+      host: process.env.PG_DB_HOST || 'localhost',
+      port: parseInt(process.env.PG_DB_PORT || '5432'),
+      database: process.env.PG_DB_DATABASE || 'kpl_auction',
+      username: process.env.PG_DB_USERNAME || 'postgres',
+      password: process.env.PG_DB_PASSWORD || '',
+      dialect: 'postgres',
+      schema: process.env.PG_DB_SCHEMA || 'public',
+      logging: process.env.NODE_ENV === 'development' ? console.log : false,
+      dialectOptions: {
+        ssl: process.env.PG_DB_HOST !== 'localhost' ? {
+          require: true,
+          rejectUnauthorized: false,
+        } : false,
+      },
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+      },
+      define: {
+        timestamps: true,
+        underscored: true, // Use snake_case for column names
+        freezeTableName: true, // Prevent Sequelize from pluralizing table names
+      },
+    });
 
 // Test the connection
 export const connectDB = async () => {
