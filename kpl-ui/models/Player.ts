@@ -1,28 +1,9 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/sequelize';
+import { PlayerStatus, PlayerType, PlayerCategory } from '@/types/player-enums';
 
-// Player status enum
-export enum PlayerStatus {
-  SOLD = 'SOLD',
-  UNSOLD = 'UNSOLD',
-  AVAILABLE = 'AVAILABLE',
-}
-
-// Player type enum
-export enum PlayerType {
-  BATSMAN = 'Batsman',
-  BOWLER = 'Bowler',
-  ALL_ROUNDER = 'All-Rounder',
-  WICKET_KEEPER = 'Wicket-Keeper',
-}
-
-// Player category enum
-export enum PlayerCategory {
-  L1 = 'L1',
-  L2 = 'L2',
-  L3 = 'L3',
-  L4 = 'L4',
-}
+// Re-export enums for backward compatibility
+export { PlayerStatus, PlayerType, PlayerCategory };
 
 // Player attributes interface
 export interface PlayerAttributes {

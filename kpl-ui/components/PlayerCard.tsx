@@ -6,6 +6,7 @@ import Image from "next/image";
 import ImageWithFallback from "./ImageWithFallback";
 import kplImage from "../assets/kpl-logo-large.jpeg";
 import Confetti from "react-confetti";
+import { PlayerStatus } from "@/types/player-enums";
 
 const sampleURL =
   "https://images.unsplash.com/photo-1595210382051-4d2c31fcc2f4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -92,15 +93,18 @@ export const PlayerCard = ({
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
         <div className="pointer-events-none absolute -bottom-28 -right-24 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
 
-        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:items-center">
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center">
           <div className="flex flex-col items-center gap-5">
-            <div className="relative aspect-[4/3] w-full max-w-xl overflow-hidden rounded-3xl border border-slate-800/60 bg-slate-900/80 shadow-inner">
+            <div className="relative aspect-[4/5] w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-800/60 bg-slate-900/80 shadow-inner">
               <ImageWithFallback
                 src={playerImageSrc}
                 fallbackSrc={kplImage}
                 alt={player?.name ?? "Player preview"}
-                width={540}
-                height={360}
+                width={810}
+                height={1012}
+                objectFit="cover"
+                objectPosition="top center"
+                enablePreview={true}
               />
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/90 via-slate-900/40 to-transparent" />
             </div>
@@ -117,18 +121,6 @@ export const PlayerCard = ({
                   />
                 </div>
               )}
-            <div className="flex flex-wrap justify-center gap-3 text-[11px] uppercase tracking-[0.35em] text-slate-300">
-              {player?.type && (
-                <Tag className="!rounded-full !border-none !bg-sky-500/15 !px-4 !py-1 !text-[11px] !font-semibold !text-sky-200">
-                  {player.type}
-                </Tag>
-              )}
-              {player?.category && (
-                <Tag className="!rounded-full !border-none !bg-violet-500/15 !px-4 !py-1 !text-[11px] !font-semibold !text-violet-200">
-                  {`Category ${player.category}`}
-                </Tag>
-              )}
-            </div>
           </div>
 
           <div className="flex h-full flex-col gap-6">
@@ -148,11 +140,19 @@ export const PlayerCard = ({
               <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
                 {player?.name}
               </h2>
-              {/* <p className="mt-2 text-sm text-slate-300 md:text-base">
-                Base Points · {formattedBaseValue}
-                {player?.type ? `  •  ${player.type}` : ""}
-                {player?.category ? `  •  Category ${player.category}` : ""}
-              </p> */}
+            </div>
+
+            <div className="flex flex-wrap gap-3 text-[11px] uppercase tracking-[0.35em] text-slate-300">
+              {player?.type && (
+                <Tag className="!rounded-full !border-none !bg-sky-500/15 !px-4 !py-1 !text-[11px] !font-semibold !text-sky-200">
+                  {player.type}
+                </Tag>
+              )}
+              {player?.category && (
+                <Tag className="!rounded-full !border-none !bg-violet-500/15 !px-4 !py-1 !text-[11px] !font-semibold !text-violet-200">
+                  {`Category ${player.category}`}
+                </Tag>
+              )}
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -246,7 +246,7 @@ function Buttons(props: {
     }, 5000);
   };
 
-  const unsoldBtn = props.player?.status === null && (
+  const unsoldBtn = props.player?.status === PlayerStatus.AVAILABLE && (
     <Popover
       content={
         <div className="flex items-center gap-2">
