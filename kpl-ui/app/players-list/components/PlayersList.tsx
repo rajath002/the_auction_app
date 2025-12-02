@@ -32,6 +32,7 @@ export default function PlayersList() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
   const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [filteredInfo, setFilteredInfo] = useState<Filters>({
     category: null,
@@ -39,7 +40,13 @@ export default function PlayersList() {
   });
 
   useEffect(() => {
-    getPlayers().then((response) => setPlayers(response.data));
+    getPlayers().then((response) => {
+      setPlayers(response.data);
+      setIsLoading(false);
+    }).catch((error) => {
+      console.error('Error fetching players:', error);
+      setIsLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -81,7 +88,11 @@ export default function PlayersList() {
         },
       }}
     >
-      {players.length > 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center min-h-screen">
+          <p className="text-xl font-semibold">Loading Players...</p>
+        </div>
+      ) : players.length > 0 ? (
         <div>
           {/* <PlayerStats filteredPlayers={filteredPlayers} /> */}
 
@@ -99,8 +110,13 @@ export default function PlayersList() {
           </div>
         </div>
       ) : (
-        <div className="flex justify-center min-h-screen">
-          <p className="text-xl font-semibold">Loading Players...</p>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="text-center p-8 bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+            <div className="text-6xl mb-4">🏏</div>
+            <p className="text-2xl font-bold text-white mb-2">No Players Found</p>
+            <p className="text-gray-400 text-lg">There are no players available at the moment.</p>
+            <p className="text-gray-500 text-sm mt-4">Try adjusting your filters or check back later.</p>
+          </div>
         </div>
       )}
     </ConfigProvider>

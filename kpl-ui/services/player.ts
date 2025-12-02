@@ -18,9 +18,9 @@ export async function getPlayers(): Promise<GetPlayersResponse> {
 }
 
 
-export async function createPlayer(playerData: Partial<Player>): Promise<Player | null> {
+export async function createPlayer(playerData: Partial<Player>[]): Promise<Player[] | null> {
   try {
-    const response = await axios.post("/api/v2/players", playerData);
+    const response = await axios.post("/api/players", playerData);
     return response.data;
   } catch (error) {
     console.error("Error creating player:", error);
