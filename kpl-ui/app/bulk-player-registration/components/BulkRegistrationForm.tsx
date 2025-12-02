@@ -40,25 +40,35 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
       key: 'name',
     },
     {
-      title: 'Level',
-      dataIndex: 'level',
-      key: 'level',
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'category',
     },
     {
-      title: 'Date of Birth',
-      dataIndex: 'dateOfBirth',
-      key: 'dateOfBirth',
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
     },
     {
-      title: 'Contact Number',
-      dataIndex: 'contactNo',
-      key: 'contactNo',
+      title: 'Base Value',
+      dataIndex: 'baseValue',
+      key: 'baseValue',
     },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
-    },
+    // {
+    //   title: 'Bid Value',
+    //   dataIndex: 'bidValue',
+    //   key: 'bidValue',
+    // },
+    // {
+    //   title: 'Current Team ID',
+    //   dataIndex: 'currentTeamId',
+    //   key: 'currentTeamId',
+    // },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   key: 'status',
+    // },
   ];
 
   const validateData = (data: any[]): boolean => {
@@ -67,10 +77,9 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
     // Check if all required fields are present
     return data.every(row => 
       row.name && 
-      row.level && 
-      row.dateOfBirth && 
-      row.contactNo && 
-      row.email
+      row.category && 
+      row.type && 
+      row.baseValue !== undefined
     );
   };
 
@@ -85,8 +94,11 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
         const worksheet = workbook.Sheets[sheetName];
         const json = XLSX.utils.sheet_to_json(worksheet);
         
+        // Filter out test/mock data
+        const filteredJson = json.filter((row: any) => !row.name || !row.name.includes('Dummy Name'));
+        
         // Add keys for table
-        const dataWithKeys = json.map((item: any, index) => ({
+        const dataWithKeys = filteredJson.map((item: any, index) => ({
           ...item,
           key: index,
         }));
@@ -130,18 +142,28 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
   const downloadTemplate = () => {
     const templateData = [
       {
-        name: 'John Doe',
-        level: 'L1',
-        dateOfBirth: '15-Jan-1990',
-        contactNo: '9876543210',
-        email: 'john@example.com',
+        name: 'Dummy Name 1',
+        category: 'L1',
+        type: 'Batsman',
+        baseValue: 200,
       },
       {
-        name: 'Jane Smith',
-        level: 'L2',
-        dateOfBirth: '20-Feb-1992',
-        contactNo: '9876543211',
-        email: 'jane@example.com',
+        name: 'Dummy Name 2',
+        category: 'L2',
+        type: 'All Rounder',
+        baseValue: 250,
+      },
+      {
+        name: 'Dummy Name 3',
+        category: 'L3',
+        type: 'Bowler',
+        baseValue: 250,
+      },
+      {
+        name: 'Dummy Name 4',
+        category: 'L4',
+        type: 'Bowler',
+        baseValue: 250,
       },
     ];
 
@@ -153,7 +175,12 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
 
   const handleSubmit = () => {
     if (isValidData && parsedData.length > 0) {
-      props.onFinish(parsedData);
+      // Remove unwanted fields before submitting
+      const cleanedData = parsedData.map(row => {
+        const { key, ...rest } = row;
+        return rest;
+      });
+      props.onFinish(cleanedData);
     }
   };
 
@@ -175,7 +202,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
               description={
                 <div>
                   <p>1. Download the template file below</p>
-                  <p>2. Fill in the player details (Name, Level, Date of Birth, Contact Number, Email)</p>
+                  <p>2. Fill in the player details (Name, Category, Type, Base Value, etc.)</p>
                   <p>3. Upload the completed Excel file</p>
                   <p>4. Review the data and submit</p>
                 </div>
