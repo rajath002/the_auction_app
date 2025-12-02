@@ -10,23 +10,47 @@ export default function BulkPlayersRegistrationPage() {
   const [disableForm, setDisableForm] = useState(false);
   const [uploadedData, setUploadedData] = useState<any[]>([]);
 
-  const onFinish = (data: any[]) => {
+  const onFinish = async (data: any[]) => {
     setDisableForm(true);
     console.log("Submit bulk data: ", data);
     setUploadedData(data);
     
     if (data && data.length > 0) {
-      // Simulate API call
-      setTimeout(() => {
-        setSubmissionSuccess(true);
-        setDisableForm(false);
-      }, 1500);
-    } else {
-      setTimeout(() => {
+      try {
+        // Transform data to match API expectations
+        const transformedData = data.map(player => ({
+          name: player.name,
+          category: player.category,
+          type: player.type,
+          base_value: player.baseValue,
+        }));
+
+        const response = await fetch('/api/players', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(transformedData),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Players created successfully:', result);
+          setSubmissionSuccess(true);
+        } else {
+          const error = await response.json();
+          console.error('Failed to create players:', error);
+          setSubmissionSuccess(false);
+        }
+      } catch (error) {
+        console.error('Error submitting players:', error);
         setSubmissionSuccess(false);
-        setDisableForm(false);
-      }, 1500);
+      }
+    } else {
+      setSubmissionSuccess(false);
     }
+    
+    setDisableForm(false);
   };
 
   return (

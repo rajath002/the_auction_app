@@ -212,7 +212,7 @@ export default function RegistrationForm(props: SubmissionFormType) {
               />
             </Form.Item>
 
-            <Form.Item 
+            {/* <Form.Item 
               label="Date Of Birth" 
               name="dateOfBirth" 
               rules={[{ required: true, message: 'Please select your date of birth' }]}
@@ -223,9 +223,9 @@ export default function RegistrationForm(props: SubmissionFormType) {
                 className="w-full"
                 format="DD-MMM-YYYY"
               />
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item 
+            {/* <Form.Item 
               label="Contact Number" 
               name="contactNo" 
               rules={[
@@ -250,9 +250,9 @@ export default function RegistrationForm(props: SubmissionFormType) {
                 className="w-full"
                 controls={false}
               />
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item 
+            {/* <Form.Item 
               label="Email" 
               name="email" 
               rules={[
@@ -265,7 +265,7 @@ export default function RegistrationForm(props: SubmissionFormType) {
                 placeholder="Enter your email" 
                 size="large"
               />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item className="mb-0">
               <Space size="middle" className="w-full justify-center">

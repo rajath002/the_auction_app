@@ -29,17 +29,18 @@ export default function PlayersRegistrationPage() {
         type: values.type, // PlayerType: BATSMAN, BOWLER, ALL_ROUNDER, WICKET_KEEPER
         category: values.level, // PlayerCategory: L1, L2, L3, L4
         image: _imageUrl || "", // Use uploaded image URL or empty string
-        currentBid: 0, // Default current bid
-        stats: {
-          baseValue: values.baseValue || 0,
-          bidValue: 0, // Default bid value
-          currentTeamId: null, // No team assigned initially
-          status: 'AVAILABLE' as const, // Default status for new players
-        },
+        base_value: values.baseValue || 0,
+        // currentBid: 0, // Default current bid
+        // stats: {
+        //   baseValue: values.baseValue || 0,
+        //   bidValue: 0, // Default bid value
+        //   currentTeamId: null, // No team assigned initially
+        //   status: 'AVAILABLE' as const, // Default status for new players
+        // },
       };
 
       // Use the service function to create player
-      const savedPlayer = await createPlayer(playerData);
+      const savedPlayer = await createPlayer([playerData]);
 
       if (savedPlayer) {
         console.log('Player saved successfully:', savedPlayer);

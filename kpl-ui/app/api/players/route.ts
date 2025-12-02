@@ -2,25 +2,56 @@ import { NextRequest, NextResponse } from "next/server";
 import playersOld from "@/data/playerslist-old.json";
 import { connectToMongoDB, database, client, closeConnection } from "../config";
 import players from "@/data/players.json";
-import Player from "@/models/Player";
+import Player, { PlayerCategory, PlayerStatus, PlayerType } from "@/models/Player";
 import { connectDB } from "@/lib/sequelize";
 import { requireAuth, requireAdminOrManager, getAdminOrManagerRole } from "@/lib/api-auth";
 
 export async function POST(request: NextRequest) {
   try {
-    await connectToMongoDB();
-    const playersCollection = database.collection("players");
-    const result = await playersCollection.insertMany(playersOld);
-    return NextResponse.json(result);
+    // Require authentication - only admin or manager can create players
+    const authResult = await requireAdminOrManager(request);
+    if (authResult instanceof NextResponse) {
+      return authResult;
+    }
+
+    const body = await request.json();
+    
+    // Handle bulk creation
+    if (Array.isArray(body)) {
+      const players = await Player.bulkCreate(body);
+      return NextResponse.json(players, { status: 201 });
+    }
+    
+    // const {
+    //   baseValue,
+    //   bidValue,
+    //   currentTeamId,
+    //   status,
+    // } = body.stats || {};
+
+    // // Handle single player creation
+    // const player = await Player.create({
+    //   name: body.name,
+    //   image: body.image,
+    //   type: body.type as PlayerType,
+    //   category: body.category as PlayerCategory,
+    //   base_value: baseValue || body.baseValue,
+    //   current_bid: body.current_bid || body.currentBid || 0,
+    //   bid_value: bidValue || body.bidValue,
+    //   current_team_id: currentTeamId || body.currentTeamId,
+    //   status: PlayerStatus.AVAILABLE,
+    // });
+
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   } catch (error) {
+    console.error('Error creating player:', error);
     return NextResponse.json(
-      { message: "Something went Wrong!" },
+      { error: 'Failed to create player', message: String(error) },
       { status: 500 }
     );
-  } finally {
-    client.close();
   }
 }
+
 
 export async function PATCH(req: NextRequest) {
   try {

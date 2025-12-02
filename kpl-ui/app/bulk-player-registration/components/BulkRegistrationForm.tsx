@@ -102,7 +102,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
           ...item,
           key: index,
         }));
-        
+
         setParsedData(dataWithKeys);
         const isValid = validateData(dataWithKeys);
         setIsValidData(isValid);
@@ -150,7 +150,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
       {
         name: 'Dummy Name 2',
         category: 'L2',
-        type: 'All Rounder',
+        type: 'All-Rounder',
         baseValue: 250,
       },
       {
@@ -175,10 +175,26 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
 
   const handleSubmit = () => {
     if (isValidData && parsedData.length > 0) {
-      // Remove unwanted fields before submitting
+      // Remove unwanted fields before submitting and normalize type
       const cleanedData = parsedData.map(row => {
         const { key, ...rest } = row;
-        return rest;
+        let normalizedType = rest.type;
+        if (rest.type && typeof rest.type === 'string') {
+          const lowerType = rest.type.toLowerCase().trim();
+          if (lowerType === 'all rounder' || lowerType === 'all-rounder') {
+            normalizedType = 'All-Rounder';
+          } else if (lowerType === 'batsman') {
+            normalizedType = 'Batsman';
+          } else if (lowerType === 'bowler') {
+            normalizedType = 'Bowler';
+          } else if (lowerType === 'wicket keeper' || lowerType === 'wicket-keeper') {
+            normalizedType = 'Wicket-Keeper';
+          }
+        }
+        return {
+          ...rest,
+          type: normalizedType,
+        };
       });
       props.onFinish(cleanedData);
     }
