@@ -7,7 +7,12 @@ import { Button, ConfigProvider, Radio, Select } from "antd";
 import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
 
-const INCREMENTAL_POINTS = 50;
+const BID_INCREMENT_OPTIONS = [
+  { value: 50, label: "₹50" },
+  { value: 100, label: "₹100" },
+  { value: 150, label: "₹150" },
+  { value: 200, label: "₹200" },
+];
 
 const data = [
   { id: 1, name: "Level 1", category: "L1" },
@@ -21,6 +26,7 @@ const categories = ["All", ...new Set(data.map((item) => item.category))];
 
 export const AuctionContainer = () => {
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
+  const [bidIncrement, setBidIncrement] = useState<number>(50);
   const {
     teams,
     currentPlayerIndex,
@@ -47,8 +53,8 @@ export const AuctionContainer = () => {
   }, [getFilteredPlayers, playerFilter, selectedCategory]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
-    updatePlayerPoints(player.id, team, player.bidValue + INCREMENTAL_POINTS, player.status);
-    updatePurse(team, team.purse - INCREMENTAL_POINTS);
+    updatePlayerPoints(player.id, team, player.bidValue + bidIncrement, player.status);
+    updatePurse(team, team.purse - bidIncrement);
   };
 
   const updateTeamAndPlayerPoints = (team: Team) => {
@@ -72,7 +78,7 @@ export const AuctionContainer = () => {
     const oldTeamId = playerInfo.currentTeamId;
 
     if (oldTeamId) {
-      value += INCREMENTAL_POINTS;
+      value += bidIncrement;
     }
 
     updatePurse(team, team.purse - value);
@@ -131,6 +137,18 @@ export const AuctionContainer = () => {
                   Unsold · {totalUnsoldPlayers}
                 </span>
               </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-xs uppercase tracking-[0.35em] text-slate-400">Bid Increment</span>
+              <Select
+                className="min-w-28 [&_.ant-select-selector]:!rounded-full [&_.ant-select-selector]:!border-slate-700 [&_.ant-select-selector]:!bg-slate-900/80 [&_.ant-select-selector]:!text-slate-100 [&_.ant-select-selection-item]:!text-slate-100 [&_.ant-select-arrow]:!text-slate-400"
+                popupClassName="[&_.ant-select-item]:!bg-slate-900 [&_.ant-select-item]:!text-slate-100 [&_.ant-select-item-option-active]:!bg-slate-700 [&_.ant-select-item-option-selected]:!bg-slate-600 [&.ant-select-dropdown]:!bg-slate-900 [&_.ant-select-item-option-content]:!text-slate-100"
+                dropdownStyle={{ backgroundColor: "#0f172a" }}
+                value={bidIncrement}
+                onChange={(value) => setBidIncrement(value)}
+                options={BID_INCREMENT_OPTIONS}
+              />
             </div>
 
             <div className="ml-auto flex flex-wrap items-center gap-1 text-sm text-slate-300">
