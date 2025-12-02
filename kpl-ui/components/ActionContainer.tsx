@@ -183,8 +183,10 @@ export const AuctionContainer = () => {
                 index={currentPlayerIndex}
               />
             ) : (
-              <div className="rounded-3xl border border-amber-500/30 bg-amber-500/10 px-6 py-8 text-center text-2xl font-semibold text-amber-200 shadow-inner">
-                Players Not Found
+              <div className="relative flex min-h-[600px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-800/60 bg-slate-950/90 px-6 py-8 shadow-[0_30px_80px_rgba(15,23,42,0.55)] backdrop-blur">
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
+                <div className="pointer-events-none absolute -bottom-28 -right-24 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
+                <span className="relative text-2xl font-semibold text-slate-300">Players Not Found</span>
               </div>
             )}
 
