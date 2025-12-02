@@ -5,6 +5,7 @@ import ConfirmationDialog from "./components/ConfirmationDialog";
 import RegistrationForm from "./components/RegistrationForm";
 import { createPlayer } from "@/services/player";
 import RoleGuard from "@/components/RoleGuard";
+import { PlayerStatus } from "@/models/Player";
 
 // const { Title } = Typography;
 
@@ -30,6 +31,8 @@ export default function PlayersRegistrationPage() {
         category: values.level, // PlayerCategory: L1, L2, L3, L4
         image: _imageUrl || "", // Use uploaded image URL or empty string
         base_value: values.baseValue || 0,
+        bid_value: values.baseValue || 0,
+        status: PlayerStatus.AVAILABLE,
         // currentBid: 0, // Default current bid
         // stats: {
         //   baseValue: values.baseValue || 0,
