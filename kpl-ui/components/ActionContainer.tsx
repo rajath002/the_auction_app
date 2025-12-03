@@ -53,6 +53,10 @@ export const AuctionContainer = () => {
   }, [getFilteredPlayers, playerFilter, selectedCategory]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
+    // Check if team has enough funds for this bid
+    if (team.purse < bidIncrement) {
+      return; // Don't allow bid if it would make purse negative
+    }
     updatePlayerPoints(player.id, team, player.bidValue + bidIncrement, player.status);
     updatePurse(team, team.purse - bidIncrement);
   };
@@ -79,6 +83,11 @@ export const AuctionContainer = () => {
 
     if (oldTeamId) {
       value += bidIncrement;
+    }
+
+    // Check if team has enough funds for this bid
+    if (team.purse < value) {
+      return; // Don't allow bid if it would make purse negative
     }
 
     updatePurse(team, team.purse - value);
@@ -256,6 +265,8 @@ export const AuctionContainer = () => {
                   disabled={filteredPlayers[currentPlayerIndex]?.status === "SOLD"}
                   latedBiddedTeam={filteredPlayers[currentPlayerIndex]?.currentTeamId}
                   variant="list"
+                  requiredBidAmount={filteredPlayers[currentPlayerIndex]?.currentTeamId ? filteredPlayers[currentPlayerIndex]?.bidValue + bidIncrement : (filteredPlayers[currentPlayerIndex]?.status === "UNSOLD" ? bidIncrement : filteredPlayers[currentPlayerIndex]?.bidValue || 0)}
+                  isAuctionInProgress={isBiddingActive}
                 />
               ) : (
                 <div className="rounded-2xl border border-slate-800/60 bg-slate-900/60 px-4 py-6 text-center text-sm text-slate-400">

@@ -20,6 +20,8 @@ interface TeamListType {
   latedBiddedTeam: number | null;
   isPlayersAvailable: boolean;
   variant?: TeamListVariant;
+  requiredBidAmount?: number;
+  isAuctionInProgress?: boolean;
 }
 
 export const TeamList = (props: TeamListType) => {
@@ -42,6 +44,9 @@ export const TeamList = (props: TeamListType) => {
           isBiddedTeam={props.latedBiddedTeam === t.id}
           isPlayersAvailable={props.isPlayersAvailable}
           variant={variant}
+          hasInsufficientFunds={props.requiredBidAmount !== undefined && t.purse < props.requiredBidAmount}
+          hasLowFunds={t.purse < 100}
+          isAuctionInProgress={props.isAuctionInProgress ?? false}
         />
       ))}
     </div>
@@ -55,11 +60,16 @@ interface TeamType {
   isBiddedTeam: boolean;
   isPlayersAvailable: boolean;
   variant: TeamListVariant;
+  hasInsufficientFunds: boolean;
+  hasLowFunds: boolean;
+  isAuctionInProgress: boolean;
 }
 
-function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, variant }: TeamType) {
+function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, variant, hasInsufficientFunds, hasLowFunds, isAuctionInProgress }: TeamType) {
   const formattedPurse = currencyFormatter.format(team.purse);
-  const disableBid = disableButton || !isPlayersAvailable;
+  const disableBid = disableButton || !isPlayersAvailable || hasInsufficientFunds;
+  const showWarning = hasLowFunds && hasInsufficientFunds;
+  const showInsufficientMessage = isAuctionInProgress && hasInsufficientFunds && !isBiddedTeam;
   const infoEntries = [
     { label: "Owner", value: team.owner },
     { label: "Mentor", value: team.mentor },
@@ -83,9 +93,11 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
     return (
       <div
         className={[
-          "relative flex min-h-[100px] w-full items-center gap-2 rounded-3xl border border-slate-700/50 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 px-4 py-3 text-slate-100 shadow-lg transition-all duration-300 ease-out",
-          "hover:-translate-y-[2px] hover:border-blue-400/60 hover:shadow-2xl",
-          disableBid ? "opacity-90" : "",
+          "relative flex min-h-[100px] w-full items-center gap-2 rounded-3xl border bg-gradient-to-br px-4 py-3 text-slate-100 shadow-lg transition-all duration-300 ease-out",
+          showWarning 
+            ? "border-red-500/50 from-slate-950 via-red-950/20 to-slate-950 opacity-60" 
+            : "border-slate-700/50 from-slate-950 via-slate-900 to-slate-950 hover:-translate-y-[2px] hover:border-blue-400/60 hover:shadow-2xl",
+          disableBid && !showWarning ? "opacity-90" : "",
           isBiddedTeam ? "ring-1 ring-blue-500/70" : "",
         ]
           .filter(Boolean)
@@ -139,9 +151,14 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
                 <span className="block text-[11px] uppercase tracking-[0.35em] text-slate-400">
                   Purse
                 </span>
-                <span className="block text-xl font-semibold text-emerald-300">
+                <span className={`block text-xl font-semibold ${showInsufficientMessage ? "text-red-400" : "text-emerald-300"}`}>
                   ₹{formattedPurse}
                 </span>
+                {showInsufficientMessage && (
+                  <span className="block text-[10px] font-medium text-red-400">
+                    Insufficient funds
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -153,9 +170,11 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
   return (
     <div
       className={[
-        "flex w-full flex-col items-center gap-5 rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-5 text-slate-100 shadow-md transition-all duration-300 ease-out",
-        "hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-2xl",
-        disableBid ? "opacity-90" : "",
+        "flex w-full flex-col items-center gap-5 rounded-2xl border bg-gradient-to-br p-5 text-slate-100 shadow-md transition-all duration-300 ease-out",
+        showWarning
+          ? "border-red-500/50 from-slate-950 via-red-950/20 to-slate-950 opacity-60"
+          : "border-slate-700/50 from-slate-950 via-slate-900 to-slate-950 hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-2xl",
+        disableBid && !showWarning ? "opacity-90" : "",
         isBiddedTeam ? "ring-1 ring-blue-500/70" : "",
       ]
         .filter(Boolean)
@@ -189,11 +208,18 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
           {team.name}
         </h2>
 
-        <div className="flex w-full items-center justify-between rounded-2xl bg-slate-950/70 px-4 py-3">
-          <span className="text-[11px] uppercase tracking-[0.4em] text-slate-400">
-            Purse
-          </span>
-          <span className="text-lg font-bold text-emerald-300">₹{formattedPurse}</span>
+        <div className="flex w-full flex-col rounded-2xl bg-slate-950/70 px-4 py-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] uppercase tracking-[0.4em] text-slate-400">
+              Purse
+            </span>
+            <span className={`text-lg font-bold ${showInsufficientMessage ? "text-red-400" : "text-emerald-300"}`}>₹{formattedPurse}</span>
+          </div>
+          {showInsufficientMessage && (
+            <span className="text-center text-[10px] font-medium text-red-400 mt-1">
+              Insufficient funds
+            </span>
+          )}
         </div>
       </div>
 
