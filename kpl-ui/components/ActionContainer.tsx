@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { PlayerCard } from "./PlayerCard";
 import { TeamList } from "./TeamList";
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, ArrowRightOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import { Button, ConfigProvider, Radio, Select } from "antd";
 import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
@@ -14,21 +14,23 @@ const BID_INCREMENT_OPTIONS = [
   { value: 200, label: "₹200" },
 ];
 
-const data = [
-  { id: 1, name: "Level 1", category: "L1" },
-  { id: 2, name: "Level 2", category: "L2" },
-  { id: 3, name: "Level 3", category: "L3" },
-  { id: 4, name: "Level 4", category: "L4" },
-  { id: 5, name: "Level 5", category: "L5" },
+const CATEGORY_OPTIONS = [
+  { id: 1, name: "Batsman", category: "L1", description: "Batsman" },
+  { id: 2, name: "All Rounder", category: "L2", description: "All Rounder" },
+  { id: 3, name: "Batsman", category: "L3", description: "Batsman" },
+  { id: 4, name: "All Rounder", category: "L4", description: "All Rounder" },
 ];
 
-const categories = ["All", ...new Set(data.map((item) => item.category))];
+const categories = ["All", ...CATEGORY_OPTIONS.map((item) => item.category)];
 
 export const AuctionContainer = () => {
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
   const [bidIncrement, setBidIncrement] = useState<number>(50);
+  const [auctionStarted, setAuctionStarted] = useState<boolean>(false);
+  const [selectedStartCategory, setSelectedStartCategory] = useState<string | null>(null);
   const {
     teams,
+    players,
     currentPlayerIndex,
     playerFilter,
     totalSoldPlayers,
@@ -40,17 +42,28 @@ export const AuctionContainer = () => {
     updatePlayerStatus,
     setCurrentPlayerIndex,
     setPlayerFilter,
-    getFilteredPlayers,
     updateSelectedCategory,
   } = useAppContext();
 
+  // Filter players locally instead of calling getFilteredPlayers to avoid infinite loop
   useEffect(() => {
-    const playersList = getFilteredPlayers(playerFilter, selectedCategory);
-    setFilteredPlayers(playersList);
-    return () => {
-      // No teardown required
-    };
-  }, [getFilteredPlayers, playerFilter, selectedCategory]);
+    let filtered: Player[];
+    
+    if (playerFilter === "SOLD" || playerFilter === "UNSOLD") {
+      filtered = players.filter(
+        (p) => p.status === playerFilter && (selectedCategory ? p.category === selectedCategory : true)
+      );
+    } else if (playerFilter === "AUCTION") {
+      filtered = players.filter(
+        (p) => !(p.status === "SOLD" || p.status === "UNSOLD") && (selectedCategory ? p.category === selectedCategory : true)
+      );
+    } else {
+      // ALL
+      filtered = selectedCategory ? players.filter((p) => p.category === selectedCategory) : players;
+    }
+    
+    setFilteredPlayers(filtered);
+  }, [players, playerFilter, selectedCategory]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
     // Check if team has enough funds for this bid
@@ -127,8 +140,108 @@ export const AuctionContainer = () => {
     }
   };
 
+  const handleStartAuction = () => {
+    if (selectedStartCategory) {
+      updateSelectedCategory(selectedStartCategory);
+      setAuctionStarted(true);
+    }
+  };
+
   const hasPlayers = filteredPlayers.length > 0;
   const isBiddingActive = filteredPlayers[currentPlayerIndex]?.status === "In-Progress";
+
+  // Show Start Screen if auction hasn't started
+  if (!auctionStarted) {
+    return (
+      <ConfigProvider>
+        <div className="mx-auto flex min-h-[80vh] w-full max-w-4xl flex-col items-center justify-center gap-8 px-4">
+          <div className="relative w-full overflow-hidden rounded-[32px] border border-slate-800/60 bg-slate-950/90 px-8 py-12 shadow-[0_30px_80px_rgba(15,23,42,0.55)] backdrop-blur">
+            {/* Background decorations */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.15),_transparent_60%)]" />
+            <div className="pointer-events-none absolute -bottom-28 -right-24 h-56 w-56 rounded-full bg-blue-500/10 blur-3xl" />
+            <div className="pointer-events-none absolute -top-20 -left-20 h-48 w-48 rounded-full bg-purple-500/10 blur-3xl" />
+
+            <div className="relative flex flex-col items-center gap-8">
+              {/* Title */}
+              <div className="text-center">
+                <h1 className="mb-3 bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-5xl font-bold tracking-tight text-transparent">
+                  Let&apos;s Start the Bid!
+                </h1>
+                <p className="text-lg text-slate-400">
+                  Select a category to begin the auction
+                </p>
+              </div>
+
+              {/* Category Selection */}
+              <div className="w-full max-w-md">
+                <label className="mb-3 block text-center text-sm uppercase tracking-[0.25em] text-slate-500">
+                  Choose Starting Category
+                </label>
+                <div className="grid grid-cols-5 gap-3">
+                  {CATEGORY_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      onClick={() => setSelectedStartCategory(option.category)}
+                      className={`group relative flex flex-col items-center gap-2 rounded-2xl border px-4 py-4 transition-all duration-300 ${
+                        selectedStartCategory === option.category
+                          ? "border-blue-500/50 bg-blue-500/20 shadow-[0_0_30px_rgba(59,130,246,0.3)]"
+                          : "border-slate-700/50 bg-slate-900/60 hover:border-slate-600 hover:bg-slate-800/60"
+                      }`}
+                    >
+                      <span
+                        className={`text-2xl font-bold ${
+                          selectedStartCategory === option.category
+                            ? "text-blue-300"
+                            : "text-slate-300 group-hover:text-white"
+                        }`}
+                      >
+                        {option.category}
+                      </span>
+                      <span
+                        className={`text-xs ${
+                          selectedStartCategory === option.category
+                            ? "text-blue-400"
+                            : "text-slate-500"
+                        }`}
+                      >
+                        {option.name}
+                      </span>
+                      {selectedStartCategory === option.category && (
+                        <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.8)]" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Start Button */}
+              <Button
+                type="primary"
+                size="large"
+                icon={<PlayCircleOutlined />}
+                onClick={handleStartAuction}
+                disabled={!selectedStartCategory}
+                className={`!mt-4 !h-14 !min-w-[200px] !rounded-full !border-none !text-lg !font-semibold !tracking-wide !transition-all !duration-300 ${
+                  selectedStartCategory
+                    ? "!bg-gradient-to-r !from-blue-600 !to-cyan-500 hover:!from-blue-500 hover:!to-cyan-400 !shadow-[0_10px_40px_rgba(59,130,246,0.4)]"
+                    : "!bg-slate-700 !text-slate-400"
+                }`}
+              >
+                Start Auction
+              </Button>
+
+              {/* Hint text */}
+              {selectedStartCategory && (
+                <p className="animate-pulse text-sm text-slate-500">
+                  Click &quot;Start Auction&quot; to begin with {selectedStartCategory} players
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </ConfigProvider>
+    );
+  }
 
   return (
     <ConfigProvider>
