@@ -5,7 +5,7 @@ import ConfirmationDialog from "./components/ConfirmationDialog";
 import RegistrationForm from "./components/RegistrationForm";
 import { createPlayer } from "@/services/player";
 import RoleGuard from "@/components/RoleGuard";
-import { PlayerStatus } from "@/models/Player";
+import { PlayerStatus } from "@/types/player-enums";
 
 // const { Title } = Typography;
 
