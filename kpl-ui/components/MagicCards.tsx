@@ -1,8 +1,18 @@
-
-'use client';
-
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+
+/**
+ * MagicCards Component - Optimized 3D Card Animation
+ * 
+ * Performance Optimizations:
+ * - Device capability detection (low-end devices get reduced quality)
+ * - Texture caching and resolution scaling for mobile
+ * - Frame rate limiting (30fps on low-end, 60fps on high-end)
+ * - Debounced mouse movements and throttled raycasting
+ * - Conditional rendering (only render when objects change)
+ * - Reduced particle count on mobile devices
+ * - Disabled shadows/antialiasing on low-end devices
+ */
 
 interface MagicCardsProps {
     hiddenWords?: string[];
@@ -11,40 +21,51 @@ interface MagicCardsProps {
 
 const defaultHiddenWords = ["COURAGE", "WISDOM", "FORTUNE", "LOVE", "PEACE"];
 
-export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProps) {
+const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
     const animationFrameRef = useRef<number | null>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
+    const clockRef = useRef<THREE.Clock>(new THREE.Clock());
+    const textureCacheRef = useRef<Map<string, THREE.CanvasTexture>>(new Map());
+    const lastFrameTimeRef = useRef<number>(0);
 
     useEffect(() => {
         if (!containerRef.current) return;
 
+        // Performance detection
+        const screenWidth = window.innerWidth;
+        const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+        const isMobile = screenWidth < 768;
+        const isTablet = screenWidth >= 768 && screenWidth < 1024;
+        const targetFPS = isLowEndDevice || isMobile ? 30 : 60;
+        const frameInterval = 1000 / targetFPS;
+
         // Configuration
         const HIDDEN_WORDS = hiddenWords;
         const ACCENT_COLOR = "#00ffcc";
+        const SECONDARY_COLOR = "#004433"; 
+        const BG_COLOR = "#050505";
+        
         abortControllerRef.current = new AbortController();
 
-        // Responsive configuration - calculate once at the start
-        const screenWidth = window.innerWidth;
-        const isMobile = screenWidth < 768;
-        const isTablet = screenWidth >= 768 && screenWidth < 1024;
+        // Responsive configuration
         
         let cols = 5;
         if (isMobile) {
-            cols = Math.min(2, HIDDEN_WORDS.length); // 2 columns on mobile
+            cols = Math.min(2, HIDDEN_WORDS.length);
         } else if (isTablet) {
-            cols = Math.min(3, HIDDEN_WORDS.length); // 3 columns on tablet
+            cols = Math.min(3, HIDDEN_WORDS.length);
         }
         
         const rows = Math.ceil(HIDDEN_WORDS.length / cols);
 
         // Setup Scene
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050505);
-        scene.fog = new THREE.FogExp2(0x050505, 0.005);
+        scene.background = new THREE.Color(BG_COLOR);
+        scene.fog = new THREE.FogExp2(BG_COLOR, 0.005);
         sceneRef.current = scene;
 
         const camera = new THREE.PerspectiveCamera(
@@ -54,9 +75,8 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
             1000
         );
         
-        // Dynamic camera position based on screen size and number of cards
         if (isMobile) {
-            camera.position.z = 18 + (rows * 2); // Move camera further back on mobile
+            camera.position.z = 18 + (rows * 2);
         } else if (isTablet) {
             camera.position.z = 15 + (rows * 1.5);
         } else {
@@ -65,67 +85,100 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
         
         cameraRef.current = camera;
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const renderer = new THREE.WebGLRenderer({ 
+            antialias: !isLowEndDevice && !isMobile,
+            alpha: true,
+            powerPreference: "high-performance"
+        });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, isLowEndDevice ? 1 : 2));
+        renderer.shadowMap.enabled = !isLowEndDevice;
+        renderer.shadowMap.type = isLowEndDevice ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
         containerRef.current.appendChild(renderer.domElement);
         rendererRef.current = renderer;
 
         // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 5);
         scene.add(ambientLight);
 
-        const spotLight = new THREE.SpotLight(0xffffff, 2);
+        const spotLight = new THREE.SpotLight(0xffffff, 1.5);
         spotLight.position.set(0, 20, 20);
         spotLight.angle = 0.5;
         spotLight.penumbra = 0.5;
         spotLight.castShadow = true;
         scene.add(spotLight);
 
-        const pointLight = new THREE.PointLight(0x00ffff, 25, 150);
+        const pointLight = new THREE.PointLight(ACCENT_COLOR, 10, 150);
         pointLight.position.set(0, 0, 5);
         scene.add(pointLight);
 
-        // Helper: Create Text Texture
+        
+
+        // --- Helper: Draw Decorative Corner ---
+        function drawCorner(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, scaleX: number, scaleY: number) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(scaleX, scaleY);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(size, 0);
+            ctx.lineTo(0, size);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // --- Helper: Create Text Texture ---
         function createTextTexture(text: string, cardNumber: number): THREE.CanvasTexture {
+            const cacheKey = `text_${text}_${cardNumber}_${isMobile}`;
+            if (textureCacheRef.current.has(cacheKey)) {
+                return textureCacheRef.current.get(cacheKey)!;
+            }
+
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d')!;
-            const width = 512;
-            const height = 768;
+            const scale = isMobile ? 0.5 : 1;
+            const width = Math.floor(1024 * scale);
+            const height = Math.floor(1536 * scale);
             canvas.width = width;
             canvas.height = height;
 
-            const gradient = ctx.createLinearGradient(0, 0, width, height);
-            gradient.addColorStop(0, '#232323');
-            gradient.addColorStop(1, '#0a0a0a');
+            const gradient = ctx.createRadialGradient(width/2, height/2, 100 * scale, width/2, height/2, height);
+            gradient.addColorStop(0, '#1a1a1a');
+            gradient.addColorStop(1, '#000000');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
 
+            const margin = 50 * scale;
             ctx.strokeStyle = ACCENT_COLOR;
-            ctx.lineWidth = 20;
-            ctx.strokeRect(20, 20, width - 40, height - 40);
+            ctx.lineWidth = 15 * scale;
+            ctx.strokeRect(margin, margin, width - margin*2, height - margin*2);
+            
+            ctx.strokeStyle = SECONDARY_COLOR;
+            ctx.lineWidth = 5 * scale;
+            ctx.strokeRect(margin + 20 * scale, margin + 20 * scale, width - (margin + 20 * scale)*2, height - (margin + 20 * scale)*2);
 
-            // Draw card number at top
-            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = ACCENT_COLOR;
+            const cornerSize = 60 * scale;
+            drawCorner(ctx, margin, margin, cornerSize, 1, 1);
+            drawCorner(ctx, width - margin, margin, cornerSize, -1, 1);
+            drawCorner(ctx, margin, height - margin, cornerSize, 1, -1);
+            drawCorner(ctx, width - margin, height - margin, cornerSize, -1, -1);
+
+            ctx.font = `italic ${100 * scale}px Georgia`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
-            ctx.fillStyle = ACCENT_COLOR;
-            ctx.shadowColor = ACCENT_COLOR;
-            ctx.shadowBlur = 5;
-            ctx.fillText(`#${cardNumber}`, width / 2, 80);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.fillText(`#${cardNumber}`, width / 2, 140 * scale);
 
-            // Draw main text in center with word wrapping
-            ctx.font = 'bold 80px Arial';
+            ctx.font = `bold ${140 * scale}px Georgia`; 
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = ACCENT_COLOR;
             ctx.shadowColor = ACCENT_COLOR;
-            ctx.shadowBlur = 8;
+            ctx.shadowBlur = 15 * scale;
             
-            // Word wrap logic
-            const maxWidth = width - 80; // Leave padding
+            const maxWidth = width - 200 * scale; 
             const words = text.split(' ');
             const lines: string[] = [];
             let currentLine = '';
@@ -133,7 +186,6 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
             words.forEach(word => {
                 const testLine = currentLine ? `${currentLine} ${word}` : word;
                 const metrics = ctx.measureText(testLine);
-                
                 if (metrics.width > maxWidth && currentLine) {
                     lines.push(currentLine);
                     currentLine = word;
@@ -143,8 +195,7 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
             });
             if (currentLine) lines.push(currentLine);
             
-            // Draw lines with proper spacing
-            const lineHeight = 90;
+            const lineHeight = 160 * scale;
             const totalHeight = lines.length * lineHeight;
             const startY = (height / 2) - (totalHeight / 2) + (lineHeight / 2);
             
@@ -152,55 +203,121 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
                 ctx.fillText(line, width / 2, startY + (index * lineHeight));
             });
 
-            return new THREE.CanvasTexture(canvas);
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            texture.anisotropy = isLowEndDevice ? 1 : renderer.capabilities.getMaxAnisotropy();
+            
+            textureCacheRef.current.set(cacheKey, texture);
+            return texture;
         }
 
-        // Helper: Create Cover Texture
+        // --- Helper: Create Cover Texture ---
         function createCoverTexture(cardNumber: number): THREE.CanvasTexture {
+            const cacheKey = `cover_${cardNumber}_${isMobile}`;
+            if (textureCacheRef.current.has(cacheKey)) {
+                return textureCacheRef.current.get(cacheKey)!;
+            }
+
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d')!;
-            const size = 512;
+            const scale = isMobile ? 0.5 : 1;
+            const size = Math.floor(1024 * scale);
             canvas.width = size;
             canvas.height = size;
 
-            ctx.fillStyle = '#111';
+            const gradient = ctx.createRadialGradient(size/2, size/2, 50 * scale, size/2, size/2, size/1.2);
+            gradient.addColorStop(0, '#0a2a2a');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, size, size);
 
-            ctx.strokeStyle = '#333';
-            ctx.lineWidth = 5;
+            const centerX = size / 2;
+            const centerY = size / 2;
+
+            ctx.strokeStyle = ACCENT_COLOR;
+            ctx.shadowColor = ACCENT_COLOR;
+            ctx.shadowBlur = 10 * scale;
 
             ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(size, size);
-            ctx.moveTo(size, 0);
-            ctx.lineTo(0, size);
+            ctx.arc(centerX, centerY, 380 * scale, 0, Math.PI * 2);
+            ctx.lineWidth = 10 * scale;
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.arc(size / 2, size / 2, 100, 0, Math.PI * 2);
-            ctx.fillStyle = '#222';
+            ctx.setLineDash([40 * scale, 30 * scale]);
+            ctx.arc(centerX, centerY, 320 * scale, 0, Math.PI * 2);
+            ctx.lineWidth = 5 * scale;
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.beginPath();
+            const points = 8; 
+            const outerRadius = 280 * scale;
+            const innerRadius = 200 * scale;
+            for (let i = 0; i <= points * 2; i++) {
+                const angle = (Math.PI * i) / points;
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.lineWidth = 4 * scale;
+            ctx.fillStyle = 'rgba(0, 255, 204, 0.1)';
             ctx.fill();
             ctx.stroke();
 
-            // Add card number
-            ctx.font = 'bold 120px Arial';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 120 * scale, 0, Math.PI * 2);
+            ctx.fillStyle = '#111';
+            ctx.fill();
+            ctx.lineWidth = 8 * scale;
+            ctx.stroke();
+
+            ctx.font = `bold ${180 * scale}px Georgia`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillStyle = ACCENT_COLOR;
-            ctx.shadowColor = ACCENT_COLOR;
-            ctx.shadowBlur = 2;
-            ctx.fillText(cardNumber.toString(), size / 2, size / 2);
+            ctx.shadowBlur = 20 * scale;
+            ctx.fillText(cardNumber.toString(), centerX, centerY + 10 * scale);
 
-            return new THREE.CanvasTexture(canvas);
+            const margin = 60 * scale;
+            const cornerLen = 100 * scale;
+            ctx.lineWidth = 6 * scale;
+            ctx.shadowBlur = 0; 
+            
+            ctx.beginPath();
+            ctx.moveTo(margin, margin + cornerLen);
+            ctx.lineTo(margin, margin);
+            ctx.lineTo(margin + cornerLen, margin);
+            ctx.moveTo(size - margin - cornerLen, margin);
+            ctx.lineTo(size - margin, margin);
+            ctx.lineTo(size - margin, margin + cornerLen);
+            ctx.moveTo(size - margin, size - margin - cornerLen);
+            ctx.lineTo(size - margin, size - margin);
+            ctx.lineTo(size - margin - cornerLen, size - margin);
+            ctx.moveTo(margin + cornerLen, size - margin);
+            ctx.lineTo(margin, size - margin);
+            ctx.lineTo(margin, size - margin - cornerLen);
+            ctx.stroke();
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
+            texture.anisotropy = isLowEndDevice ? 1 : renderer.capabilities.getMaxAnisotropy();
+            
+            textureCacheRef.current.set(cacheKey, texture);
+            return texture;
         }
 
         // Create Cards
         const cards: THREE.Mesh[] = [];
         
-        // Responsive card size
         const cardWidth = isMobile ? 2 : (isTablet ? 2.5 : 3);
         const cardHeight = isMobile ? 3 : (isTablet ? 3.75 : 4.5);
-        const geometry = new THREE.BoxGeometry(cardWidth, cardHeight, 0.1);
+        const geometry = new THREE.BoxGeometry(cardWidth, cardHeight, 0.15); 
 
         const spacingX = isMobile ? 2.5 : (isTablet ? 3 : 3.5);
         const spacingY = isMobile ? 3.5 : (isTablet ? 4.25 : 5);
@@ -219,19 +336,22 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
                 const coverTexture = createCoverTexture(cardNumber);
 
                 const materials = [
-                    new THREE.MeshStandardMaterial({ color: 0x111111 }),
-                    new THREE.MeshStandardMaterial({ color: 0x111111 }),
-                    new THREE.MeshStandardMaterial({ color: 0x111111 }),
-                    new THREE.MeshStandardMaterial({ color: 0x111111 }),
-                    new THREE.MeshStandardMaterial({
+                    new THREE.MeshStandardMaterial({ color: 0x1a1a1a }),
+                    new THREE.MeshStandardMaterial({ color: 0x1a1a1a }),
+                    new THREE.MeshStandardMaterial({ color: 0x1a1a1a }),
+                    new THREE.MeshStandardMaterial({ color: 0x1a1a1a }),
+                    new THREE.MeshStandardMaterial({ // Front (Cover)
                         color: 0xffffff,
                         map: coverTexture,
-                        roughness: 0.5,
-                        metalness: 0.7,
-                        emissive: 0x333333,
-                        emissiveIntensity: 0.5
+                        roughness: 0.3,
+                        metalness: 0.6,
                     }),
-                    new THREE.MeshBasicMaterial({ map: textTexture })
+                    new THREE.MeshStandardMaterial({ // Back (Text)
+                        color: 0xffffff,
+                        map: textTexture,
+                        roughness: 0.4,
+                        metalness: 0.2,
+                    })
                 ];
 
                 const card = new THREE.Mesh(geometry, materials);
@@ -244,6 +364,8 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
 
                 card.userData = {
                     isFlipped: false,
+                    isShaking: false,    // New state for shake animation
+                    shakeStartTime: 0,   // Timestamp when shake started
                     targetRotationY: 0,
                     targetScale: 1,
                     baseY: card.position.y,
@@ -256,9 +378,34 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
             }
         }
 
-        // Background Particles
+        // Particles
+        function createCircleTexture(): THREE.CanvasTexture {
+            const cacheKey = 'particle_circle';
+            if (textureCacheRef.current.has(cacheKey)) {
+                return textureCacheRef.current.get(cacheKey)!;
+            }
+
+            const canvas = document.createElement('canvas');
+            const size = 32;
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d')!;
+            
+            const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+            gradient.addColorStop(0, 'rgba(0, 255, 204, 1)');
+            gradient.addColorStop(0.5, 'rgba(0, 255, 204, 0.4)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            textureCacheRef.current.set(cacheKey, texture);
+            return texture;
+        }
+
+        const particlesCount = isLowEndDevice ? 200 : isMobile ? 400 : 700;
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 700;
         const posArray = new Float32Array(particlesCount * 3);
 
         for (let i = 0; i < particlesCount * 3; i++) {
@@ -267,51 +414,56 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
 
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
         const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.05,
-            color: 0x00ffff,
+            size: isMobile ? 0.06 : 0.08,
+            color: 0xffffff,
             transparent: true,
             opacity: 0.6,
             sizeAttenuation: true,
-            map: createCircleTexture()
+            map: createCircleTexture(),
+            depthWrite: false,
+            blending: THREE.AdditiveBlending
         });
         const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particlesMesh);
-
-        // Helper: Create Circle Texture for particles
-        function createCircleTexture(): THREE.CanvasTexture {
-            const canvas = document.createElement('canvas');
-            const size = 32;
-            canvas.width = size;
-            canvas.height = size;
-            const ctx = canvas.getContext('2d')!;
-            
-            const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.5)');
-            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, size, size);
-            
-            return new THREE.CanvasTexture(canvas);
-        }
 
         // Interactivity
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         const targetMouse = new THREE.Vector2();
         let hoveredCard: THREE.Mesh | null = null;
+        let mouseMoveTimeout: number | null = null;
+        
+        const vec = new THREE.Vector3(); 
+        const pos = new THREE.Vector3();
 
         const handleMouseMove = (event: MouseEvent) => {
             targetMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             targetMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            // Debounce raycasting for performance
+            if (mouseMoveTimeout) clearTimeout(mouseMoveTimeout);
+            mouseMoveTimeout = window.setTimeout(() => {
+                mouse.x = targetMouse.x;
+                mouse.y = targetMouse.y;
+            }, isLowEndDevice ? 32 : 16); // ~30fps or 60fps updates
         };
 
         const handleClick = () => {
             if (hoveredCard) {
                 const data = hoveredCard.userData;
-                data.isFlipped = !data.isFlipped;
-                data.targetRotationY = data.isFlipped ? Math.PI : 0;
+                
+                // If already flipping or shaking, ignore interactions
+                if (data.isShaking) return;
+
+                if (!data.isFlipped) {
+                    // Start Reveal Sequence: Shake -> Flip
+                    data.isShaking = true;
+                    data.shakeStartTime = clockRef.current.getElapsedTime();
+                } else {
+                    // Close Sequence: Instant
+                    data.isFlipped = false;
+                    data.targetRotationY = 0;
+                }
             }
         };
 
@@ -320,83 +472,148 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
         canvasElement.addEventListener('click', handleClick, { signal: abortControllerRef.current.signal });
 
         // Animation Loop
-        const clock = new THREE.Clock();
-
-        function animate() {
+        function animate(currentTime: number = 0) {
             animationFrameRef.current = requestAnimationFrame(animate);
 
-            const elapsedTime = clock.getElapsedTime();
+            // Frame rate limiting for low-end devices
+            if (currentTime - lastFrameTimeRef.current < frameInterval) {
+                return;
+            }
+            lastFrameTimeRef.current = currentTime;
 
+            const elapsedTime = clockRef.current.getElapsedTime();
+
+            // Smooth mouse interpolation
             mouse.x += (targetMouse.x - mouse.x) * 0.1;
             mouse.y += (targetMouse.y - mouse.y) * 0.1;
 
-            pointLight.position.x = mouse.x * 10;
-            pointLight.position.y = mouse.y * 10;
+            // Precise Light Tracking
+            vec.set(mouse.x, mouse.y, 0.5);
+            vec.unproject(camera);
+            vec.sub(camera.position).normalize();
+            const lightZ = 8;
+            const distance = (lightZ - camera.position.z) / vec.z;
+            pos.copy(camera.position).add(vec.multiplyScalar(distance));
+            pointLight.position.copy(pos);
 
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(cards);
+            // Throttle raycasting for performance
+            if (currentTime % (isLowEndDevice ? 4 : 2) === 0) { // Every 4th or 2nd frame
+                raycaster.setFromCamera(mouse, camera);
+                const intersects = raycaster.intersectObjects(cards);
 
-            if (intersects.length > 0) {
-                const object = intersects[0].object as THREE.Mesh;
-                if (hoveredCard !== object) {
-                    hoveredCard = object;
-                    renderer.domElement.style.cursor = 'pointer';
-                }
-            } else {
-                if (hoveredCard) {
-                    hoveredCard = null;
-                    renderer.domElement.style.cursor = 'default';
+                if (intersects.length > 0) {
+                    const object = intersects[0].object as THREE.Mesh;
+                    if (hoveredCard !== object) {
+                        hoveredCard = object;
+                        renderer.domElement.style.cursor = 'pointer';
+                    }
+                } else {
+                    if (hoveredCard) {
+                        hoveredCard = null;
+                        renderer.domElement.style.cursor = 'default';
+                    }
                 }
             }
 
+            // Optimize card updates - only update cards that need it
+            let needsRender = false;
             cards.forEach(card => {
                 const data = card.userData;
+                let cardNeedsUpdate = false;
 
                 let targetScale = 1;
                 let targetZ = 0;
                 let targetTiltX = 0;
                 let targetTiltY = 0;
 
-                if (card === hoveredCard) {
-                    targetScale = 1.1;
-                    targetZ = 0.5;
-                    targetTiltX = mouse.y * 0.2;
-                    targetTiltY = -mouse.x * 0.2;
+                // Shake Logic
+                if (data.isShaking) {
+                    const shakeDuration = 0.4;
+                    const timeShaking = elapsedTime - data.shakeStartTime;
+
+                    if (timeShaking < shakeDuration) {
+                        const shakeIntensity = 0.1;
+                        const shakeSpeed = 40;
+                        card.rotation.z = Math.sin(timeShaking * shakeSpeed) * shakeIntensity;
+                        targetScale = 1.05;
+                        cardNeedsUpdate = true;
+                    } else {
+                        data.isShaking = false;
+                        card.rotation.z = 0;
+                        data.isFlipped = true;
+                        data.targetRotationY = Math.PI;
+                        cardNeedsUpdate = true;
+                    }
+                } else if (Math.abs(card.rotation.z) > 0.001) {
+                    card.rotation.z = THREE.MathUtils.lerp(card.rotation.z, 0, 0.1);
+                    cardNeedsUpdate = true;
                 }
 
-                const lerpSpeed = 0.1;
+                if (card === hoveredCard) {
+                    targetScale = 1.05;
+                    targetZ = 0.5;
+                    targetTiltX = mouse.y * 0.3;
+                    targetTiltY = -mouse.x * 0.3;
+                    cardNeedsUpdate = true;
+                }
 
+                const lerpSpeed = isLowEndDevice ? 0.05 : 0.08;
+
+                // Rotation Logic
                 const targetRotY = data.targetRotationY + targetTiltY;
-                card.rotation.y += (targetRotY - card.rotation.y) * lerpSpeed;
-                card.rotation.x += (targetTiltX - card.rotation.x) * lerpSpeed;
+                if (Math.abs(card.rotation.y - targetRotY) > 0.001) {
+                    card.rotation.y += (targetRotY - card.rotation.y) * lerpSpeed;
+                    cardNeedsUpdate = true;
+                }
+                if (Math.abs(card.rotation.x - targetTiltX) > 0.001) {
+                    card.rotation.x += (targetTiltX - card.rotation.x) * lerpSpeed;
+                    cardNeedsUpdate = true;
+                }
 
                 const zOffset = data.isFlipped ? 0.2 : 0;
-                card.position.z += ((targetZ + zOffset) - card.position.z) * lerpSpeed;
-
-                card.scale.setScalar(
-                    card.scale.x + (targetScale - card.scale.x) * lerpSpeed
-                );
-
-                if (!data.isFlipped && card !== hoveredCard) {
-                    card.position.y = data.baseY + Math.sin(elapsedTime * 2 + data.id) * 0.05;
-                } else {
-                    card.position.y += (data.baseY - card.position.y) * 0.1;
+                const targetFinalZ = targetZ + zOffset;
+                if (Math.abs(card.position.z - targetFinalZ) > 0.001) {
+                    card.position.z += (targetFinalZ - card.position.z) * lerpSpeed;
+                    cardNeedsUpdate = true;
                 }
+
+                if (Math.abs(card.scale.x - targetScale) > 0.001) {
+                    card.scale.setScalar(card.scale.x + (targetScale - card.scale.x) * lerpSpeed);
+                    cardNeedsUpdate = true;
+                }
+
+                // Idle Float - only update every few frames for performance
+                if (!data.isFlipped && !data.isShaking && card !== hoveredCard) {
+                    if (currentTime % (isLowEndDevice ? 8 : 4) === 0) { // Less frequent updates
+                        card.position.y = data.baseY + Math.sin(elapsedTime * 1.5 + data.id) * 0.05;
+                        cardNeedsUpdate = true;
+                    }
+                } else if (Math.abs(card.position.y - data.baseY) > 0.001) {
+                    card.position.y += (data.baseY - card.position.y) * 0.1;
+                    cardNeedsUpdate = true;
+                }
+
+                if (cardNeedsUpdate) needsRender = true;
             });
 
-            particlesMesh.rotation.y = elapsedTime * 0.05;
-            particlesMesh.rotation.x = elapsedTime * 0.02;
+            // Particles - less frequent updates
+            if (currentTime % (isLowEndDevice ? 6 : 3) === 0) {
+                particlesMesh.rotation.y = elapsedTime * 0.02;
+                particlesMesh.position.y = Math.sin(elapsedTime * 0.1) * 0.5;
+                needsRender = true;
+            }
 
-            renderer.render(scene, camera);
+            // Only render if something changed
+            if (needsRender) {
+                renderer.render(scene, camera);
+            }
         }
 
-        // Resize Handler
         const handleResize = () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             
-            // Update camera position on resize
             const isMobile = window.innerWidth < 768;
             const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
             
@@ -413,18 +630,15 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
 
         animate();
 
-        // Cleanup
         return () => {
-            // window.removeEventListener('mousemove', handleMouseMove);
-            // if (rendererRef.current) {
-            //     rendererRef.current.domElement.removeEventListener('click', handleClick);
-            // }
-            // window.removeEventListener('resize', handleResize);
-
             abortControllerRef.current?.abort();
 
             if (animationFrameRef.current) {
                 cancelAnimationFrame(animationFrameRef.current);
+            }
+
+            if (mouseMoveTimeout) {
+                clearTimeout(mouseMoveTimeout);
             }
 
             if (rendererRef.current && containerRef.current) {
@@ -432,7 +646,10 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
                 rendererRef.current.dispose();
             }
 
-            // Dispose geometries and materials
+            // Clear texture cache
+            textureCacheRef.current.forEach(texture => texture.dispose());
+            textureCacheRef.current.clear();
+
             cards.forEach(card => {
                 if (card.geometry) card.geometry.dispose();
                 if (Array.isArray(card.material)) {
@@ -445,22 +662,24 @@ export default function MagicCards({ hiddenWords = defaultHiddenWords, onBack }:
             if (particlesGeometry) particlesGeometry.dispose();
             if (particlesMaterial) particlesMaterial.dispose();
         };
-    }, []);
+    }, [hiddenWords]);
 
     return (
         <div className="fixed inset-0 w-full h-screen overflow-hidden bg-[#050505] z-40">
             {onBack && (
                 <button
                     onClick={onBack}
-                    className="absolute top-20 left-5 z-50 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg text-white flex items-center gap-2"
+                    className="absolute top-20 left-5 z-50 px-6 py-3 bg-gradient-to-r from-teal-800 to-teal-900 hover:from-teal-700 hover:to-teal-800 rounded-lg font-serif tracking-widest text-sm transition-all transform hover:scale-105 shadow-lg text-white flex items-center gap-2 border border-teal-500/30"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
                     </svg>
-                    Go Back
+                    RETURN
                 </button>
             )}
             <div ref={containerRef} className="w-full h-full" />
         </div>
     );
 }
+
+export default MagicCards;
