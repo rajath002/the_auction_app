@@ -177,7 +177,7 @@ export const AuctionContainer = () => {
                 <label className="mb-3 block text-center text-sm uppercase tracking-[0.25em] text-slate-500">
                   Choose Starting Category
                 </label>
-                <div className="grid grid-cols-5 gap-3">
+                <div className="grid grid-cols-4 gap-3">
                   {CATEGORY_OPTIONS.map((option) => (
                     <button
                       key={option.id}
