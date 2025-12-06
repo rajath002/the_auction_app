@@ -462,14 +462,20 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
         canvasElement.addEventListener('click', handleClick, { signal: abortControllerRef.current.signal });
 
         // Animation Loop
+        let frameCount = 0;
+        let lastRaycastTime = 0;
+        const raycastInterval = isLowEndDevice ? 50 : 32; // ms between raycasts
+
         function animate(currentTime: number = 0) {
             animationFrameRef.current = requestAnimationFrame(animate);
 
             // Frame rate limiting for low-end devices
-            if (currentTime - lastFrameTimeRef.current < frameInterval) {
+            const deltaTime = currentTime - lastFrameTimeRef.current;
+            if (deltaTime < frameInterval) {
                 return;
             }
             lastFrameTimeRef.current = currentTime;
+            frameCount++;
 
             const elapsedTime = clockRef.current.getElapsedTime();
 
@@ -486,8 +492,9 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
             pos.copy(camera.position).add(vec.multiplyScalar(distance));
             pointLight.position.copy(pos);
 
-            // Throttle raycasting for performance
-            if (currentTime % (isLowEndDevice ? 4 : 2) === 0) { // Every 4th or 2nd frame
+            // Throttle raycasting using time-based interval
+            if (currentTime - lastRaycastTime > raycastInterval) {
+                lastRaycastTime = currentTime;
                 raycaster.setFromCamera(mouse, camera);
                 const intersects = raycaster.intersectObjects(cards);
 
@@ -505,11 +512,9 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
                 }
             }
 
-            // Optimize card updates - only update cards that need it
-            let needsRender = false;
+            // Update all cards every frame for smooth animations
             cards.forEach(card => {
                 const data = card.userData;
-                let cardNeedsUpdate = false;
 
                 let targetScale = 1;
                 let targetZ = 0;
@@ -526,17 +531,14 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
                         const shakeSpeed = 40;
                         card.rotation.z = Math.sin(timeShaking * shakeSpeed) * shakeIntensity;
                         targetScale = 1.05;
-                        cardNeedsUpdate = true;
                     } else {
                         data.isShaking = false;
                         card.rotation.z = 0;
                         data.isFlipped = true;
                         data.targetRotationY = Math.PI;
-                        cardNeedsUpdate = true;
                     }
                 } else if (Math.abs(card.rotation.z) > 0.001) {
                     card.rotation.z = THREE.MathUtils.lerp(card.rotation.z, 0, 0.1);
-                    cardNeedsUpdate = true;
                 }
 
                 if (card === hoveredCard) {
@@ -544,59 +546,35 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
                     targetZ = 0.5;
                     targetTiltX = mouse.y * 0.3;
                     targetTiltY = -mouse.x * 0.3;
-                    cardNeedsUpdate = true;
                 }
 
-                const lerpSpeed = isLowEndDevice ? 0.05 : 0.08;
+                const lerpSpeed = isLowEndDevice ? 0.08 : 0.1;
 
                 // Rotation Logic
                 const targetRotY = data.targetRotationY + targetTiltY;
-                if (Math.abs(card.rotation.y - targetRotY) > 0.001) {
-                    card.rotation.y += (targetRotY - card.rotation.y) * lerpSpeed;
-                    cardNeedsUpdate = true;
-                }
-                if (Math.abs(card.rotation.x - targetTiltX) > 0.001) {
-                    card.rotation.x += (targetTiltX - card.rotation.x) * lerpSpeed;
-                    cardNeedsUpdate = true;
-                }
+                card.rotation.y += (targetRotY - card.rotation.y) * lerpSpeed;
+                card.rotation.x += (targetTiltX - card.rotation.x) * lerpSpeed;
 
                 const zOffset = data.isFlipped ? 0.2 : 0;
                 const targetFinalZ = targetZ + zOffset;
-                if (Math.abs(card.position.z - targetFinalZ) > 0.001) {
-                    card.position.z += (targetFinalZ - card.position.z) * lerpSpeed;
-                    cardNeedsUpdate = true;
-                }
+                card.position.z += (targetFinalZ - card.position.z) * lerpSpeed;
 
-                if (Math.abs(card.scale.x - targetScale) > 0.001) {
-                    card.scale.setScalar(card.scale.x + (targetScale - card.scale.x) * lerpSpeed);
-                    cardNeedsUpdate = true;
-                }
+                card.scale.setScalar(card.scale.x + (targetScale - card.scale.x) * lerpSpeed);
 
-                // Idle Float - only update every few frames for performance
+                // Idle Float - always update for smooth animation
                 if (!data.isFlipped && !data.isShaking && card !== hoveredCard) {
-                    if (currentTime % (isLowEndDevice ? 8 : 4) === 0) { // Less frequent updates
-                        card.position.y = data.baseY + Math.sin(elapsedTime * 1.5 + data.id) * 0.05;
-                        cardNeedsUpdate = true;
-                    }
-                } else if (Math.abs(card.position.y - data.baseY) > 0.001) {
+                    card.position.y = data.baseY + Math.sin(elapsedTime * 1.5 + data.id) * 0.05;
+                } else {
                     card.position.y += (data.baseY - card.position.y) * 0.1;
-                    cardNeedsUpdate = true;
                 }
-
-                if (cardNeedsUpdate) needsRender = true;
             });
 
-            // Particles - less frequent updates
-            if (currentTime % (isLowEndDevice ? 6 : 3) === 0) {
-                particlesMesh.rotation.y = elapsedTime * 0.02;
-                particlesMesh.position.y = Math.sin(elapsedTime * 0.1) * 0.5;
-                needsRender = true;
-            }
+            // Particles - always update for smooth animation
+            particlesMesh.rotation.y = elapsedTime * 0.02;
+            particlesMesh.position.y = Math.sin(elapsedTime * 0.1) * 0.5;
 
-            // Only render if something changed
-            if (needsRender) {
-                renderer.render(scene, camera);
-            }
+            // Always render
+            renderer.render(scene, camera);
         }
 
         const handleResize = () => {
