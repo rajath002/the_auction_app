@@ -1,19 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-/**
- * MagicCards Component - Optimized 3D Card Animation
- * 
- * Performance Optimizations:
- * - Device capability detection (low-end devices get reduced quality)
- * - Texture caching and resolution scaling for mobile
- * - Frame rate limiting (30fps on low-end, 60fps on high-end)
- * - Debounced mouse movements and throttled raycasting
- * - Conditional rendering (only render when objects change)
- * - Reduced particle count on mobile devices
- * - Disabled shadows/antialiasing on low-end devices
- */
-
 interface MagicCardsProps {
     hiddenWords?: string[];
     onBack?: () => void;
@@ -21,6 +8,9 @@ interface MagicCardsProps {
 
 const defaultHiddenWords = ["COURAGE", "WISDOM", "FORTUNE", "LOVE", "PEACE"];
 
+/**
+ * MagicCards Component - Optimized 3D Card Animation
+ */
 const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
