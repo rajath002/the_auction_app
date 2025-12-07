@@ -67,11 +67,6 @@ export default function Header() {
 
   // Check if user has access to a specific page
   const hasPageAccess = (route: string): boolean => {
-    // Temporary global access for Icon Draw demo
-    // TODO: Remove this after the demo
-    if (route === NavLinks.ICON_ALLOCATION) {
-      return true;
-    }
     
     // Find the page access setting for this route
     const setting = pageAccessSettings.find(s => s.page_route === route);
