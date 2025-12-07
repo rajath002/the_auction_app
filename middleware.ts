@@ -10,6 +10,7 @@ const alwaysPublicRoutes = [
   "/api",
   "/_next",
   "/favicon.ico",
+  "/icon-allocation",
 ];
 
 // Define routes that require specific roles
