@@ -6,7 +6,7 @@ import MagicCards from '@/components/MagicCards';
 import './icon-allocation.scss';
 
 export default function IconAllocationPage() {
-  const [players, setPlayers] = useState<string[]>(['Dheeraj Shetty', 'Praveen Acharya', 'Adarsh Acharya', 'Shashi', 'Sandesh']);
+  const [players, setPlayers] = useState<string[]>(['Dheeraj Shetty', 'Praveen Acharya', 'Adarsh Acharya', 'Shreepad Poojary', 'Sandesh Poojary']);
   const [input, setInput] = useState('');
   const [showCards, setShowCards] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);

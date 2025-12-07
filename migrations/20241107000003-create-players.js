@@ -26,6 +26,10 @@ module.exports = {
         type: Sequelize.ENUM('L1', 'L2', 'L3', 'L4'),
         allowNull: false
       },
+      role: {
+        type: Sequelize.STRING(25),
+        allowNull: true
+      },
       current_bid: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -68,6 +72,7 @@ module.exports = {
     // Create indexes
     await queryInterface.addIndex('players', ['type']);
     await queryInterface.addIndex('players', ['category']);
+    await queryInterface.addIndex('players', ['role']);
     await queryInterface.addIndex('players', ['status']);
     await queryInterface.addIndex('players', ['current_team_id']);
     await queryInterface.addIndex('players', ['name'], {
@@ -79,6 +84,7 @@ module.exports = {
     // Remove indexes
     await queryInterface.removeIndex('players', ['type']);
     await queryInterface.removeIndex('players', ['category']);
+    await queryInterface.removeIndex('players', ['role']);
     await queryInterface.removeIndex('players', ['status']);
     await queryInterface.removeIndex('players', ['current_team_id']);
     await queryInterface.removeIndex('players', 'idx_players_name');

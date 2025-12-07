@@ -1,9 +1,9 @@
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/sequelize';
-import { PlayerStatus, PlayerType, PlayerCategory } from '@/types/player-enums';
+import { PlayerStatus, PlayerType, PlayerCategory, PlayerRole } from '@/types/player-enums';
 
 // Re-export enums for backward compatibility
-export { PlayerStatus, PlayerType, PlayerCategory };
+export { PlayerStatus, PlayerType, PlayerCategory, PlayerRole };
 
 // Player attributes interface
 export interface PlayerAttributes {
@@ -12,6 +12,7 @@ export interface PlayerAttributes {
   image?: string;
   type: PlayerType;
   category: PlayerCategory;
+  role?: string;
   current_bid: number;
   base_value: number;
   bid_value?: number;
@@ -22,7 +23,7 @@ export interface PlayerAttributes {
 }
 
 // Optional fields for creation
-interface PlayerCreationAttributes extends Optional<PlayerAttributes, 'id' | 'created_at' | 'updated_at' | 'image' | 'current_bid' | 'bid_value' | 'current_team_id' | 'status'> {}
+interface PlayerCreationAttributes extends Optional<PlayerAttributes, 'id' | 'created_at' | 'updated_at' | 'image' | 'current_bid' | 'bid_value' | 'current_team_id' | 'status' | 'role'> {}
 
 // Player model class
 class Player extends Model<PlayerAttributes, PlayerCreationAttributes> implements PlayerAttributes {
@@ -31,6 +32,7 @@ class Player extends Model<PlayerAttributes, PlayerCreationAttributes> implement
   public image?: string;
   public type!: PlayerType;
   public category!: PlayerCategory;
+  public role?: string;
   public current_bid!: number;
   public base_value!: number;
   public bid_value?: number;
@@ -64,6 +66,10 @@ Player.init(
     category: {
       type: DataTypes.ENUM(...Object.values(PlayerCategory)),
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING(25),
+      allowNull: true,
     },
     current_bid: {
       type: DataTypes.INTEGER,
@@ -99,6 +105,7 @@ Player.init(
     indexes: [
       { fields: ['type'] },
       { fields: ['category'] },
+      { fields: ['role'] },
       { fields: ['status'] },
       { fields: ['current_team_id'] },
       { fields: ['name'], name: 'idx_players_name' },
@@ -115,6 +122,7 @@ Player.prototype.toJSON = function () {
     image: values.image,
     type: values.type,
     category: values.category,
+    role: values.role,
     currentBid: values.current_bid,
     baseValue: values.base_value, 
     bidValue: values.bid_value,

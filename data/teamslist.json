@@ -4,39 +4,39 @@
     "name": "KGF",
     "purse": 10000,
     "owner": "Jaya Shetty",
-    "mentor": "Sagar Shetty",
-    "iconPlayer": "Dheeraj Shetty"
+    "mentor": "",
+    "iconPlayer": ""
   },
   {
     "id": 2,
     "name": "Silver Squad",
     "purse": 10000,
     "owner": "Guruprasad",
-    "mentor": "Santhosh Shetty",
-    "iconPlayer": "Adarsh Acharya"
+    "mentor": "",
+    "iconPlayer": ""
   },
   {
     "id": 3,
     "name": "Shabari Strikers",
     "purse": 10000,
     "owner": "Rajesh Shetty",
-    "mentor": "Pawan Shetty",
-    "iconPlayer": "Dheeraj Shetty"
+    "mentor": "",
+    "iconPlayer": ""
   },
   {
     "id": 4,
     "name": "Ocean Stunners",
     "purse": 10000,
     "owner": "Ashok Devadiga",
-    "mentor": "Yogish Kulal",
-    "iconPlayer": "Abhijith Kulal"
+    "mentor": "",
+    "iconPlayer": ""
   },
   {
     "id": 5,
     "name": "Bhoomi Fighters",
     "purse": 10000,
     "owner": "Dheeraj Kulal",
-    "mentor": "Praveen Acharya Melmane",
-    "iconPlayer": "Prajwal Mathias"
+    "mentor": "",
+    "iconPlayer": ""
   }
 ]

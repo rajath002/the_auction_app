@@ -20,3 +20,12 @@ export enum PlayerCategory {
   L3 = 'L3',
   L4 = 'L4',
 }
+
+// Player role enum
+export enum PlayerRole {
+  OWNER = 'Owner',
+  MENTOR = 'Mentor',
+  ICON_PLAYER = 'Icon Player',
+  CAPTAIN = 'Captain',
+  PLAYER = 'Player',
+}
