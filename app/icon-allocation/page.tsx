@@ -6,14 +6,20 @@ import MagicCards from '@/components/MagicCards';
 import './icon-allocation.scss';
 
 export default function IconAllocationPage() {
-  const [players, setPlayers] = useState<string[]>(['Dheeraj Shetty', 'Praveen Acharya', 'Adarsh Acharya', 'Shreepad Poojary', 'Sandesh Poojary']);
+  const [players, setPlayers] = useState<{ text: string; image: string }[]>([
+    { text: 'Dheeraj Shetty', image: 'https://ik.imagekit.io/6c4tah4mp/icons/dheeraj.jpeg' },
+    { text: 'Praveen Acharya', image: 'https://ik.imagekit.io/6c4tah4mp/icons/praveen.jpeg' },
+    { text: 'Adarsh Acharya', image: 'https://ik.imagekit.io/6c4tah4mp/icons/adarsh.jpeg' },
+    { text: 'Shreepad Poojary', image: 'https://ik.imagekit.io/6c4tah4mp/icons/shreepad.jpeg' },
+    { text: 'Sandesh Poojary', image: 'https://ik.imagekit.io/6c4tah4mp/icons/sandesh.jpeg' }
+  ]);
   const [input, setInput] = useState('');
   const [showCards, setShowCards] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   const addPlayer = () => {
     if (input.trim()) {
-      setPlayers([...players, input.trim()]);
+      setPlayers([...players, { text: input.trim(), image: '' }]);
       setInput('');
     }
   };
@@ -113,7 +119,7 @@ export default function IconAllocationPage() {
                   key={index}
                   className="flex justify-between items-center bg-slate-800 px-4 py-3 rounded-lg border border-slate-600"
                 >
-                  <span className="font-medium">{player}</span>
+                  <span className="font-medium">{player.text}</span>
                   <button
                     onClick={() => removePlayer(index)}
                     className="text-red-400 hover:text-red-300 text-sm font-semibold"
@@ -137,7 +143,8 @@ export default function IconAllocationPage() {
         {/* Shuffled Cards */}
         {showCards && (
           <MagicCards 
-            hiddenWords={players}
+            items={players}
+            hiddenWords={[]}
             onBack={() => setShowCards(false)}
           />
         )}

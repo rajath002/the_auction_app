@@ -1,17 +1,29 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+interface CardItem {
+    text: string;
+    image?: string;
+}
+
 interface MagicCardsProps {
-    hiddenWords?: string[];
+    items?: CardItem[];
+    hiddenWords?: string[]; // Kept for backward compatibility
     onBack?: () => void;
 }
 
-const defaultHiddenWords = ["COURAGE", "WISDOM", "FORTUNE", "LOVE", "PEACE"];
+const defaultItems: CardItem[] = [
+    { text: "ALEX", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Alex" },
+    { text: "SARAH", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Sarah" },
+    { text: "JORDAN", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Jordan" },
+    { text: "EMMA", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Emma" },
+    { text: "RYAN", image: "https://api.dicebear.com/9.x/avataaars/svg?seed=Ryan" }
+];
 
 /**
- * MagicCards Component - Optimized 3D Card Animation
+ * MagicCards Component - Optimized 3D Card Animation with Avatars
  */
-const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProps) => {
+const MagicCards = ({ items = defaultItems, hiddenWords, onBack }: MagicCardsProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
@@ -25,16 +37,16 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
     useEffect(() => {
         if (!containerRef.current) return;
 
-        // Performance detection
-        const screenWidth = window.innerWidth;
-        const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
-        const isMobile = screenWidth < 768;
-        const isTablet = screenWidth >= 768 && screenWidth < 1024;
-        const targetFPS = isLowEndDevice || isMobile ? 30 : 60;
-        const frameInterval = 1000 / targetFPS;
-
         // Configuration
-        const HIDDEN_WORDS = hiddenWords;
+        // Merge hiddenWords into items if items aren't provided but hiddenWords are
+        let activeItems: CardItem[] = items;
+        if (items === defaultItems && hiddenWords) {
+            activeItems = hiddenWords.map(word => ({ 
+                text: word, 
+                image: `https://api.dicebear.com/9.x/initials/svg?seed=${word}` // Fallback avatar
+            }));
+        }
+
         const ACCENT_COLOR = "#00ffcc";
         const SECONDARY_COLOR = "#004433"; 
         const BG_COLOR = "#050505";
@@ -42,15 +54,21 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
         abortControllerRef.current = new AbortController();
 
         // Responsive configuration
+        const screenWidth = window.innerWidth;
+        const isLowEndDevice = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+        const isMobile = screenWidth < 768;
+        const isTablet = screenWidth >= 768 && screenWidth < 1024;
+        const targetFPS = isLowEndDevice || isMobile ? 30 : 60;
+        const frameInterval = 1000 / targetFPS;
         
         let cols = 5;
         if (isMobile) {
-            cols = Math.min(2, HIDDEN_WORDS.length);
+            cols = Math.min(2, activeItems.length);
         } else if (isTablet) {
-            cols = Math.min(3, HIDDEN_WORDS.length);
+            cols = Math.min(3, activeItems.length);
         }
         
-        const rows = Math.ceil(HIDDEN_WORDS.length / cols);
+        const rows = Math.ceil(activeItems.length / cols);
 
         // Setup Scene
         const scene = new THREE.Scene();
@@ -91,7 +109,7 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
         const ambientLight = new THREE.AmbientLight(0xffffff, 5);
         scene.add(ambientLight);
 
-        const spotLight = new THREE.SpotLight(0xffffff, 1.5);
+        const spotLight = new THREE.SpotLight(0xffffff, 2.5);
         spotLight.position.set(0, 20, 20);
         spotLight.angle = 0.5;
         spotLight.penumbra = 0.5;
@@ -101,8 +119,6 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
         const pointLight = new THREE.PointLight(ACCENT_COLOR, 10, 150);
         pointLight.position.set(0, 0, 5);
         scene.add(pointLight);
-
-        
 
         // --- Helper: Draw Decorative Corner ---
         function drawCorner(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, scaleX: number, scaleY: number) {
@@ -118,9 +134,121 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
             ctx.restore();
         }
 
-        // --- Helper: Create Text Texture ---
-        function createTextTexture(text: string, cardNumber: number): THREE.CanvasTexture {
-            const cacheKey = `text_${text}_${cardNumber}_${isMobile}`;
+        // --- Helper: Draw Card Content (Abstracted for Async Image Loading) ---
+        function drawCardFaceContent(
+            ctx: CanvasRenderingContext2D, 
+            width: number, 
+            height: number, 
+            scale: number, 
+            text: string, 
+            cardNumber: number,
+            image?: HTMLImageElement
+        ) {
+            // 1. Background
+            const gradient = ctx.createRadialGradient(width/2, height/2, 100 * scale, width/2, height/2, height);
+            gradient.addColorStop(0, '#1a1a1a');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // 2. Borders
+            const margin = 50 * scale;
+            ctx.strokeStyle = ACCENT_COLOR;
+            ctx.lineWidth = 15 * scale;
+            ctx.strokeRect(margin, margin, width - margin*2, height - margin*2);
+            
+            ctx.strokeStyle = SECONDARY_COLOR;
+            ctx.lineWidth = 5 * scale;
+            ctx.strokeRect(margin + 20 * scale, margin + 20 * scale, width - (margin + 20 * scale)*2, height - (margin + 20 * scale)*2);
+
+            // 3. Corners
+            ctx.fillStyle = ACCENT_COLOR;
+            const cornerSize = 60 * scale;
+            drawCorner(ctx, margin, margin, cornerSize, 1, 1);
+            drawCorner(ctx, width - margin, margin, cornerSize, -1, 1);
+            drawCorner(ctx, margin, height - margin, cornerSize, 1, -1);
+            drawCorner(ctx, width - margin, height - margin, cornerSize, -1, -1);
+
+            // 4. Circular Avatar
+            const avatarRadius = 350 * scale; // Increased from 250
+            const avatarY = height * 0.4; // Adjusted position slightly down
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(width/2, avatarY, avatarRadius, 0, Math.PI * 2);
+            ctx.closePath();
+            
+            // Avatar Glow
+            ctx.shadowColor = ACCENT_COLOR;
+            ctx.shadowBlur = 30 * scale;
+            ctx.strokeStyle = ACCENT_COLOR;
+            ctx.lineWidth = 10 * scale;
+            ctx.stroke();
+            ctx.shadowBlur = 0; // Reset for clip
+
+            ctx.clip(); // Clip subsequent drawing to circle
+
+            if (image && image.complete && image.naturalWidth > 0) {
+                // Draw Image
+                // Calculate aspect ratio to cover
+                const aspect = image.naturalWidth / image.naturalHeight;
+                let drawW = avatarRadius * 2;
+                let drawH = avatarRadius * 2;
+                if (aspect > 1) {
+                    drawH = drawW / aspect; // Fit width
+                    if (drawH < avatarRadius * 2) { // If height is too small, scale by height
+                         drawH = avatarRadius * 2;
+                         drawW = drawH * aspect;
+                    }
+                } else {
+                    drawW = drawH * aspect;
+                    if (drawW < avatarRadius * 2) {
+                        drawW = avatarRadius * 2;
+                        drawH = drawW / aspect;
+                    }
+                }
+                ctx.drawImage(image, width/2 - drawW/2, avatarY - drawH/2, drawW, drawH);
+            } else {
+                // Placeholder
+                ctx.fillStyle = '#222';
+                ctx.fillRect(width/2 - avatarRadius, avatarY - avatarRadius, avatarRadius*2, avatarRadius*2);
+                
+                // Initials as placeholder
+                ctx.font = `bold ${200 * scale}px Georgia`; // Increased font size for bigger circle
+                ctx.fillStyle = SECONDARY_COLOR;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text.substring(0, 1).toUpperCase(), width/2, avatarY);
+            }
+            ctx.restore();
+
+            // 5. Card Number (Moved to top)
+            ctx.font = `italic ${80 * scale}px Georgia`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.shadowBlur = 0;
+            ctx.fillText(`#${cardNumber}`, width / 2, margin + 40 * scale);
+
+            // 6. Name / Text (Below Avatar)
+            const textY = height * 0.8; // Moved text down further
+            ctx.font = `bold ${120 * scale}px Georgia`; 
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = ACCENT_COLOR;
+            ctx.shadowColor = ACCENT_COLOR;
+            ctx.shadowBlur = 15 * scale;
+            
+            const maxWidth = width - 150 * scale; 
+            ctx.fillText(text.toUpperCase(), width/2, textY, maxWidth);
+        }
+
+        // --- Helper: Create Texture with Async Image ---
+        function createCardFaceTexture(item: CardItem, cardNumber: number): THREE.CanvasTexture {
+            const cacheKey = `face_${item.text}_${cardNumber}_${isMobile}`;
+            
+            // We don't return cached texture immediately if we want to handle image loading 
+            // unless we cache the Loaded state too. For simplicity, we recreate or check cache.
             if (textureCacheRef.current.has(cacheKey)) {
                 return textureCacheRef.current.get(cacheKey)!;
             }
@@ -133,71 +261,26 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
             canvas.width = width;
             canvas.height = height;
 
-            const gradient = ctx.createRadialGradient(width/2, height/2, 100 * scale, width/2, height/2, height);
-            gradient.addColorStop(0, '#1a1a1a');
-            gradient.addColorStop(1, '#000000');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, width, height);
-
-            const margin = 50 * scale;
-            ctx.strokeStyle = ACCENT_COLOR;
-            ctx.lineWidth = 15 * scale;
-            ctx.strokeRect(margin, margin, width - margin*2, height - margin*2);
-            
-            ctx.strokeStyle = SECONDARY_COLOR;
-            ctx.lineWidth = 5 * scale;
-            ctx.strokeRect(margin + 20 * scale, margin + 20 * scale, width - (margin + 20 * scale)*2, height - (margin + 20 * scale)*2);
-
-            ctx.fillStyle = ACCENT_COLOR;
-            const cornerSize = 60 * scale;
-            drawCorner(ctx, margin, margin, cornerSize, 1, 1);
-            drawCorner(ctx, width - margin, margin, cornerSize, -1, 1);
-            drawCorner(ctx, margin, height - margin, cornerSize, 1, -1);
-            drawCorner(ctx, width - margin, height - margin, cornerSize, -1, -1);
-
-            ctx.font = `italic ${100 * scale}px Georgia`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'top';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-            ctx.fillText(`#${cardNumber}`, width / 2, 140 * scale);
-
-            ctx.font = `bold ${140 * scale}px Georgia`; 
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = ACCENT_COLOR;
-            ctx.shadowColor = ACCENT_COLOR;
-            ctx.shadowBlur = 15 * scale;
-            
-            const maxWidth = width - 200 * scale; 
-            const words = text.split(' ');
-            const lines: string[] = [];
-            let currentLine = '';
-            
-            words.forEach(word => {
-                const testLine = currentLine ? `${currentLine} ${word}` : word;
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && currentLine) {
-                    lines.push(currentLine);
-                    currentLine = word;
-                } else {
-                    currentLine = testLine;
-                }
-            });
-            if (currentLine) lines.push(currentLine);
-            
-            const lineHeight = 160 * scale;
-            const totalHeight = lines.length * lineHeight;
-            const startY = (height / 2) - (totalHeight / 2) + (lineHeight / 2);
-            
-            lines.forEach((line, index) => {
-                ctx.fillText(line, width / 2, startY + (index * lineHeight));
-            });
-
             const texture = new THREE.CanvasTexture(canvas);
             texture.minFilter = THREE.LinearFilter;
             texture.magFilter = THREE.LinearFilter;
             texture.anisotropy = isLowEndDevice ? 1 : renderer.capabilities.getMaxAnisotropy();
-            
+
+            // Initial Draw (Placeholder)
+            drawCardFaceContent(ctx, width, height, scale, item.text, cardNumber);
+            texture.needsUpdate = true;
+
+            // Load Image Asynchronously
+            if (item.image) {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = () => {
+                    drawCardFaceContent(ctx, width, height, scale, item.text, cardNumber, img);
+                    texture.needsUpdate = true;
+                };
+                img.src = item.image;
+            }
+
             textureCacheRef.current.set(cacheKey, texture);
             return texture;
         }
@@ -259,13 +342,6 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
             ctx.fill();
             ctx.stroke();
 
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, 120 * scale, 0, Math.PI * 2);
-            ctx.fillStyle = '#111';
-            ctx.fill();
-            ctx.lineWidth = 8 * scale;
-            ctx.stroke();
-
             ctx.font = `bold ${180 * scale}px Georgia`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -318,11 +394,11 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
 
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
-                if (wordIndex >= HIDDEN_WORDS.length) break;
+                if (wordIndex >= activeItems.length) break;
 
-                const word = HIDDEN_WORDS[wordIndex];
+                const item = activeItems[wordIndex];
                 const cardNumber = wordIndex + 1;
-                const textTexture = createTextTexture(word, cardNumber);
+                const textTexture = createCardFaceTexture(item, cardNumber);
                 const coverTexture = createCoverTexture(cardNumber);
 
                 const materials = [
@@ -336,7 +412,7 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
                         roughness: 0.3,
                         metalness: 0.6,
                     }),
-                    new THREE.MeshStandardMaterial({ // Back (Text)
+                    new THREE.MeshStandardMaterial({ // Back (Text + Avatar)
                         color: 0xffffff,
                         map: textTexture,
                         roughness: 0.4,
@@ -435,7 +511,7 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
             mouseMoveTimeout = window.setTimeout(() => {
                 mouse.x = targetMouse.x;
                 mouse.y = targetMouse.y;
-            }, isLowEndDevice ? 32 : 16); // ~30fps or 60fps updates
+            }, isLowEndDevice ? 32 : 16);
         };
 
         const handleClick = () => {
@@ -464,7 +540,7 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
         // Animation Loop
         let frameCount = 0;
         let lastRaycastTime = 0;
-        const raycastInterval = isLowEndDevice ? 50 : 32; // ms between raycasts
+        const raycastInterval = isLowEndDevice ? 50 : 32;
 
         function animate(currentTime: number = 0) {
             animationFrameRef.current = requestAnimationFrame(animate);
@@ -512,7 +588,7 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
                 }
             }
 
-            // Update all cards every frame for smooth animations
+            // Update all cards every frame
             cards.forEach(card => {
                 const data = card.userData;
 
@@ -561,7 +637,7 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
 
                 card.scale.setScalar(card.scale.x + (targetScale - card.scale.x) * lerpSpeed);
 
-                // Idle Float - always update for smooth animation
+                // Idle Float
                 if (!data.isFlipped && !data.isShaking && card !== hoveredCard) {
                     card.position.y = data.baseY + Math.sin(elapsedTime * 1.5 + data.id) * 0.05;
                 } else {
@@ -569,11 +645,10 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
                 }
             });
 
-            // Particles - always update for smooth animation
+            // Particles
             particlesMesh.rotation.y = elapsedTime * 0.02;
             particlesMesh.position.y = Math.sin(elapsedTime * 0.1) * 0.5;
 
-            // Always render
             renderer.render(scene, camera);
         }
 
@@ -614,7 +689,6 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
                 rendererRef.current.dispose();
             }
 
-            // Clear texture cache
             textureCacheRef.current.forEach(texture => texture.dispose());
             textureCacheRef.current.clear();
 
@@ -630,7 +704,7 @@ const MagicCards = ({ hiddenWords = defaultHiddenWords, onBack }: MagicCardsProp
             if (particlesGeometry) particlesGeometry.dispose();
             if (particlesMaterial) particlesMaterial.dispose();
         };
-    }, [hiddenWords]);
+    }, [items, hiddenWords]); // Re-run if props change
 
     return (
         <div className="fixed inset-0 w-full h-screen overflow-hidden bg-[#050505] z-40">
