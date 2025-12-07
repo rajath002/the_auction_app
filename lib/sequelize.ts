@@ -1,3 +1,4 @@
+import pg from "pg";
 import { Sequelize } from 'sequelize';
 
 // PostgreSQL connection configuration
@@ -26,6 +27,7 @@ const sequelize = process.env.DATABASE_URL
       dialect: 'postgres',
       schema: process.env.PG_DB_SCHEMA || 'public',
       logging: process.env.NODE_ENV === 'development' ? console.log : false,
+      dialectModule: pg,
       dialectOptions: {
         ssl: process.env.PG_DB_HOST !== 'localhost' ? {
           require: true,
