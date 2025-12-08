@@ -23,6 +23,7 @@ export default function BulkPlayersRegistrationPage() {
           category: player.category,
           type: player.type,
           base_value: player.baseValue,
+          bid_value: player.baseValue || 0,
         }));
 
         const response = await fetch('/api/players', {

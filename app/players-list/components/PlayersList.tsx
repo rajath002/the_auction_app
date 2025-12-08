@@ -12,8 +12,9 @@ import playersJsonList from "@/data/players.json";
 import { SearchOutlined } from "@ant-design/icons";
 import PlayerStats from "./PlayerStats";
 import { getPlayers } from "@/services/player";
-import Image from "next/image";
+import ImageWithFallback from "@/components/ImageWithFallback";
 import { useSession } from "next-auth/react";
+import kplLogo from "@/assets/kpl-logo-large.jpeg";
 
 interface DataType {
   key: string;
@@ -144,12 +145,13 @@ function PlayerCard({ player, userRole }: { player: Player; userRole?: string })
     () => (
       <div className="hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
         <div className="relative">
-          <Image
-            className="w-full h-60 object-cover"
-            src={player.image}
+          <ImageWithFallback
+            src={player.image || ""}
+            fallbackSrc={kplLogo}
             alt={player.name}
             width={400}
             height={240}
+            objectFit="cover"
           />
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
             <div className="font-bold text-xl">{player.name}</div>
