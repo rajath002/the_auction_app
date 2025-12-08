@@ -72,6 +72,7 @@ export const PlayerCard = ({
   onRevoke,
   onResetPlayer,
   onUnsold,
+  isLastPlayer,
 }: {
   player: Player;
   onSell: (player: Player) => void;
@@ -79,6 +80,7 @@ export const PlayerCard = ({
   onResetPlayer: (player: Player) => void;
   onUnsold: (player: Player) => void;
   index: number | undefined;
+  isLastPlayer?: boolean;
 }) => {
   const statusKey = (player?.status ?? "AVAILABLE") as StatusKey;
   const statusMeta = STATUS_STYLES[statusKey];
@@ -137,7 +139,7 @@ export const PlayerCard = ({
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
+              <h2 className="truncate text-3xl font-bold tracking-tight text-white md:text-3xl lg:text-4xl text-center" title={player?.name}>
                 {player?.name}
               </h2>
             </div>
@@ -184,6 +186,14 @@ export const PlayerCard = ({
             }`}>
               {statusMeta.panelText || 'Placeholder text for layout'}
             </div>
+
+              {isLastPlayer && (
+                <div className="w-full mb-3 flex items-center justify-center gap-2 rounded-2xl border border-pink-500/30 bg-pink-500/10 px-4 py-3 text-center">
+                  <span className="text-pink-200 font-medium">
+                  ⚠️ You&apos;ve reached the end of the player list!
+                  </span>
+                </div>
+              )}
           </div>
         </div>
       </div>

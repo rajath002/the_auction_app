@@ -149,6 +149,7 @@ export const AuctionContainer = () => {
 
   const hasPlayers = filteredPlayers.length > 0;
   const isBiddingActive = filteredPlayers[currentPlayerIndex]?.status === "In-Progress";
+  const isLastPlayer = hasPlayers && currentPlayerIndex === filteredPlayers.length - 1;
 
   // Show Start Screen if auction hasn't started
   if (!auctionStarted) {
@@ -262,6 +263,15 @@ export const AuctionContainer = () => {
             </div>
 
             <div className="flex flex-col gap-1">
+              <span className="text-xs uppercase tracking-[0.35em] text-slate-400">Progress</span>
+              <div className="flex items-center gap-1 text-lg font-semibold">
+                <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1 text-cyan-200">
+                  {filteredPlayers.length - currentPlayerIndex - 1} remaining of {filteredPlayers.length}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
               <span className="text-xs uppercase tracking-[0.35em] text-slate-400">Bid Increment</span>
               <Select
                 className="min-w-28 [&_.ant-select-selector]:!rounded-full [&_.ant-select-selector]:!border-slate-700 [&_.ant-select-selector]:!bg-slate-900/80 [&_.ant-select-selector]:!text-slate-100 [&_.ant-select-selection-item]:!text-slate-100 [&_.ant-select-arrow]:!text-slate-400"
@@ -303,6 +313,7 @@ export const AuctionContainer = () => {
                 onResetPlayer={resetPlayerTeamAndPoints}
                 onUnsold={onUnsoldHandler}
                 index={currentPlayerIndex}
+                isLastPlayer={isLastPlayer}
               />
             ) : (
               <div className="relative flex min-h-[600px] items-center justify-center overflow-hidden rounded-[28px] border border-slate-800/60 bg-slate-950/90 px-6 py-8 shadow-[0_30px_80px_rgba(15,23,42,0.55)] backdrop-blur">

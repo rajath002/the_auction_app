@@ -1,11 +1,15 @@
 import { useMemo } from "react";
 import { Player, Team } from "@/interface/interfaces";
 import { useAppContext } from "@/context/useAppState";
+import { useCurrentUser } from "@/hooks/useAuth";
 
 const accentGradient = "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950";
 
 export default function TeamsAndPlayers() {
   const { teams, getPlayersOfTeam } = useAppContext();
+  const { user } = useCurrentUser();
+  
+  const canSeeBidValue = user?.role === "admin" || user?.role === "manager";
 
   const computedTeams = useMemo(() => teams ?? [], [teams]);
 
@@ -40,6 +44,7 @@ export default function TeamsAndPlayers() {
           {computedTeams.map((team: Team) => {
             const players: Player[] = getPlayersOfTeam(team.id) ?? [];
             const iconPlayer = team.iconPlayer?.trim();
+            const totalSpent = players.reduce((sum, p) => sum + (p.bidValue ?? 0), 0);
 
             return (
               <article
@@ -77,6 +82,12 @@ export default function TeamsAndPlayers() {
                       <span className="text-[10px] tracking-[0.35em] text-slate-400">Mentor</span>
                       <span className="ml-2 truncate text-sm font-semibold text-slate-100">{team.mentor || "TBD"}</span>
                     </div>
+                    {canSeeBidValue && (
+                      <div className="flex items-center justify-between gap-3 mt-1">
+                        <span className="text-[10px] tracking-[0.35em] text-slate-400">Total Spent</span>
+                        <span className="ml-2 truncate text-sm font-semibold text-emerald-300">₹{totalSpent.toLocaleString("en-IN")}</span>
+                      </div>
+                    )}
                   </header>
 
                   {iconPlayer ? (
@@ -101,9 +112,16 @@ export default function TeamsAndPlayers() {
                             className="flex items-center justify-between rounded-2xl border border-slate-800/60 bg-slate-900/60 px-3 py-2 text-sm transition hover:border-blue-500/50 hover:bg-slate-900/80"
                           >
                             <span className="font-medium text-slate-100">{player.name}</span>
-                            <span className="text-xs uppercase tracking-[0.3em] text-slate-400">
-                              {player.type}
-                            </span>
+                            <div className="flex items-center gap-3">
+                              {canSeeBidValue && (
+                                <span className="text-xs font-semibold text-emerald-300">
+                                  ₹{player.bidValue?.toLocaleString("en-IN") ?? 0}
+                                </span>
+                              )}
+                              <span className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                                {player.type}
+                              </span>
+                            </div>
                           </div>
                         ))
                       ) : (

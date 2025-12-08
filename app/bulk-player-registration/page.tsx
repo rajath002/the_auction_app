@@ -26,6 +26,7 @@ export default function BulkPlayersRegistrationPage() {
           bid_value: player.baseValue || 0,
           image: player.imageUrl,
           role: player.role || null,
+          status: 'AVAILABLE',
         }));
 
         const response = await fetch('/api/players', {
