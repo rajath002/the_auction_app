@@ -153,7 +153,7 @@ export default function PageAccessManagementPage() {
       title: 'Allowed Roles',
       dataIndex: 'allowed_roles',
       key: 'allowed_roles',
-      width: 250,
+      // width: 250,
       render: (roles: string[] | null) => (
         <Space size="small" wrap>
           {roles && roles.length > 0 ? (
@@ -172,7 +172,7 @@ export default function PageAccessManagementPage() {
       title: 'Public Access',
       dataIndex: 'public_access',
       key: 'public_access',
-      width: 150,
+      // width: 150,
       render: (value: boolean, record: PageAccessSetting) => (
         <Switch
           checked={value}
@@ -191,7 +191,7 @@ export default function PageAccessManagementPage() {
     {
       title: 'Actions',
       key: 'actions',
-      width: 150,
+      // width: 150,
       render: (_: any, record: PageAccessSetting) => (
         <Space>
           <Button

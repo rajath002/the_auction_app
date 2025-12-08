@@ -54,6 +54,12 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
       dataIndex: 'baseValue',
       key: 'baseValue',
     },
+    {
+      title: 'Image URL',
+      dataIndex: 'imageUrl',
+      key: 'imageUrl',
+    },
+    
     // {
     //   title: 'Bid Value',
     //   dataIndex: 'bidValue',
@@ -146,24 +152,28 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
         category: 'L1',
         type: 'Batsman',
         baseValue: 200,
+        imageUrl: '',
       },
       {
         name: 'Dummy Name 2',
         category: 'L2',
         type: 'All-Rounder',
         baseValue: 250,
+        imageUrl: '',
       },
       {
         name: 'Dummy Name 3',
         category: 'L3',
         type: 'Bowler',
         baseValue: 250,
+        imageUrl: '',
       },
       {
         name: 'Dummy Name 4',
         category: 'L4',
         type: 'Bowler',
         baseValue: 250,
+        imageUrl: '',
       },
     ];
 
@@ -218,7 +228,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
               description={
                 <div>
                   <p>1. Download the template file below</p>
-                  <p>2. Fill in the player details (Name, Category, Type, Base Value, etc.)</p>
+                  <p>2. Fill in the player details (Name, Category, Type, Base Value, Image URL (optional))</p>
                   <p>3. Upload the completed Excel file</p>
                   <p>4. Review the data and submit</p>
                 </div>
