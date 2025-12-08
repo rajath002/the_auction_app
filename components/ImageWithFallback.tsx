@@ -5,7 +5,7 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { Modal } from "antd";
 
 interface IImageWithFallback {
-  src: string;
+  src: string | StaticImport;
   fallbackSrc: StaticImport | string;
   alt: string;
   priority?: boolean;

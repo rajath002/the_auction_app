@@ -143,18 +143,18 @@ function PlayerCard({ player, userRole }: { player: Player; userRole?: string })
   // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
   const cardContent = useMemo(
     () => (
-      <div className="hover:border-yellow-600 h-fit border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800">
-        <div className="relative">
+      <div className="hover:border-yellow-600 h-[560px] border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800 flex flex-col">
+        <div className="relative h-[440px] w-full flex-shrink-0 overflow-hidden">
           <ImageWithFallback
-            src={player.image || ""}
+            src={player.image || kplLogo}
             fallbackSrc={kplLogo}
             alt={player.name}
             width={400}
-            height={240}
+            height={440}
             objectFit="cover"
           />
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
-            <div className="font-bold text-xl">{player.name}</div>
+            <div className="font-bold text-xl truncate">{player.name}</div>
           </div>
         </div>
         <div className="px-6 py-4">
