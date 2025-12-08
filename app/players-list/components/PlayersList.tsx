@@ -1,7 +1,8 @@
 "use client";
 import { Player } from "@/interface/interfaces";
 import {
-  experimental_useEffectEvent,
+  memo,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -125,73 +126,54 @@ export default function PlayersList() {
 }
 
 // bg-black bg-opacity-50
-function PlayerCard({ player, userRole }: { player: Player; userRole?: string }) {
-  const statusColor = player.status
-    ? player.status === "UNSOLD"
-      ? "text-red-500"
-      : "text-green-500"
-    : "";
-
+const PlayerCard = memo(function PlayerCard({ player, userRole }: { player: Player; userRole?: string }) {
   // Check if user can see bid values (admin or manager)
   const canSeeBidValue = userRole === "admin" || userRole === "manager";
 
-  const showBadge = useMemo(
-    () => canSeeBidValue && (player.bidValue || player.baseValue),
-    [canSeeBidValue, player.bidValue, player.baseValue]
-  );
+  const showBadge = canSeeBidValue && (player.bidValue || player.baseValue);
 
-  // hover:-translate-y-1 transition ease-in-out delay-150 hover:scale-110
-  const cardContent = useMemo(
-    () => (
-      <div className="hover:border-yellow-600 h-[560px] border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800 flex flex-col">
-        <div className="relative h-[440px] w-full flex-shrink-0 overflow-hidden">
-          <ImageWithFallback
-            src={player.image || kplLogo}
-            fallbackSrc={kplLogo}
-            alt={player.name}
-            width={400}
-            height={440}
-            objectFit="cover"
-          />
-          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
-            <div className="font-bold text-xl truncate">{player.name}</div>
-          </div>
-        </div>
-        <div className="px-6 py-4">
-          <p className="text-gray-700 dark:text-gray-300 text-base">
-            Type: {player.type}
-          </p>
-          <p className="text-gray-700 dark:text-gray-300 text-base">
-            Category: {player.category}
-          </p>
-          <p className="text-gray-700 dark:text-gray-300 text-base">
-            Status:
-            <span className={`text-base ${statusColor}`}>
-              &nbsp;{player.status}
-            </span>
-          </p>
-          {canSeeBidValue && player.bidValue && (
-            <p className="text-gray-700 dark:text-gray-300 text-base">
-              Current Bid: {player.bidValue} pts
-            </p>
-          )}
+  const statusColor = player.status === "UNSOLD" ? "text-red-500" : player.status ? "text-green-500" : "";
+
+  const cardContent = (
+    <div className="hover:border-yellow-600 h-[560px] border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800 flex flex-col">
+      <div className="relative h-[440px] w-full flex-shrink-0 overflow-hidden">
+        <ImageWithFallback
+          src={player.image || kplLogo}
+          fallbackSrc={kplLogo}
+          alt={player.name}
+          width={400}
+          height={440}
+          objectFit="cover"
+        />
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-800 to-transparent text-white p-2 flex items-end">
+          <div className="font-bold text-xl truncate">{player.name}</div>
         </div>
       </div>
-    ),
-    [
-      player.image,
-      player.name,
-      player.type,
-      player.category,
-      player.status,
-      player.bidValue,
-      statusColor,
-      canSeeBidValue,
-    ]
+      <div className="px-6 py-4">
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Type: {player.type}
+        </p>
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Category: {player.category}
+        </p>
+        <p className="text-gray-700 dark:text-gray-300 text-base">
+          Status:
+          <span className={`text-base ${statusColor}`}>
+            &nbsp;{player.status}
+          </span>
+        </p>
+        {canSeeBidValue && player.bidValue && (
+          <p className="text-gray-700 dark:text-gray-300 text-base">
+            Current Bid: {player.bidValue} pts
+          </p>
+        )}
+      </div>
+    </div>
   );
 
   return (
-    <div className="transition ease-in-out delay-200 md:hover:scale-105">
+    // <div className="will-change-transform md:hover:scale-105 transition-transform duration-200">
+    <div>
       {showBadge ? (
         <Badge.Ribbon text={player.bidValue || player.baseValue} color="gold">
           {cardContent}
@@ -201,7 +183,9 @@ function PlayerCard({ player, userRole }: { player: Player; userRole?: string })
       )}
     </div>
   );
-}
+});
+
+PlayerCard.displayName = "PlayerCard";
 
 // Sample data
 const data = [
