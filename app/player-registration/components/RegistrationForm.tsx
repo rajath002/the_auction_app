@@ -212,6 +212,26 @@ export default function RegistrationForm(props: SubmissionFormType) {
               />
             </Form.Item>
 
+            <Form.Item 
+              label="Role" 
+              name="role"
+              rules={[{ required: false }]}
+            >
+              <Select 
+                placeholder="Select role (optional)" 
+                size="large"
+                allowClear
+              >
+                <Select.Option value="player">Player</Select.Option>
+                <Select.Option value="owner">Owner</Select.Option>
+                <Select.Option value="mentor">Mentor</Select.Option>
+                <Select.Option value="icon_player">Icon Player</Select.Option>
+                <Select.Option value="captain">Captain</Select.Option>
+              </Select>
+            </Form.Item>
+
+            
+
             {/* <Form.Item 
               label="Date Of Birth" 
               name="dateOfBirth" 

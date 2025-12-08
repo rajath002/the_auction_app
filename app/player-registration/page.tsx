@@ -33,6 +33,7 @@ export default function PlayersRegistrationPage() {
         base_value: values.baseValue || 0,
         bid_value: values.baseValue || 0,
         status: PlayerStatus.AVAILABLE,
+        role: values.role || "player",
         // currentBid: 0, // Default current bid
         // stats: {
         //   baseValue: values.baseValue || 0,

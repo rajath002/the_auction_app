@@ -59,6 +59,11 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
       dataIndex: 'imageUrl',
       key: 'imageUrl',
     },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+    },
     
     // {
     //   title: 'Bid Value',
@@ -153,6 +158,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
         type: 'Batsman',
         baseValue: 200,
         imageUrl: '',
+        role: 'player',
       },
       {
         name: 'Dummy Name 2',
@@ -160,6 +166,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
         type: 'All-Rounder',
         baseValue: 250,
         imageUrl: '',
+        role: 'captain',
       },
       {
         name: 'Dummy Name 3',
@@ -167,6 +174,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
         type: 'Bowler',
         baseValue: 250,
         imageUrl: '',
+        role: 'icon player',
       },
       {
         name: 'Dummy Name 4',
@@ -174,6 +182,7 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
         type: 'Bowler',
         baseValue: 250,
         imageUrl: '',
+        role: '',
       },
     ];
 
@@ -199,6 +208,23 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
             normalizedType = 'Bowler';
           } else if (lowerType === 'wicket keeper' || lowerType === 'wicket-keeper') {
             normalizedType = 'Wicket-Keeper';
+          }
+        }
+
+        if (rest.role && typeof rest.role === 'string') {
+          const role = rest.role.toLowerCase().trim();
+          if (role === 'player') {
+            rest.role = 'player';
+          } else if (role === 'owner') {
+            rest.role = 'owner';
+          } else if (role === 'mentor') {
+            rest.role = 'mentor';
+          } else if (role === 'icon player' || role === 'icon' || role === 'icon-player' || role === 'iconplayer' || role === 'icon_player') {
+            rest.role = 'icon player';
+          } else if (role === 'captain') {
+            rest.role = 'captain';
+          } else {
+            rest.role = null;
           }
         }
         return {
@@ -228,9 +254,10 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
               description={
                 <div>
                   <p>1. Download the template file below</p>
-                  <p>2. Fill in the player details (Name, Category, Type, Base Value, Image URL (optional))</p>
-                  <p>3. Upload the completed Excel file</p>
-                  <p>4. Review the data and submit</p>
+                  <p>2. Fill in the player details (Name, Category, Type, Base Value, Image URL (optional), Role (optional))</p>
+                  <p>3. Role can be: Player, Owner, Mentor, Icon Player, Captain, or leave empty</p>
+                  <p>4. Upload the completed Excel file</p>
+                  <p>5. Review the data and submit</p>
                 </div>
               }
               type="info"
