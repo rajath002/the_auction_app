@@ -130,6 +130,7 @@ Player.prototype.toJSON = function () {
     status: values.status,
     createdAt: values.created_at,
     updatedAt: values.updated_at,
+    currentTeam: (values as any).currentTeam,
   };
 };
 

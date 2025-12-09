@@ -131,6 +131,9 @@ export default function Header() {
   // Check if user is admin (for admin menu)
   const isAdmin = session?.user?.role === "admin" && hasPageAccess(NavLinks.PAGE_ACCESS_MANAGEMENT);
 
+  // Check if user can manage players
+  const canManagePlayers = hasPageAccess(NavLinks.MANAGE_PLAYERS);
+
   return (
     <>
     <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-gray-950/80 text-white backdrop-blur">
@@ -235,7 +238,7 @@ export default function Header() {
               </li>
             )}
 
-            {isAdmin && (
+            {(isAdmin || canManagePlayers) && (
               <li>
                 <div className="group relative">
                   <button
@@ -263,30 +266,34 @@ export default function Header() {
 
                   <div className="pointer-events-none invisible absolute left-0 top-full z-20 w-64 translate-y-2 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:duration-150 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible">
                     <ul className="overflow-hidden rounded-2xl border border-white/10 bg-gray-900/95 shadow-xl backdrop-blur">
-                      <li>
-                        <Link
-                          href={NavLinks.PAGE_ACCESS_MANAGEMENT}
-                          className={`block px-4 py-3 text-sm transition-colors duration-150 ${
-                            pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
-                              ? "bg-white/10 text-yellow-300"
-                              : "text-gray-200 hover:bg-white/5 hover:text-white"
-                          }`}
-                        >
-                          Page Access Management
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          href={NavLinks.MANAGE_PLAYERS}
-                          className={`block px-4 py-3 text-sm transition-colors duration-150 ${
-                            pathName === NavLinks.MANAGE_PLAYERS
-                              ? "bg-white/10 text-yellow-300"
-                              : "text-gray-200 hover:bg-white/5 hover:text-white"
-                          }`}
-                        >
-                          Manage Players
-                        </Link>
-                      </li>
+                      {isAdmin && (
+                        <li>
+                          <Link
+                            href={NavLinks.PAGE_ACCESS_MANAGEMENT}
+                            className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                              pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
+                                ? "bg-white/10 text-yellow-300"
+                                : "text-gray-200 hover:bg-white/5 hover:text-white"
+                            }`}
+                          >
+                            Page Access Management
+                          </Link>
+                        </li>
+                      )}
+                      {canManagePlayers && (
+                        <li>
+                          <Link
+                            href={NavLinks.MANAGE_PLAYERS}
+                            className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                              pathName === NavLinks.MANAGE_PLAYERS
+                                ? "bg-white/10 text-yellow-300"
+                                : "text-gray-200 hover:bg-white/5 hover:text-white"
+                            }`}
+                          >
+                            Manage Players
+                          </Link>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </div>
@@ -392,7 +399,7 @@ export default function Header() {
                 </li>
               )}
 
-              {isAdmin && (
+              {(isAdmin || canManagePlayers) && (
                 <li>
                   <div className="space-y-1">
                     <div className={`px-4 py-2 text-sm font-medium ${
@@ -401,28 +408,32 @@ export default function Header() {
                       Admin
                     </div>
                     <div className="ml-4 space-y-1">
-                      <Link
-                        href={NavLinks.PAGE_ACCESS_MANAGEMENT}
-                        className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
-                          pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
-                            ? "bg-white/10 text-yellow-300"
-                            : "text-gray-200 hover:bg-white/5 hover:text-white"
-                        }`}
-                        onClick={closeMobileMenu}
-                      >
-                        Page Access Management
-                      </Link>
-                      <Link
-                        href={NavLinks.MANAGE_PLAYERS}
-                        className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
-                          pathName === NavLinks.MANAGE_PLAYERS
-                            ? "bg-white/10 text-yellow-300"
-                            : "text-gray-200 hover:bg-white/5 hover:text-white"
-                        }`}
-                        onClick={closeMobileMenu}
-                      >
-                        Manage Players
-                      </Link>
+                      {isAdmin && (
+                        <Link
+                          href={NavLinks.PAGE_ACCESS_MANAGEMENT}
+                          className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
+                            pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
+                              ? "bg-white/10 text-yellow-300"
+                              : "text-gray-200 hover:bg-white/5 hover:text-white"
+                          }`}
+                          onClick={closeMobileMenu}
+                        >
+                          Page Access Management
+                        </Link>
+                      )}
+                      {canManagePlayers && (
+                        <Link
+                          href={NavLinks.MANAGE_PLAYERS}
+                          className={`block rounded-lg px-4 py-2 text-sm transition-colors ${
+                            pathName === NavLinks.MANAGE_PLAYERS
+                              ? "bg-white/10 text-yellow-300"
+                              : "text-gray-200 hover:bg-white/5 hover:text-white"
+                          }`}
+                          onClick={closeMobileMenu}
+                        >
+                          Manage Players
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </li>

@@ -73,6 +73,12 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
       dataIndex: "name",
       key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
+      filters: players.map((player) => ({
+        text: player.name,
+        value: player.name,
+      })),
+      onFilter: (value, record) =>
+        record.name.toLowerCase().includes((value as string).toLowerCase()),
       filterSearch: true,
     },
     {
@@ -86,6 +92,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
         { text: "Wicket-Keeper", value: "Wicket-Keeper" },
       ],
       onFilter: (value, record) => record.type === value,
+      filterSearch: true,
     },
     {
       title: "Category",
@@ -99,6 +106,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
         { text: "L4", value: "L4" },
       ],
       onFilter: (value, record) => record.category === value,
+      filterSearch: true,
     },
     {
       title: "Base Value",
@@ -126,6 +134,7 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
         { text: "In-Progress", value: "In-Progress" },
       ],
       onFilter: (value, record) => record.status === value,
+      filterSearch: true,
       render: (status: string) => (
         <Tag color={getStatusColor(status)}>{status}</Tag>
       ),
