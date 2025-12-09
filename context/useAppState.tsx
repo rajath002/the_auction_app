@@ -7,6 +7,7 @@ import teamList from "@/data/teamslist.json";
 // import playersList from "@/data/playerslist.json";
 import { getTeams, updateTeam } from "@/services/teams";
 import { getPlayers, updatePlayer } from "@/services/player";
+import { ShufflePlayers } from "@/utils/playerUtils";
 
 enum FilterType {
   ALL = "ALL",
@@ -37,7 +38,9 @@ function useAppState() {
   async function initDataValues() {
     const teamList = await getTeams();
     const responsePlayer = await getPlayers();
-    const shuffledPlayers = [...responsePlayer.data].sort(() => Math.random() - 0.5);
+    
+    const shuffledPlayers = ShufflePlayers(responsePlayer.data);
+    
     setTeams(teamList);
     setPlayers(shuffledPlayers);
   }
