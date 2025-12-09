@@ -59,12 +59,12 @@ const PlayerTable: React.FC<PlayerTableProps> = ({
       width: 100,
       render: (image: string, record: Player) => (
         <Image
-          src={image || "/placeholder-player.png"}
+          src={image || "/human_placeholder.png"}
           alt={record.name}
           width={50}
           height={50}
           style={{ objectFit: "cover", borderRadius: 4 }}
-          fallback="/placeholder-player.png"
+          fallback="/human_placeholder.png"
         />
       ),
     },
