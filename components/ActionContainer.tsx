@@ -66,12 +66,28 @@ export const AuctionContainer = () => {
   }, [players, playerFilter, selectedCategory]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
+    // For UNSOLD players:
+    // - First bid starts from baseValue
+    // - Subsequent bids add bidIncrement to current bidValue
+    const isFirstBid = !player.currentTeamId;
+    const newBidValue = isFirstBid ? player.baseValue : player.bidValue + bidIncrement;
+    const bidAmount = isFirstBid ? player.baseValue : bidIncrement;
+    
     // Check if team has enough funds for this bid
-    if (team.purse < bidIncrement) {
+    if (team.purse < bidAmount) {
       return; // Don't allow bid if it would make purse negative
     }
-    updatePlayerPoints(player.id, team, player.bidValue + bidIncrement, player.status);
-    updatePurse(team, team.purse - bidIncrement);
+    
+    // If there's a previous bidder, refund their bid
+    if (!isFirstBid && player.currentTeamId) {
+      const oldTeam = teams.find((t) => t.id === player.currentTeamId);
+      if (oldTeam) {
+        updatePurse(oldTeam, oldTeam.purse + player.bidValue);
+      }
+    }
+    
+    updatePlayerPoints(player.id, team, newBidValue, player.status);
+    updatePurse(team, team.purse - newBidValue);
   };
 
   const updateTeamAndPlayerPoints = (team: Team) => {

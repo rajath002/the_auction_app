@@ -253,7 +253,7 @@ function Buttons(props: {
     setOpenUnsoldPopover(false);
     setTimeout(() => {
       props.onUnsold(props.player);
-    }, 5000);
+    }, 600);
   };
 
   const unsoldBtn = props.player?.status === PlayerStatus.AVAILABLE && (
