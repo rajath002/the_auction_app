@@ -1,8 +1,8 @@
 // import type { NextApiRequest, NextApiResponse } from 'next'
 import { NextResponse } from "next/server";
-import { connectToMongoDB } from "./config";
+// import { connectToMongoDB } from "./config";
 
-connectToMongoDB();
+// connectToMongoDB();
 
 
 export async function GET() {

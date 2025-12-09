@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import playersOld from "@/data/playerslist-old.json";
-import { connectToMongoDB, database, client, closeConnection } from "../config";
+// import { connectToMongoDB, database, client, closeConnection } from "../config";
 import players from "@/data/players.json";
 import Player, { PlayerCategory, PlayerStatus, PlayerType } from "@/models/Player";
 import { connectDB } from "@/lib/sequelize";

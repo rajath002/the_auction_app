@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import PageAccessSetting from "@/models/PageAccessSetting";
 import '@/lib/db-init';
 
+export const dynamic = 'force-dynamic';
+
 // GET - Check if a specific route is publicly accessible
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    // const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
     const route = searchParams.get('route');
 
     if (!route) {

@@ -4,6 +4,8 @@ import Player from "@/models/Player";
 import '@/lib/db-init';
 import { getAdminOrManagerRole } from "@/lib/api-auth";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Require authentication for accessing teams with players
