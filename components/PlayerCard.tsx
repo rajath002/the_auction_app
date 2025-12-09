@@ -294,7 +294,7 @@ function Buttons(props: {
     </Popover>
   );
 
-  const sellButton = (props.player?.status === "AVAILABLE" || props.player?.status === "In-Progress") && props.player?.currentTeamId ? (
+  const sellButton = (props.player?.status === "AVAILABLE" || props.player?.status === "In-Progress" || props.player?.status === "UNSOLD") && props.player?.currentTeamId ? (
     <Popover
       content={
         <div className="flex items-center gap-2">
@@ -330,7 +330,7 @@ function Buttons(props: {
     </Popover>
   ) : null;
 
-  const revokeButton = props.player?.status === "SOLD" || props.player?.status === "UNSOLD" ? (
+  const revokeButton = (props.player?.status === "SOLD" || props.player?.status === "UNSOLD") && !props.player?.currentTeamId ? (
     <Button
       onClick={() => props.onRevoke(props.player)}
       className="!rounded-full !border-none !bg-amber-500 !px-6 !py-2 !text-sm !font-semibold !text-slate-900 !shadow-lg hover:!bg-amber-400"

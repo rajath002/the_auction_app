@@ -270,6 +270,9 @@ export const AuctionContainer = () => {
             <div className="flex flex-col gap-1">
               <span className="text-xs uppercase tracking-[0.35em] text-slate-400">Summary</span>
               <div className="flex items-center gap-1 text-lg font-semibold">
+                <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1 text-blue-200">
+                  Total · {players.length}
+                </span>
                 <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-emerald-200">
                   Sold · {totalSoldPlayers}
                 </span>
