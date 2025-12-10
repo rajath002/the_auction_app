@@ -39,6 +39,8 @@
     "react-confetti": "^6.1.0",
     "react-confetti-explosion": "^2.1.2",
     "react-dom": "^18",
+    "react-virtualized": "^9.22.6",
+    "react-window": "^2.2.3",
     "sass": "^1.69.5",
     "sequelize": "^6.37.7",
     "sharp": "^0.34.5",

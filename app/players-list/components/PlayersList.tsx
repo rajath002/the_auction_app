@@ -16,6 +16,7 @@ import { getPlayers } from "@/services/player";
 import ImageWithFallback from "@/components/ImageWithFallback";
 import { useSession } from "next-auth/react";
 import kplLogo from "@/assets/kpl-logo-large.jpeg";
+import { Grid, AutoSizer } from 'react-virtualized';
 
 interface DataType {
   key: string;
@@ -90,6 +91,7 @@ export default function PlayersList() {
         },
       }}
     >
+      <style dangerouslySetInnerHTML={{ __html: `.light-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) transparent; } .light-scrollbar::-webkit-scrollbar { width: 6px; } .light-scrollbar::-webkit-scrollbar-track { background: transparent; } .light-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 3px; } .light-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }` }} />
       {isLoading ? (
         <div className="flex justify-center min-h-screen">
           <p className="text-xl font-semibold">Loading Players...</p>
@@ -104,11 +106,42 @@ export default function PlayersList() {
               setSearchText={setSearchText}
             />
           </div>
-          {/* <div className="flex flex-wrap justify-center gap-6 min-h-screen"> */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5 gap-3 md:gap-6 p-6 min-h-screen">
-            {filteredPlayers.map((player) => (
-              <PlayerCard key={player.id} player={player} userRole={session?.user?.role} />
-            ))}
+          <div className="p-6 min-h-screen display-flex align-middle justify-center">
+            <AutoSizer>
+              {({ height, width }) => {
+                const minColumnWidth = 280; // minimum width per card
+                const horizontalGap = 16; // horizontal gap between cards
+                const verticalGap = 16; // vertical gap between cards
+                const columnCount = Math.max(1, Math.floor((width + horizontalGap) / (minColumnWidth + horizontalGap)));
+                const rowCount = Math.ceil(filteredPlayers.length / columnCount);
+                const columnWidth = (width - horizontalGap * (columnCount - 1)) / columnCount;
+                const rowHeight = 560 + verticalGap; // fixed height per card plus vertical gap
+                const colHeight = rowCount * rowHeight;
+                return (
+                  <Grid
+                    cellRenderer={({ columnIndex, rowIndex, key, style }) => {
+                      const index = rowIndex * columnCount + columnIndex;
+                      const player = filteredPlayers[index];
+                      if (!player) return null;
+                      const cellStyle = { ...style, padding: `${verticalGap / 2}px` };
+                      return (
+                        <div key={key} style={cellStyle}>
+                          <PlayerCard player={player} userRole={session?.user?.role} />
+                        </div>
+                      );
+                    }}
+                    className="light-scrollbar"
+                    columnCount={columnCount}
+                    columnWidth={columnWidth}
+                    height={height}
+                    rowCount={rowCount}
+                    rowHeight={rowHeight}
+                    style={{ overflowX: 'hidden' }}
+                    width={width}
+                  />
+                );
+              }}
+            </AutoSizer>
           </div>
         </div>
       ) : (
@@ -130,12 +163,12 @@ const PlayerCard = memo(function PlayerCard({ player, userRole }: { player: Play
   // Check if user can see bid values (admin or manager)
   const canSeeBidValue = userRole === "admin" || userRole === "manager";
 
-  const showBadge = canSeeBidValue && (player.bidValue || player.baseValue);
+  // const showBadge = canSeeBidValue && (player.bidValue || player.baseValue);
 
   const statusColor = player.status === "UNSOLD" ? "text-red-500" : player.status ? "text-green-500" : "";
 
   const cardContent = (
-    <div className="hover:border-yellow-600 h-[560px] border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800 flex flex-col">
+    <div className="hover:border-yellow-600 h-[560px] border-b-4 border-slate-800 rounded overflow-hidden shadow-lg dark:bg-gray-800 flex flex-col max-w-xs mx-auto">
       <div className="relative h-[440px] w-full flex-shrink-0 overflow-hidden">
         <ImageWithFallback
           src={player.image || kplLogo}
@@ -174,13 +207,7 @@ const PlayerCard = memo(function PlayerCard({ player, userRole }: { player: Play
   return (
     // <div className="will-change-transform md:hover:scale-105 transition-transform duration-200">
     <div>
-      {showBadge ? (
-        <Badge.Ribbon text={player.bidValue || player.baseValue} color="gold">
-          {cardContent}
-        </Badge.Ribbon>
-      ) : (
-        cardContent
-      )}
+      {cardContent}
     </div>
   );
 });
@@ -222,12 +249,13 @@ function SearchBar(props: SearchBarType) {
         <Row
           data-testid="search-bar"
           justify="space-between"
+          align="middle"
           gutter={16}
           className="w-full"
         >
-          <Col className="px-2">
+          <Col className="px-1">
             <div className="relative text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+              <h1 className="text-4xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
                 Players List
               </h1>
               {/* <p className="text-slate-300 text-lg md:text-xl">Browse and manage all available players</p> */}
