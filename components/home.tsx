@@ -9,7 +9,7 @@ export default function HomeBase() {
   const { teams } = useAppContext();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
-      <section className="flex justify-center mb-8">
+      <section className="flex justify-center mb-8 align-middle">
         <Image
           src={kplLogoTransparent}
           alt={"kpl-logo"}
@@ -36,7 +36,7 @@ function ShowTeam({ team }: { team: Team }) {
       {/* Hero image (bigger visual footprint) */}
       <div className="w-full h-44 2xl:h-56 overflow-hidden">
         <Image
-          src={kplLogo}
+          src={team.image || kplLogo}
           alt={`${team.name} banner`}
           width={200}
           height={250}

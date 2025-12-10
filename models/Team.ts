@@ -9,6 +9,7 @@ export interface TeamAttributes {
   owner: string;
   mentor: string;
   icon_player?: string;
+  image?: string;
   created_at?: Date;
   updated_at?: Date;
   players?: any[]; // Associated players
@@ -25,6 +26,7 @@ class Team extends Model<TeamAttributes, TeamCreationAttributes> implements Team
   public owner!: string;
   public mentor!: string;
   public icon_player?: string;
+  public image?: string;
   public players?: any[]; // Associated players
 
   public readonly created_at!: Date;
@@ -40,6 +42,7 @@ class Team extends Model<TeamAttributes, TeamCreationAttributes> implements Team
       owner: values.owner,
       mentor: values.mentor,
       iconPlayer: values.icon_player || '',
+      image: values.image || '',
     };
 
     // Include associated players if they exist
@@ -78,6 +81,10 @@ Team.init(
       allowNull: false,
     },
     icon_player: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    image: {
       type: DataTypes.STRING(255),
       allowNull: true,
     },

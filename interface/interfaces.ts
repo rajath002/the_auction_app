@@ -5,6 +5,7 @@ export interface Team {
   owner: string;
   mentor: string;
   iconPlayer: string;
+  image?: string;
 }
 
 export type PlayerStatus = "SOLD" | "UNSOLD" | "AVAILABLE" | "In-Progress";

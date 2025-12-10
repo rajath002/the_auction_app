@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
 
     // Fetch all teams from the database
     const teams = await Team.findAll({
-      attributes: ['id', 'name', 'purse', 'owner', 'mentor', 'icon_player'],
+      attributes: ['id', 'name', 'purse', 'owner', 'mentor', 'image', 'icon_player'],
       order: [['id', 'ASC']],
     });
 
