@@ -8,10 +8,11 @@ import { useAppContext } from "@/context/useAppState";
 import { Player, Team } from "@/interface/interfaces";
 
 const BID_INCREMENT_OPTIONS = [
-  { value: 50, label: "₹50" },
-  { value: 100, label: "₹100" },
-  { value: 150, label: "₹150" },
-  { value: 200, label: "₹200" },
+  { value: 100, label: "100" },
+  { value: 200, label: "200" },
+  { value: 300, label: "300" },
+  { value: 400, label: "400" },
+  { value: 500, label: "500" },
 ];
 
 const CATEGORY_OPTIONS = [
@@ -25,7 +26,7 @@ const categories = ["All", ...CATEGORY_OPTIONS.map((item) => item.category)];
 
 export const AuctionContainer = () => {
   const [filteredPlayers, setFilteredPlayers] = useState<Player[]>([]);
-  const [bidIncrement, setBidIncrement] = useState<number>(50);
+  const [bidIncrement, setBidIncrement] = useState<number>(100);
   const [auctionStarted, setAuctionStarted] = useState<boolean>(false);
   const [selectedStartCategory, setSelectedStartCategory] = useState<string | null>(null);
   const {
@@ -64,6 +65,14 @@ export const AuctionContainer = () => {
     
     setFilteredPlayers(filtered);
   }, [players, playerFilter, selectedCategory]);
+
+  // Auto-select bidIncrement based on current player's baseValue
+  useEffect(() => {
+    const currentPlayer = filteredPlayers[currentPlayerIndex];
+    if (currentPlayer) {
+      setBidIncrement(currentPlayer.baseValue);
+    }
+  }, [currentPlayerIndex, filteredPlayers]);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
     // For UNSOLD players:

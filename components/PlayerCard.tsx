@@ -118,7 +118,7 @@ export const PlayerCard = ({
                     alt="Sold stamp"
                     width={600}
                     height={600}
-                    className="h-40 w-40 -rotate-6 opacity-95 drop-shadow-[0_18px_45px_rgba(22,163,74,0.45)]"
+                    className="h-52 w-52 -rotate-6 opacity-95 drop-shadow-[0_18px_45px_rgba(22,163,74,0.45)]"
                     priority
                   />
                 </div>
