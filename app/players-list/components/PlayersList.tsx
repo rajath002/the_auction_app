@@ -43,7 +43,7 @@ export default function PlayersList() {
   });
 
   useEffect(() => {
-    getPlayers().then((response) => {
+    getPlayers({ all: true }).then((response) => {
       setPlayers(response.data);
       setIsLoading(false);
     }).catch((error) => {
@@ -189,6 +189,7 @@ const PlayerCard = memo(function PlayerCard({ player, userRole }: { player: Play
         <p className="text-gray-700 dark:text-gray-300 text-base">
           Category: {player.category}
         </p>
+        {(player.role === 'player') && <>
         <p className="text-gray-700 dark:text-gray-300 text-base">
           Status:
           <span className={`text-base ${statusColor}`}>
@@ -200,6 +201,7 @@ const PlayerCard = memo(function PlayerCard({ player, userRole }: { player: Play
             Current Bid: {player.bidValue} pts
           </p>
         )}
+        </>}
       </div>
     </div>
   );

@@ -55,14 +55,14 @@ export default function BulkRegistrationForm(props: BulkRegistrationFormProps) {
       key: 'baseValue',
     },
     {
-      title: 'Image URL',
-      dataIndex: 'imageUrl',
-      key: 'imageUrl',
-    },
-    {
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
+    },
+    {
+      title: 'Image URL',
+      dataIndex: 'imageUrl',
+      key: 'imageUrl',
     },
     
     // {

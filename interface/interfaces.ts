@@ -22,4 +22,5 @@ export interface Player {
   currentBid: number;
   type: string;
   category: string;
+  role?: string;
 }

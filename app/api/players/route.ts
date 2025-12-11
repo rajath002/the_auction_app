@@ -5,6 +5,7 @@ import players from "@/data/players.json";
 import Player, { PlayerCategory, PlayerStatus, PlayerType } from "@/models/Player";
 import { connectDB } from "@/lib/sequelize";
 import { requireAuth, requireAdminOrManager, getAdminOrManagerRole } from "@/lib/api-auth";
+import { Op } from 'sequelize';
 
 export async function POST(request: NextRequest) {
   try {
@@ -132,7 +133,7 @@ export async function GET(request: NextRequest) {
     // const adminOrManager = await requireAdminOrManager(request);
     const userRole = await getAdminOrManagerRole(request);
 
-    const playerAttributes = ['id', 'name', 'image', 'type', 'category', 'current_team_id', 'current_bid', 'base_value', 'status', 'created_at', 'updated_at'];
+    const playerAttributes = ['id', 'name', 'image', 'type', 'category', 'current_team_id', 'current_bid', 'base_value', 'status', 'created_at', 'updated_at', 'role'];
     if (userRole === 'admin' || userRole === 'manager') {
       playerAttributes.push('bid_value');
     }
@@ -153,6 +154,7 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type');
     const category = searchParams.get('category');
     const teamId = searchParams.get('teamId');
+    const all = searchParams.get('all');
     
     // Build where clause based on query parameters
     const whereClause: any = {};
@@ -171,6 +173,10 @@ export async function GET(request: NextRequest) {
     
     if (teamId) {
       whereClause.current_team_id = parseInt(teamId);
+    }
+    
+    if (all === null) {
+      whereClause.role = { [Op.or]: ['player', null] };
     }
     
     // Determine if user can see sensitive bid information
