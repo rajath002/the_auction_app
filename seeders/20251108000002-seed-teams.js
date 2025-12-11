@@ -8,7 +8,7 @@ module.exports = {
       [
         {
           name: "KGF",
-          purse: 10000,
+          purse: 12000,
           owner: "Jaya Shetty",
           mentor: "Nikhil Karmarjid",
           icon_player: "Dheeraj Shetty",
@@ -18,7 +18,7 @@ module.exports = {
         },
         {
           name: "Silver Squad",
-          purse: 10000,
+          purse: 12000,
           owner: "Guruprasad",
           mentor: "Santhosh Shetty",
           icon_player: "Praveen D acharya",
@@ -28,7 +28,7 @@ module.exports = {
         },
         {
           name: "Shabari Strikers",
-          purse: 10000,
+          purse: 12000,
           owner: "Rajesh Shetty",
           mentor: "Pawan Shetty",
           icon_player: "Shreepad Poojary",
@@ -38,7 +38,7 @@ module.exports = {
         },
         {
           name: "Ocean Stunners",
-          purse: 10000,
+          purse: 12000,
           owner: "Ashok Devadiga",
           mentor: "Yogish Kulal",
           icon_player: "Adarsh Acharya",
@@ -48,7 +48,7 @@ module.exports = {
         },
         {
           name: "Bhoomi Fighters",
-          purse: 10000,
+          purse: 12000,
           owner: "Dheeraj Kulal",
           mentor: "Praveen Acharya",
           icon_player: "Sandesh Poojary",

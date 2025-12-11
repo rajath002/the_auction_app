@@ -15,7 +15,7 @@ module.exports = {
       {
         page_route: '/teams',
         page_name: 'Teams',
-        public_access: true,
+        public_access: false,
         description: 'View all teams and their players',
         created_at: new Date(),
         updated_at: new Date()
