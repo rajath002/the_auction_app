@@ -52,7 +52,7 @@ export const AuctionContainer = () => {
     
     if (playerFilter === "SOLD" || playerFilter === "UNSOLD") {
       filtered = players.filter(
-        (p) => p.status === playerFilter && (selectedCategory ? p.category === selectedCategory : true)
+        (p) => p.status === playerFilter && (selectedCategory ? p?.category === selectedCategory : true)
       );
     } else if (playerFilter === "AUCTION") {
       filtered = players.filter(
@@ -60,7 +60,7 @@ export const AuctionContainer = () => {
       );
     } else {
       // ALL
-      filtered = selectedCategory ? players.filter((p) => p.category === selectedCategory) : players;
+      filtered = selectedCategory ? players.filter((p) => p?.category === selectedCategory) : players;
     }
     
     setFilteredPlayers(filtered);
