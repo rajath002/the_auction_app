@@ -1,23 +1,17 @@
-"use client";
 import Image from "next/image";
 import kplLogo from "@/assets/kpl-logo-large.jpeg";
 import kplLogoTransparent from "@/assets/kpl-logo-transparent.png";
-import { useAppContext } from "@/context/useAppState";
-import { Team } from "@/interface/interfaces";
+import TeamModel from "@/models/Team";
+import sequelize from "@/lib/sequelize";
+import { Team as TeamInterface } from "@/interface/interfaces";
 
-export default function HomeBase() {
-  const { teams } = useAppContext();
+export default async function HomeBase() {
+  await sequelize.authenticate();
+  const teamRecords = await TeamModel.findAll();
+  const teams: TeamInterface[] = teamRecords.map((record) => record.toJSON() as TeamInterface);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
-      <style jsx>{`
-        @keyframes marquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-        .animate-marquee {
-          animation: marquee 25s linear infinite;
-        }
-      `}</style>
       <section className="flex justify-center mb-8 align-middle">
         <Image
           src={kplLogoTransparent}
@@ -30,12 +24,12 @@ export default function HomeBase() {
       <section className="w-full">
         {/* <h1 className="text-center font-semibold">Teams</h1> */}
         <div className="flex flex-wrap justify-center gap-5">
-          {teams.map((t: Team) => (
+          {teams.map((t: TeamInterface) => (
             <ShowTeam key={t.id} team={t} />
           ))}
         </div>
       </section>
-      <div className="fixed bottom-0 left-0 right-0 w-full overflow-hidden py-3 shadow-md z-50">
+      <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-3/4 overflow-hidden py-3 shadow-md z-50 bg-gradient-to-t from-white/20 to-transparent backdrop-blur-md">
         <div className="animate-marquee whitespace-nowrap text-center font-bold text-xl text-white">
           📢 Announcement: The auction will be on 15 Dec, 5 PM Onwards. 📢
         </div>
@@ -44,7 +38,7 @@ export default function HomeBase() {
   );
 }
 
-function ShowTeam({ team }: { team: Team }) {
+function ShowTeam({ team }: { team: TeamInterface }) {
   return (    
     <article className="w-64 2xl:w-80 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl">
       {/* Hero image (bigger visual footprint) */}
@@ -69,7 +63,7 @@ function ShowTeam({ team }: { team: Team }) {
           <span className="inline-flex items-center justify-center w-9 2xl:w-11 h-9 2xl:h-11 rounded-full bg-blue-100 text-blue-700 font-semibold text-base 2xl:text-lg">😎</span>
           <div className="flex-1">
             <div className="text-xs 2xl:text-sm text-slate-500 uppercase">Owner</div>
-            <div className="text-sm 2xl:text-base font-semibold text-slate-700 truncate">{team.owner || '—'}</div>
+            <div className="text-sm 2xl:text-base font-semibold text-slate-700 truncate">{team.owner || 'TBD'}</div>
           </div>
         </div>
 
@@ -77,7 +71,7 @@ function ShowTeam({ team }: { team: Team }) {
           <span className="inline-flex items-center justify-center w-9 2xl:w-11 h-9 2xl:h-11 rounded-full bg-amber-100 text-amber-700 font-semibold text-base 2xl:text-lg">🧭</span>
           <div className="flex-1">
             <div className="text-xs 2xl:text-sm text-slate-500 uppercase">Mentor</div>
-            <div className="text-sm 2xl:text-base font-semibold text-slate-700 truncate">{team.mentor || '—'}</div>
+            <div className="text-sm 2xl:text-base font-semibold text-slate-700 truncate">{team.mentor || 'TBD'}</div>
           </div>
         </div>
 
@@ -85,7 +79,7 @@ function ShowTeam({ team }: { team: Team }) {
           <span className="inline-flex items-center justify-center w-9 2xl:w-11 h-9 2xl:h-11 rounded-full bg-emerald-100 text-emerald-700 font-semibold text-base 2xl:text-lg">🦸‍♂️</span>
           <div className="flex-1">
             <div className="text-xs 2xl:text-sm text-slate-500 uppercase">Icon Player</div>
-            <div className="text-sm 2xl:text-base font-semibold text-slate-700 truncate">{team.iconPlayer || '—'}</div>
+            <div className="text-sm 2xl:text-base font-semibold text-slate-700 truncate">{team.iconPlayer || 'TBD'}</div>
           </div>
         </div>
 
