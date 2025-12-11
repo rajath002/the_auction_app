@@ -9,6 +9,15 @@ export default function HomeBase() {
   const { teams } = useAppContext();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
+      <style jsx>{`
+        @keyframes marquee {
+          0% { transform: translateX(100%); }
+          100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+          animation: marquee 25s linear infinite;
+        }
+      `}</style>
       <section className="flex justify-center mb-8 align-middle">
         <Image
           src={kplLogoTransparent}
@@ -26,6 +35,11 @@ export default function HomeBase() {
           ))}
         </div>
       </section>
+      <div className="fixed bottom-0 left-0 right-0 w-full overflow-hidden py-3 shadow-md z-50">
+        <div className="animate-marquee whitespace-nowrap text-center font-bold text-xl text-white">
+          📢 Announcement: The auction will be on 15 Dec, 5 PM Onwards. 📢
+        </div>
+      </div>
     </div>
   );
 }
