@@ -17,6 +17,7 @@ import ImageWithFallback from "@/components/ImageWithFallback";
 import { useSession } from "next-auth/react";
 import kplLogo from "@/assets/kpl-logo-large.jpeg";
 import { Grid, AutoSizer } from 'react-virtualized';
+import useDebounce from "@/hooks/useDebounce";
 
 interface DataType {
   key: string;
@@ -42,6 +43,13 @@ export default function PlayersList() {
     searchText: "",
   });
 
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearchText = useDebounce(searchInput, 500);
+
+  useEffect(() => {
+    setFilteredInfo(prev => ({ ...prev, searchText: debouncedSearchText }));
+  }, [debouncedSearchText]);
+
   useEffect(() => {
     getPlayers({ all: true }).then((response) => {
       setPlayers(response.data);
@@ -56,7 +64,7 @@ export default function PlayersList() {
     setFilteredPlayers(() =>
       players.filter((p) => {
         const matchesSearchText = filteredInfo.searchText
-          ? p.name.includes(filteredInfo.searchText)
+          ? p.name.toLowerCase().includes(filteredInfo.searchText.toLowerCase())
           : true;
         const matchesCategory = filteredInfo.category
           ? p.category === filteredInfo.category
@@ -70,13 +78,6 @@ export default function PlayersList() {
     setFilteredInfo({
       ...filteredInfo,
       category,
-    });
-  };
-
-  const setSearchText = (searchText: string) => {
-    setFilteredInfo({
-      ...filteredInfo,
-      searchText,
     });
   };
 
@@ -103,7 +104,7 @@ export default function PlayersList() {
           <div>
             <SearchBar
               setCategory={setCategory}
-              setSearchText={setSearchText}
+              setSearchInput={setSearchInput}
             />
           </div>
           <div className="p-6 min-h-screen display-flex align-middle justify-center">
@@ -227,11 +228,11 @@ const data = [
 
 type SearchBarType = {
   setCategory: (category: string | null) => void;
-  setSearchText: (text: string) => void;
+  setSearchInput: (text: string) => void;
 };
 function SearchBar(props: SearchBarType) {
   const handleSearch = (e) => {
-    props.setSearchText(e.target.value);
+    props.setSearchInput(e.target.value);
   };
 
   const handleCategoryChange = (value) => {
