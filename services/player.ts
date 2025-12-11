@@ -7,9 +7,9 @@ type GetPlayersResponse = {
   count: number;
 }
 
-export async function getPlayers(): Promise<GetPlayersResponse> {
+export async function getPlayers(params?: Record<string, any>): Promise<GetPlayersResponse> {
   try {
-    const response = await axios.get("/api/players");
+    const response = await axios.get("/api/players", { params });
     return response.data;
   } catch (error) {
     console.log("Error in player fetch ", error);
