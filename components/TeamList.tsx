@@ -31,8 +31,8 @@ export const TeamList = (props: TeamListType) => {
   };
   const containerClass =
     variant === "list"
-      ? "flex flex-col gap-2"
-      : "grid w-full h-full gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
+      ? "flex flex-col gap-4"
+      : "grid w-full h-full gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5";
   return (
     <div className={containerClass}>
       {props.teams?.map((t) => (
@@ -93,19 +93,19 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
     return (
       <div
         className={[
-          "relative flex min-h-[100px] w-full items-center gap-2 rounded-3xl border bg-gradient-to-br px-4 py-3 text-slate-100 shadow-lg transition-all duration-300 ease-out",
+          "relative flex min-h-[100px] w-full items-center gap-2 rounded-3xl border bg-gradient-to-br px-4 py-3 text-slate-100 shadow-lg transition-all duration-300 ease-out m-1",
           showWarning 
             ? "border-red-500/50 from-slate-950 via-red-950/20 to-slate-950 opacity-60" 
-            : "border-slate-700/50 from-slate-950 via-slate-900 to-slate-950 hover:-translate-y-[2px] hover:border-blue-400/60 hover:shadow-2xl",
+            : "border-slate-700/50 from-slate-950 via-slate-900 to-slate-950 hover:border-blue-400/60 hover:shadow-2xl",
           disableBid && !showWarning ? "opacity-90" : "",
-          isBiddedTeam ? "ring-1 ring-blue-500/70" : "",
+          isBiddedTeam ? "ring-2 ring-blue-500/70" : "",
         ]
           .filter(Boolean)
           .join(" ")}
       >
         <div className="flex items-center gap-2">
           <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-900/70 shadow-inner">
-            <Image src={url} alt="team icon" height={80} width={80} />
+            <Image src={team.image || url} alt="team icon" height={80} width={80} />
           </div>
         </div>
 
@@ -141,18 +141,18 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
             <div className="flex justify-center items-center">
               <Button
                 type="primary"
-                className="!rounded-full !border-none !bg-gradient-to-r !from-sky-500 !to-blue-600 !px-6 !py-2 text-sm font-semibold tracking-wide text-white shadow-md transition hover:!from-sky-400 hover:!to-blue-500 disabled:!bg-slate-700 disabled:!from-slate-700 disabled:!to-slate-700 disabled:!text-slate-300"
+                className="!flex !items-center h-fit !justify-center !rounded-full !border-none !bg-gradient-to-r !from-sky-500 !to-blue-600 !px-8 !py-3 text-base font-semibold tracking-wide text-white shadow-md transition hover:!from-sky-400 hover:!to-blue-500 disabled:!bg-slate-700 disabled:!from-slate-700 disabled:!to-slate-700 disabled:!text-slate-300"
                 onClick={() => onBid(team)}
                 disabled={disableBid}
               >
                 Bid
               </Button>
-              <div className="rounded-2xl bg-slate-950/70 px-2 py-1 text-right">
+              <div className="rounded-2xl bg-slate-950/70 px-2 py-1 text-right w-24">
                 <span className="block text-[11px] uppercase tracking-[0.35em] text-slate-400">
                   Purse
                 </span>
-                <span className={`block text-xl font-semibold ${showInsufficientMessage ? "text-red-400" : "text-emerald-300"}`}>
-                  ₹{formattedPurse}
+                <span className={`block text-2xl font-semibold ${showInsufficientMessage ? "text-red-400" : "text-emerald-300"}`}>
+                  {formattedPurse}
                 </span>
                 {showInsufficientMessage && (
                   <span className="block text-[10px] font-medium text-red-400">
@@ -173,9 +173,9 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
         "flex w-full flex-col items-center gap-5 rounded-2xl border bg-gradient-to-br p-5 text-slate-100 shadow-md transition-all duration-300 ease-out",
         showWarning
           ? "border-red-500/50 from-slate-950 via-red-950/20 to-slate-950 opacity-60"
-          : "border-slate-700/50 from-slate-950 via-slate-900 to-slate-950 hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-2xl",
+          : "border-slate-700/50 from-slate-950 via-slate-900 to-slate-950 hover:border-blue-400/60 hover:shadow-2xl",
         disableBid && !showWarning ? "opacity-90" : "",
-        isBiddedTeam ? "ring-1 ring-blue-500/70" : "",
+        isBiddedTeam ? "ring-2 ring-blue-500/70" : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -201,7 +201,7 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
 
       <div className="flex flex-col items-center gap-4">
         <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-slate-700/70 bg-slate-900/70 shadow-inner">
-          <Image src={url} alt="team icon" height={96} width={96} />
+          <Image src={team?.image || url} alt="team icon" height={96} width={96} />
         </div>
 
         <h2 className="text-center text-base font-semibold uppercase tracking-wide">
@@ -213,7 +213,7 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
             <span className="text-[11px] uppercase tracking-[0.4em] text-slate-400">
               Purse
             </span>
-            <span className={`text-lg font-bold ${showInsufficientMessage ? "text-red-400" : "text-emerald-300"}`}>₹{formattedPurse}</span>
+            <span className={`text-xl font-bold ${showInsufficientMessage ? "text-red-400" : "text-emerald-300"}`}>{formattedPurse}</span>
           </div>
           {showInsufficientMessage && (
             <span className="text-center text-[10px] font-medium text-red-400 mt-1">
@@ -225,7 +225,7 @@ function Team({ team, onBid, disableButton, isBiddedTeam, isPlayersAvailable, va
 
       <Button
         type="primary"
-        className="!mt-2 !w-full !rounded-full !border-none !bg-gradient-to-r !from-sky-500 !to-blue-600 !py-2 text-sm font-semibold tracking-wide text-white shadow-md transition hover:!from-sky-400 hover:!to-blue-500 disabled:!bg-slate-700 disabled:!from-slate-700 disabled:!to-slate-700 disabled:!text-slate-300"
+        className="!flex !items-center !justify-center !mt-2 !w-full !rounded-full !border-none !bg-gradient-to-r !from-sky-500 !to-blue-600 !py-3 text-base font-semibold tracking-wide text-white shadow-md transition hover:!from-sky-400 hover:!to-blue-500 disabled:!bg-slate-700 disabled:!from-slate-700 disabled:!to-slate-700 disabled:!text-slate-300"
         onClick={() => onBid(team)}
         disabled={disableBid}
       >

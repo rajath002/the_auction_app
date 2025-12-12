@@ -176,7 +176,7 @@ export const PlayerCard = ({
               <span className="text-xs uppercase tracking-[0.4em] text-emerald-200">
                 Current Bid
               </span>
-              <p className="mt-2 text-5xl font-black text-emerald-100">₹{formattedBidValue}</p>
+              <p className="mt-2 text-5xl font-black text-emerald-100">{formattedBidValue}</p>
             </div>
 
             <div className={`rounded-2xl px-4 py-3 text-center text-lg font-semibold transition-all duration-300 ${

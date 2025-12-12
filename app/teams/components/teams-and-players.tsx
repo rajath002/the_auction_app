@@ -30,7 +30,7 @@ export default function TeamsAndPlayers() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_60%)]" />
         {/* <div className="pointer-events-none absolute -bottom-28 -right-24 rounded-full bg-blue-500/10 blur-3xl" /> */}
       <div className="h-20"></div>
-      <div className="mx-auto flex max-w-6xl flex-col gap-8">
+      <div className="mx-auto flex flex-col gap-8">
         <header className="text-center">
           <h2 className="text-4xl font-bold uppercase tracking-[0.35em] text-slate-100">
             Teams & Players
@@ -40,7 +40,7 @@ export default function TeamsAndPlayers() {
           </p>
         </header>
 
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {computedTeams.map((team: Team) => {
             const players: Player[] = getPlayersOfTeam(team.id) ?? [];
             const iconPlayer = team.iconPlayer?.trim();
@@ -50,7 +50,7 @@ export default function TeamsAndPlayers() {
               <article
                 key={team.id}
                 className={[
-                  "group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-800/60 p-6 text-slate-100 shadow-lg transition-all duration-300",
+                  "group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-800/60 p-3 text-slate-100 shadow-lg transition-all duration-300",
                   accentGradient,
                   "hover:-translate-y-1 hover:border-blue-500/60 hover:shadow-2xl",
                 ].join(" ")}
@@ -103,22 +103,22 @@ export default function TeamsAndPlayers() {
                     </div>
                   )}
 
-                  <div className="flex-1 overflow-hidden">
-                    <div className="custom-scrollbar max-h-48 space-y-2 overflow-y-auto pr-1">
+                  <div className="flex-1">
+                    <div className="space-y-2 pr-1">
                       {players.length ? (
                         players.map((player) => (
                           <div
                             key={player.id}
-                            className="flex items-center justify-between rounded-2xl border border-slate-800/60 bg-slate-900/60 px-3 py-2 text-sm transition hover:border-blue-500/50 hover:bg-slate-900/80"
+                            className="flex items-center justify-between rounded-2xl border border-slate-800/60 bg-slate-900/60 px-3 py-2 text-sm transition hover:border-blue-500/50 hover:bg-slate-900/80 cursor-default"
                           >
-                            <span className="font-medium text-slate-100">{player.name}</span>
+                            <span className="font-medium text-slate-100 truncate" title={player.name}>{player.name}</span>
                             <div className="flex items-center gap-3">
                               {canSeeBidValue && (
                                 <span className="text-xs font-semibold text-emerald-300">
                                   ₹{player.bidValue?.toLocaleString("en-IN") ?? 0}
                                 </span>
                               )}
-                              <span className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                              <span className="text-xs uppercase tracking-[0.3em] text-orange-400">
                                 {player.type}
                               </span>
                             </div>

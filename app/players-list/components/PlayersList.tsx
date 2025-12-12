@@ -184,14 +184,14 @@ const PlayerCard = memo(function PlayerCard({ player, userRole }: { player: Play
         </div>
       </div>
       <div className="px-6 py-4">
-        <p className="text-gray-700 dark:text-gray-300 text-base">
+        <p className="text-gray-700 dark:text-white text-base">
           Type: {player.type}
         </p>
-        <p className="text-gray-700 dark:text-gray-300 text-base">
+        <p className="text-gray-700 dark:text-white text-base">
           Category: {player.category}
         </p>
         {(player.role === 'player') && <>
-        <p className="text-gray-700 dark:text-gray-300 text-base">
+        <p className="text-gray-700 dark:text-white text-base">
           Status:
           <span className={`text-base ${statusColor}`}>
             &nbsp;{player.status}
