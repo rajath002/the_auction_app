@@ -9,7 +9,7 @@ module.exports = {
       admin: await bcrypt.hash('adminsKpl123', 10),
       user: await bcrypt.hash('user123', 10),
       demo: await bcrypt.hash('demo123', 10),
-      manager: await bcrypt.hash('auctionmanager111', 10),
+      manager: await bcrypt.hash('auctionsmanager111', 10),
     };
 
     await queryInterface.bulkInsert('users', [
