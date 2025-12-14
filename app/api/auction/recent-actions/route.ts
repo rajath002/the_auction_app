@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
         },
       ],
       order: [['updated_at', 'DESC']],
-      attributes: { exclude: ['bid_value'] },
     });
 
     return NextResponse.json({ data: players }, { status: 200 });

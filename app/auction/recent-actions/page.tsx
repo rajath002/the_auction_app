@@ -10,6 +10,7 @@ interface Player {
   type: string;
   category: string;
   status: string;
+  bidValue?: number;
   currentTeam?: {
     id: number;
     name: string;
@@ -83,6 +84,9 @@ export default function RecentActionsPage() {
                       <p className="text-sm text-gray-600">{player.type} • {player.category}</p>
                       <p className="text-sm font-medium text-green-700">
                         Sold to {player.currentTeam?.name || 'Unknown Team'}
+                      </p>
+                      <p className="text-sm font-medium text-green-700">
+                        Bid Value: {player.bidValue ? `$${player.bidValue}` : 'N/A'}
                       </p>
                     </div>
                   </div>
