@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Player, Team } from "@/interface/interfaces";
 import { useAppContext } from "@/context/useAppState";
 import { useCurrentUser } from "@/hooks/useAuth";
+import Image from "next/image";
 
 const accentGradient = "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950";
 
@@ -12,6 +13,19 @@ export default function TeamsAndPlayers() {
   const canSeeBidValue = user?.role === "admin" || user?.role === "manager";
 
   const computedTeams = useMemo(() => teams ?? [], [teams]);
+
+  const getPlayerTypeIcon = (type: string) => {
+    switch (type.toLocaleLowerCase('en')) {
+      case "batsman":
+        return <Image src="/assets/icons/bat.png" alt="Batsman" width={16} height={16} />;
+      case "bowler":
+        return <Image src="/assets/icons/ball.png" alt="Bowler" width={16} height={16} />;
+      case "all-rounder":
+        return <Image src="/assets/icons/batball.png" alt="All Rounder" width={16} height={16} />;
+      default:
+        return type;
+    }
+  };
 
   if (!computedTeams.length) {
     return (
@@ -42,7 +56,10 @@ export default function TeamsAndPlayers() {
 
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {computedTeams.map((team: Team) => {
-            const players: Player[] = getPlayersOfTeam(team.id) ?? [];
+            const players: Player[] = (getPlayersOfTeam(team.id) ?? []).sort((a, b) => {
+              const order = { batsman: 1, "all-rounder": 2, bowler: 3 };
+              return order[a.type.toLowerCase()] - order[b.type.toLowerCase()];
+            });
             const iconPlayer = team.iconPlayer?.trim();
             const totalSpent = players.reduce((sum, p) => sum + (p.bidValue ?? 0), 0);
 
@@ -106,20 +123,23 @@ export default function TeamsAndPlayers() {
                   <div className="flex-1">
                     <div className="space-y-2 pr-1">
                       {players.length ? (
-                        players.map((player) => (
+                        players.map((player, index) => (
                           <div
                             key={player.id}
                             className="flex items-center justify-between rounded-2xl border border-slate-800/60 bg-slate-900/60 px-3 py-2 text-sm transition hover:border-blue-500/50 hover:bg-slate-900/80 cursor-default"
                           >
-                            <span className="font-medium text-slate-100 truncate" title={player.name}>{player.name}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-semibold text-blue-300">#{index + 1}</span>
+                              <span className="font-medium text-slate-100 truncate" title={player.name}>{player.name}</span>
+                            </div>
                             <div className="flex items-center gap-3">
                               {canSeeBidValue && (
                                 <span className="text-xs font-semibold text-emerald-300">
-                                  ₹{player.bidValue?.toLocaleString("en-IN") ?? 0}
+                                  {player.bidValue?.toLocaleString("en-IN") ?? 0}
                                 </span>
                               )}
                               <span className="text-xs uppercase tracking-[0.3em] text-orange-400">
-                                {player.type}
+                                {getPlayerTypeIcon(player.type)}
                               </span>
                             </div>
                           </div>
