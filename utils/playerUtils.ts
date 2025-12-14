@@ -33,8 +33,8 @@ export function ShufflePlayers(players: Player[]): Player[] {
     return fisherYatesShuffle(players);
   }
 
-  const firstPositionCount = 20;
-  const positionCount = 20;
+  const firstPositionCount = 30;
+  const positionCount = 30;
 
   // Separate players into three groups
   const firstPositionPlayers = players.filter((p: Player) =>
