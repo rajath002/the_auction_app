@@ -77,17 +77,17 @@ export default function TeamsAndPlayers() {
                 </div>
 
                 <div className="relative z-10 flex flex-col gap-2">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
+                  <div className="flex items-start justify-between gap-3 flex-col">
+                    <div className="flex justify-between w-full">
                       <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Team</p>
-                      <h3 className="text-xl font-semibold uppercase tracking-wide text-slate-100">
-                        {team.name}
-                      </h3>
+                      <div className="rounded-full bg-blue-500/15 px-4 py-1 text-[10px] font-semibold uppercase tracking-[0.35em] te
+                      xt-blue-300 w-48">
+                        {players.length} Players
+                      </div>
                     </div>
-                    <span className="rounded-full bg-blue-500/15 px-4 py-1 text-[10px] font-semibold uppercase tracking-[0.35em] te
-                    xt-blue-300">
-                      {players.length} Players
-                    </span>
+                    <h3 className="text-xl font-semibold uppercase tracking-wide text-slate-100">
+                      {team.name}
+                    </h3>
                   </div>
 
                     <header className="flex flex-col text-[11px] uppercase tracking-[0.35em] text-slate-500 cursor-default">
