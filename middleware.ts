@@ -14,6 +14,7 @@ const alwaysPublicRoutes = [
 
 // Define routes that require specific roles
 const protectedRoutes = {
+  "/auction/recent-actions": ["admin", "user"],
   "/player-registration": ["admin"],
   "/bulk-player-registration": ["admin"],
   "/auction": ["admin", "manager"],

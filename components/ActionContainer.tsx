@@ -68,11 +68,8 @@ export const AuctionContainer = () => {
 
   // Auto-select bidIncrement based on current player's baseValue
   useEffect(() => {
-    const currentPlayer = filteredPlayers[currentPlayerIndex];
-    if (currentPlayer) {
-      setBidIncrement(currentPlayer.baseValue);
-    }
-  }, [currentPlayerIndex, filteredPlayers]);
+      setBidIncrement(200);
+  }, []);
 
   const updateUnsoldPlayerTeamAndPoints = (player: Player, team: Team) => {
     // For UNSOLD players:
