@@ -31,11 +31,11 @@ export default async function HomeBase() {
           ))}
         </div>
       </section>
-      <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full overflow-hidden py-3 shadow-md z-50 bg-gradient-to-t from-white/20 to-transparent backdrop-blur-md">
+      {/* <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full overflow-hidden py-3 shadow-md z-50 bg-gradient-to-t from-white/20 to-transparent backdrop-blur-md">
         <div className="animate-marquee whitespace-nowrap text-center font-bold text-xl text-white">
           📢 Announcement: The auction will be on Sunday, 14 Dec, 5 PM Onwards. 📢
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
