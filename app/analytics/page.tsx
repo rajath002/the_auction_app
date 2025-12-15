@@ -71,6 +71,7 @@ export default function AnalyticsPage() {
   return (
     <RoleGuard allowedRoles={['admin', 'manager']}>
       <div className="p-6 bg-gray-950 min-h-screen text-white">
+        <div className="h-16" />
         <h1 className="text-3xl font-bold mb-6">Analytics Dashboard</h1>
 
         <Row gutter={[16, 16]}>
