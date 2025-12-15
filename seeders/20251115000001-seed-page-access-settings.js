@@ -83,6 +83,14 @@ module.exports = {
         description: 'Gallery page showcasing images and media',
         created_at: new Date(),
         updated_at: new Date()
+      },
+      {
+        page_route: '/analytics',
+        page_name: 'Analytics',
+        public_access: false,
+        description: 'Analytics dashboard (Admin and Manager only)',
+        created_at: new Date(),
+        updated_at: new Date()
       }
     ], {});
 
