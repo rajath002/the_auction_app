@@ -18,6 +18,7 @@ const protectedRoutes = {
   "/player-registration": ["admin"],
   "/bulk-player-registration": ["admin"],
   "/auction": ["admin", "manager"],
+  "/analytics": ["admin", "manager"],
   "/page-access-management": ["admin"],
 };
 

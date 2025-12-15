@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Row, Col, Statistic, Spin, message, Table } from "antd";
 import { UserOutlined, TeamOutlined, DollarOutlined, TrophyOutlined } from "@ant-design/icons";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import RoleGuard from "@/components/RoleGuard";
 
 interface AnalyticsData {
@@ -48,17 +48,17 @@ export default function AnalyticsPage() {
     }
   };
 
-  // Colors for pie chart
+  // Colors for radial bar chart
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C'];
 
   // Prepare data for team summary table
-  const teamSummaryData = data?.teamSpending.map((team, index) => ({
+  const teamSummaryData = data && data.teamSpending ? data.teamSpending.map((team, index) => ({
     key: team.teamId,
     teamName: team.teamName,
     totalSpent: team.totalSpent,
     playerCount: team.players.length,
     avgSpentPerPlayer: team.players.length > 0 ? Math.round(team.totalSpent / team.players.length) : 0
-  })) || [];
+  })) : [];
 
   if (loading) {
     return (
@@ -101,9 +101,9 @@ export default function AnalyticsPage() {
               <Statistic
                 title={<span className="text-gray-300">Total Auction Value</span>}
                 value={data?.totalAuctionValue || 0}
-                prefix={<DollarOutlined className="text-yellow-400" />}
+                suffix="pts"
                 valueStyle={{ color: '#fff' }}
-                formatter={(value) => `₹${value.toLocaleString()}`}
+                formatter={(value) => `${value.toLocaleString()}`}
               />
             </Card>
           </Col>
@@ -121,7 +121,7 @@ export default function AnalyticsPage() {
         </Row>
 
         {/* Team Summary Table */}
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4 text-white">Team Spending Summary</h2>
           <Table
             dataSource={teamSummaryData}
@@ -158,19 +158,34 @@ export default function AnalyticsPage() {
             className="bg-gray-800"
             rowClassName={() => 'bg-gray-700 hover:bg-gray-600'}
           />
-        </div>
+        </div> */}
 
         {/* Team-wise Player Spending Breakdown */}
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4 text-white">Team-wise Player Spending Breakdown</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data?.teamSpending.map((team, teamIndex) => {
-              const teamPieData = team.players.map((player, playerIndex) => ({
+              // Transform data for radial bar chart - show top 5 players and others
+              const topPlayers = team.players.slice(0, 5);
+              const otherPlayers = team.players.slice(5);
+              
+              let teamRadialData = topPlayers.map((player, playerIndex) => ({
                 name: player.playerName,
-                value: player.amount,
-                percentage: player.percentage,
+                value: parseFloat(player.percentage),
+                amount: player.amount,
                 fill: COLORS[playerIndex % COLORS.length]
               }));
+
+              if (otherPlayers.length > 0) {
+                const othersAmount = otherPlayers.reduce((sum, p) => sum + p.amount, 0);
+                const othersPercentage = (othersAmount / team.totalSpent) * 100;
+                teamRadialData.push({
+                  name: 'Others',
+                  value: othersPercentage,
+                  amount: othersAmount,
+                  fill: COLORS[5 % COLORS.length]
+                });
+              }
 
               return (
                 <Card key={team.teamId} className="bg-gray-800 border-gray-700">
@@ -183,33 +198,57 @@ export default function AnalyticsPage() {
                   <ResponsiveContainer width="100%" height={250}>
                     <PieChart>
                       <Pie
-                        data={teamPieData}
+                        data={teamRadialData}
                         cx="50%"
                         cy="50%"
-                        labelLine={false}
-                        label={({ percentage }) => `${percentage}%`}
                         outerRadius={70}
                         fill="#8884d8"
                         dataKey="value"
-                      >
-                        {teamPieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.fill} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value: number, name: string) => [
-                          `₹${value.toLocaleString()}`,
-                          `${name}`
-                        ]}
-                        labelStyle={{ color: '#000' }}
-                        contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc' }}
+                        label={({ value }) => `${value.toFixed(1)}%`}
+                        labelLine={true}
                       />
-                      <Legend
-                        wrapperStyle={{ fontSize: '12px' }}
-                        iconType="circle"
+                      <Tooltip
+                        cursor={false}
+                        formatter={(value: number, name: string, props: any) => [
+                          <div key="tooltip" className="text-center">
+                            <div className="font-semibold">{name}</div>
+                            <div>₹{props.payload.amount.toLocaleString()}</div>
+                            <div className="text-blue-600">{value.toFixed(1)}% of team spending</div>
+                          </div>,
+                          ''
+                        ]}
+                        labelStyle={{ color: '#000', display: 'none' }}
+                        contentStyle={{
+                          backgroundColor: '#fff',
+                          border: '1px solid #ccc',
+                          borderRadius: '8px',
+                          fontSize: '14px',
+                          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                        }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
+
+                  {/* Compact Player List */}
+                  <div className="mt-2">
+                    <div className="flex flex-wrap gap-1 justify-center">
+                      {teamRadialData.map((item, index) => (
+                        <div
+                          key={item.name}
+                          className="flex items-center gap-1 text-xs text-gray-300"
+                          style={{ color: item.fill }}
+                        >
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: item.fill }}
+                          ></div>
+                          <span className="truncate max-w-16">
+                            {item.name.split(' ')[0]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </Card>
               );
             })}

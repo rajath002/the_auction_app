@@ -18,6 +18,7 @@ enum NavLinks {
   ABOUT_US = "/about-us",
   GALLERY = "/gallery",
   PAGE_ACCESS_MANAGEMENT = "/page-access-management",
+  ANALYTICS = "/analytics",
   MANAGE_PLAYERS = "/manage-players",
   ICON_ALLOCATION = "/icon-allocation",
 }
@@ -133,6 +134,8 @@ export default function Header() {
 
   // Check if user can manage players
   const canManagePlayers = hasPageAccess(NavLinks.MANAGE_PLAYERS);
+
+  const canSeeAnalytics = hasPageAccess(NavLinks.ANALYTICS);
 
   return (
     <>
@@ -267,18 +270,20 @@ export default function Header() {
                   <div className="pointer-events-none invisible absolute left-0 top-full z-20 w-64 translate-y-2 pt-3 opacity-0 transition-all duration-200 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 group-hover:visible group-hover:duration-150 group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible">
                     <ul className="overflow-hidden rounded-2xl border border-white/10 bg-gray-900/95 shadow-xl backdrop-blur">
                       {isAdmin && (
-                        <li>
-                          <Link
-                            href={NavLinks.PAGE_ACCESS_MANAGEMENT}
-                            className={`block px-4 py-3 text-sm transition-colors duration-150 ${
-                              pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
-                                ? "bg-white/10 text-yellow-300"
-                                : "text-gray-200 hover:bg-white/5 hover:text-white"
-                            }`}
-                          >
-                            Page Access Management
-                          </Link>
-                        </li>
+                        <>
+                          <li>
+                            <Link
+                              href={NavLinks.PAGE_ACCESS_MANAGEMENT}
+                              className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                                pathName === NavLinks.PAGE_ACCESS_MANAGEMENT
+                                  ? "bg-white/10 text-yellow-300"
+                                  : "text-gray-200 hover:bg-white/5 hover:text-white"
+                              }`}
+                            >
+                              Page Access Management
+                            </Link>
+                          </li>
+                        </>
                       )}
                       {canManagePlayers && (
                         <li>
@@ -293,6 +298,20 @@ export default function Header() {
                             Manage Players
                           </Link>
                         </li>
+                      )}
+                      {canSeeAnalytics && (
+                                                  <li>
+                            <Link
+                              href={NavLinks.ANALYTICS}
+                              className={`block px-4 py-3 text-sm transition-colors duration-150 ${
+                                pathName === NavLinks.ANALYTICS
+                                  ? "bg-white/10 text-yellow-300"
+                                  : "text-gray-200 hover:bg-white/5 hover:text-white"
+                              }`}
+                            >
+                              Analytics
+                            </Link>
+                          </li>
                       )}
                     </ul>
                   </div>

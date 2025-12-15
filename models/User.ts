@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 // User role enum
 export enum UserRole {
   ADMIN = 'admin',
+  MANAGER = 'manager',
   USER = 'user',
 }
 

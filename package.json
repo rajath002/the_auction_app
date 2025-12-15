@@ -11,12 +11,12 @@
     "db:init": "ts-node -r tsconfig-paths/register scripts/db.ts init",
     "db:seed": "ts-node -r tsconfig-paths/register scripts/db.ts seed",
     "db:reset": "ts-node -r tsconfig-paths/register scripts/db.ts reset",
-    "migrate": "npx sequelize-cli db:migrate",
-    "migrate:undo": "npx sequelize-cli db:migrate:undo",
-    "migrate:undo:all": "npx sequelize-cli db:migrate:undo:all",
-    "seed": "npx sequelize-cli db:seed:all",
-    "seed:undo": "npx sequelize-cli db:seed:undo",
-    "seed:undo:all": "npx sequelize-cli db:seed:undo:all"
+    "migrate": "npx sequelize-cli db:migrate --env test",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo --env test",
+    "migrate:undo:all": "npx sequelize-cli db:migrate:undo:all --env test",
+    "seed:all": "npx sequelize-cli db:seed:all --env test",
+    "seed:undo": "npx sequelize-cli db:seed:undo --env test",
+    "seed:undo:all": "npx sequelize-cli db:seed:undo:all --env test"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.7",
@@ -41,6 +41,7 @@
     "react-dom": "^18",
     "react-virtualized": "^9.22.6",
     "react-window": "^2.2.3",
+    "recharts": "^3.5.1",
     "sass": "^1.69.5",
     "sequelize": "^6.37.7",
     "sharp": "^0.34.5",
