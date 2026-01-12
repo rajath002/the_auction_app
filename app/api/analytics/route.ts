@@ -30,7 +30,7 @@ export async function GET() {
       where: {
         status: 'SOLD',
         current_team_id: {
-          [Op.ne]: null
+          [Op.ne]: null as any
         }
       },
       include: [{
